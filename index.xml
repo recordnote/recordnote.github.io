@@ -6,7 +6,17 @@
         <description>Recent content on Aaron</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 09 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://recordnote.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 20 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://recordnote.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>2021年文章测试</title>
+        <link>https://recordnote.github.io/p/2021%E5%B9%B4%E6%96%87%E7%AB%A0%E6%B5%8B%E8%AF%95/</link>
+        <pubDate>Sun, 20 Jun 2021 00:00:00 +0000</pubDate>
+        
+        <guid>https://recordnote.github.io/p/2021%E5%B9%B4%E6%96%87%E7%AB%A0%E6%B5%8B%E8%AF%95/</guid>
+        <description>&lt;p&gt;2021年&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;n&#34;&gt;Hello&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        </item>
+        <item>
         <title>Chinese Test</title>
         <link>https://recordnote.github.io/p/test-chinese/</link>
         <pubDate>Wed, 09 Sep 2020 00:00:00 +0000</pubDate>
