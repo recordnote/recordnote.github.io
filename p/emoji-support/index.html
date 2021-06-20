@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="en-us">
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Guide to emoji usage in Hugo'><title>Emoji Support</title>
 
@@ -38,7 +38,7 @@
     })();
 </script><div class="container main-container flex on-phone--column extended article-page with-toolbar">
             <aside class="sidebar left-sidebar sticky">
-    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
         <span class="hamburger-box">
             <span class="hamburger-inner"></span>
         </span>
@@ -162,7 +162,7 @@
 
 
 
-                <span>暗色模式</span>
+                <span>Dark Mode</span>
             </li>
         
     </ol>
@@ -276,7 +276,7 @@
     <aside class="related-contents--wrapper">
     
     
-        <h2 class="section-title">相关文章</h2>
+        <h2 class="section-title">Related contents</h2>
         <div class="related-contents">
             <div class="flex article-list--tile">
                 
@@ -332,46 +332,30 @@
 
     
         
-    <div class="disqus-container">
-    <div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
+    <link rel="stylesheet" href="https://unpkg.com/vssue/dist/vssue.min.css" />
 
-<style>
-    .disqus-container {
-        background-color: var(--card-background);
-        border-radius: var(--card-border-radius);
-        box-shadow: var(--shadow-l1);
-        padding: var(--card-padding);
-    }
-</style>
+<div id="vssue"></div>
+
+<script src="https://unpkg.com/vue/dist/vue.runtime.min.js"></script>
+<script src="https://unpkg.com/vssue/dist/vssue..min.js"></script>
 
 <script>
-    window.addEventListener('onColorSchemeChange', (e) => {
-        if (DISQUS) {
-            DISQUS.reset({
-                reload: true
-            });
-        }
-    })
+    new Vue({
+        el: "#vssue",
+        render: (h) =>
+            h("Vssue", {
+                props: {
+                    title: "Emoji Support",
+                    options: {
+                        proxy: (url) => "https://cors-anywhere.azm.workers.dev/" + url,
+                        owner: "",
+                        repo: "",
+                        clientId: "",
+                        clientSecret: "",
+                    },
+                },
+            }),
+    });
 </script>
 
     
