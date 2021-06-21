@@ -1,81 +1,100 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on Aaron</title>
-    <link>https://recordnote.github.io/tags/</link>
-    <description>Recent content in Tags on Aaron</description>
+    <title>Tags on Aaron 的博客</title>
+    <link>http://aaronlin.cn/tags/</link>
+    <description>Recent content in Tags on Aaron 的博客</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 20 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://recordnote.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-Hans</language>
+    <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;&lt;img alt=&#34;知识共享许可协议&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png&#34; /&gt;&lt;/a&gt;&lt;br /&gt;本作品采用&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议&lt;/a&gt;进行许可。&lt;br /&gt;&lt;br /&gt;背景使用了 &lt;a href=&#34;https://www.pexels.com/zh-cn/&#34; target=&#34;_blank&#34;&gt;Pexels&lt;/a&gt; 上 &lt;a href=&#34;https://www.pexels.com/zh-cn/@minan1398&#34; target=&#34;_blank&#34;&gt;Min An&lt;/a&gt; 拍摄的&lt;a href=&#34;https://www.pexels.com/zh-cn/photo/1454794/&#34; target=&#34;_blank&#34;&gt;图片&lt;/a&gt;。</copyright>
+    <lastBuildDate>Tue, 12 Jan 2021 23:54:31 +0800</lastBuildDate><atom:link href="http://aaronlin.cn/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>2021</title>
-      <link>https://recordnote.github.io/tags/2021/</link>
-      <pubDate>Sun, 20 Jun 2021 00:00:00 +0000</pubDate>
+      <title>Chrome Extension</title>
+      <link>http://aaronlin.cn/tags/chrome-extension/</link>
+      <pubDate>Tue, 12 Jan 2021 23:54:31 +0800</pubDate>
       
-      <guid>https://recordnote.github.io/tags/2021/</guid>
+      <guid>http://aaronlin.cn/tags/chrome-extension/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>css</title>
-      <link>https://recordnote.github.io/tags/css/</link>
-      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      <title>ClojureScript</title>
+      <link>http://aaronlin.cn/tags/clojurescript/</link>
+      <pubDate>Tue, 12 Jan 2021 23:54:31 +0800</pubDate>
       
-      <guid>https://recordnote.github.io/tags/css/</guid>
+      <guid>http://aaronlin.cn/tags/clojurescript/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>html</title>
-      <link>https://recordnote.github.io/tags/html/</link>
-      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      <title>Figwheel Main</title>
+      <link>http://aaronlin.cn/tags/figwheel-main/</link>
+      <pubDate>Tue, 12 Jan 2021 23:54:31 +0800</pubDate>
       
-      <guid>https://recordnote.github.io/tags/html/</guid>
+      <guid>http://aaronlin.cn/tags/figwheel-main/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>markdown</title>
-      <link>https://recordnote.github.io/tags/markdown/</link>
-      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      <title>年度</title>
+      <link>http://aaronlin.cn/tags/%E5%B9%B4%E5%BA%A6/</link>
+      <pubDate>Tue, 05 Jan 2021 21:52:44 +0800</pubDate>
       
-      <guid>https://recordnote.github.io/tags/markdown/</guid>
+      <guid>http://aaronlin.cn/tags/%E5%B9%B4%E5%BA%A6/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>themes</title>
-      <link>https://recordnote.github.io/tags/themes/</link>
-      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      <title>生活</title>
+      <link>http://aaronlin.cn/tags/%E7%94%9F%E6%B4%BB/</link>
+      <pubDate>Tue, 05 Jan 2021 21:52:44 +0800</pubDate>
       
-      <guid>https://recordnote.github.io/tags/themes/</guid>
+      <guid>http://aaronlin.cn/tags/%E7%94%9F%E6%B4%BB/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>tag with whitespaces</title>
-      <link>https://recordnote.github.io/tags/tag-with-whitespaces/</link>
-      <pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate>
+      <title>感悟</title>
+      <link>http://aaronlin.cn/tags/%E6%84%9F%E6%82%9F/</link>
+      <pubDate>Thu, 07 May 2020 21:41:50 +0800</pubDate>
       
-      <guid>https://recordnote.github.io/tags/tag-with-whitespaces/</guid>
+      <guid>http://aaronlin.cn/tags/%E6%84%9F%E6%82%9F/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>text</title>
-      <link>https://recordnote.github.io/tags/text/</link>
-      <pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate>
+      <title>技术</title>
+      <link>http://aaronlin.cn/tags/%E6%8A%80%E6%9C%AF/</link>
+      <pubDate>Thu, 07 May 2020 21:41:50 +0800</pubDate>
       
-      <guid>https://recordnote.github.io/tags/text/</guid>
+      <guid>http://aaronlin.cn/tags/%E6%8A%80%E6%9C%AF/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>emoji</title>
-      <link>https://recordnote.github.io/tags/emoji/</link>
-      <pubDate>Tue, 05 Mar 2019 00:00:00 +0000</pubDate>
+      <title>豆瓣FM</title>
+      <link>http://aaronlin.cn/tags/%E8%B1%86%E7%93%A3fm/</link>
+      <pubDate>Sat, 21 Dec 2019 22:00:53 +0800</pubDate>
       
-      <guid>https://recordnote.github.io/tags/emoji/</guid>
+      <guid>http://aaronlin.cn/tags/%E8%B1%86%E7%93%A3fm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>赞赏</title>
+      <link>http://aaronlin.cn/tags/%E8%B5%9E%E8%B5%8F/</link>
+      <pubDate>Mon, 03 Jun 2019 14:21:26 +0800</pubDate>
+      
+      <guid>http://aaronlin.cn/tags/%E8%B5%9E%E8%B5%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ruby Lang</title>
+      <link>http://aaronlin.cn/tags/ruby-lang/</link>
+      <pubDate>Tue, 09 Jan 2018 14:00:11 +0800</pubDate>
+      
+      <guid>http://aaronlin.cn/tags/ruby-lang/</guid>
       <description></description>
     </item>
     
