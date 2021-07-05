@@ -18,16 +18,6 @@
     </item>
     
     <item>
-      <title>Buy Me A Coffee</title>
-      <link>https://recordnote.github.io/posts/buy-me-a-coffee/</link>
-      <pubDate>Mon, 03 Jun 2019 14:21:26 +0800</pubDate>
-      
-      <guid>https://recordnote.github.io/posts/buy-me-a-coffee/</guid>
-      <description>&lt;p&gt;如果你喜欢我的开源项目或者它们可以给你带来帮助，可以赏一杯咖啡 ☕ 给我。~&lt;/p&gt;
-&lt;p&gt;If you like my open source projects or they can help you. You can buy me a coffee ☕.~&lt;/p&gt;</description>
-    </item>
-    
-    <item>
       <title>Build a Chrome Extension with Figwheel Main</title>
       <link>https://recordnote.github.io/posts/build-a-chrome-extension-with-figwheel-main/</link>
       <pubDate>Tue, 12 Jan 2021 23:54:31 +0800</pubDate>
