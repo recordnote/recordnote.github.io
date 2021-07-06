@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>架构 | Aaron 的博客</title>
+    <title>小程序项目 | Aaron 的博客</title>
 
     
 <link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
@@ -19,22 +19,24 @@
 
 <meta name="generator" content="Hugo 0.84.0" />
 
-<link rel="canonical" href="https://recordnote.github.io/categories/%E6%9E%B6%E6%9E%84/" />
+<link rel="canonical" href="https://recordnote.github.io/spring-cloud-alibaba1/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84/" />
 
 
-<meta property="og:title" content="架构" />
-<meta property="og:description" content="Aaron 的生活记录～" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://recordnote.github.io/categories/%E6%9E%B6%E6%9E%84/" /><meta property="og:image" content="https://recordnote.github.io/me/background.jpg"/>
+<meta property="og:title" content="小程序项目" />
+<meta property="og:description" content="一、项目架构 &gt; 二、数据库模型 三、技术选型及项目层级 项目层级：" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/spring-cloud-alibaba1/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84/" /><meta property="og:image" content="https://recordnote.github.io/img/2017.jpg" /><meta property="article:section" content="spring-cloud-alibaba1" />
+<meta property="article:published_time" content="2021-02-01T14:21:26&#43;08:00" />
+<meta property="article:modified_time" content="2021-02-01T14:21:26&#43;08:00" />
 
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/me/background.jpg"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/2017.jpg"/>
 
-<meta name="twitter:title" content="架构"/>
-<meta name="twitter:description" content="Aaron 的生活记录～"/>
+<meta name="twitter:title" content="小程序项目"/>
+<meta name="twitter:description" content="一、项目架构 &gt; 二、数据库模型 三、技术选型及项目层级 项目层级："/>
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
@@ -86,7 +88,17 @@
 </style>
 
 
-     
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
 
     
     <link rel="stylesheet" href="/css/custom.css" />
@@ -120,287 +132,92 @@
         <section class="front">
           <div class="dream-max-width">
             
-
-<header class="ui basic very padded segment dream-header">
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
   
-  <div class="ui small circular image">
-    <img src="/me/yy.jpg" alt="avatar" />
-  </div>
+  
+  
   
 
-  <div class="content">
-    <h1 class="ui medium header">Aaron 的博客<span class="sub header">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-    </h1>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">小程序项目<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Aaron
+                
+              
 
-    <article class="ui horizontal list">
-      
-      <a class="item" href="/posts">
-        <i class="archive icon" title="归档"></i>
-      </a>
-      
-      <a class="item" href="/categories">
-        <i class="th list icon" title="所有分类"></i>
-      </a>
-      <a class="item" href="/tags">
-        <i class="tags icon" title="所有标签"></i>
-      </a>
+              | 
+                  <span data-format="luxon">2021-02-01T14:21:26&#43;08:00</span>
+                
+
+              | 1 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2021-02-01T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=%e5%b0%8f%e7%a8%8b%e5%ba%8f%e9%a1%b9%e7%9b%ae&url=https%3a%2f%2frecordnote.github.io%2fspring-cloud-alibaba1%2f%25E5%25B0%258F%25E7%25A8%258B%25E5%25BA%258F%25E9%25A1%25B9%25E7%259B%25AE%25E6%259E%25B6%25E6%259E%2584%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fspring-cloud-alibaba1%2f%25E5%25B0%258F%25E7%25A8%258B%25E5%25BA%258F%25E9%25A1%25B9%25E7%259B%25AE%25E6%259E%25B6%25E6%259E%2584%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/2017.jpg" />
+        
+
+        <h1 id="一项目架构">一、项目架构</h1>
+<p><img src="小程序项目架构/image-20210705203744795.png" alt="image-20210705203744795" style="zoom: 80%;" />&gt;</p>
+<h1 id="二数据库模型">二、数据库模型</h1>
+<p><img src="小程序项目架构/image-20210703160458226.png" alt="image-20210703160458226" style="zoom: 50%;" /></p>
+<p><img src="小程序项目架构/image-20210703160849792.png" alt="image-20210703160849792" style="zoom:50%;" /></p>
+<h1 id="三技术选型及项目层级">三、技术选型及项目层级</h1>
+<p><img src="小程序项目架构/image-20210705203928525.png" alt="image-20210705203928525" style="zoom: 80%;" /></p>
+<p>项目层级：</p>
+<p><img src="小程序项目架构/image-20210704223826504.png" alt="image-20210704223826504" style="zoom:67%;" /></p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
     </article>
-
-    
-    
-    
-    
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-    
-
-    
-
-    
-    
-    
-          <div class="dream-tags">
-          
-          
-          
-            <a class="ui label" href="/tags/chrome-extension/" title="Chrome Extension">
-              Chrome Extension
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/clojurescript/" title="ClojureScript">
-              ClojureScript
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/figwheel-main/" title="Figwheel Main">
-              Figwheel Main
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/ruby-lang/" title="Ruby Lang">
-              Ruby Lang
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/spring/" title="Spring">
-              Spring
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E5%B9%B4%E5%BA%A6/" title="年度">
-              年度
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
-              微服务
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
-              感悟
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%8A%80%E6%9C%AF/" title="技术">
-              技术
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
-              杂谈
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
-              生活
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E8%B1%86%E7%93%A3fm/" title="豆瓣FM">
-              豆瓣FM
-            </a>
-          
-          </div>
     
 
     
   </div>
-</header>
-
-
-<div class="ui relaxed grid dream-grid">
-  
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  <a class="image" href="https://recordnote.github.io/spring-cloud-alibaba/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84/">
-    
-    <img src="/img/2017.jpg" alt="小程序项目" />
-    
-  </a>
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/spring-cloud-alibaba/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84/">小程序项目</a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">2021-02-01T14:21:26&#43;08:00</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      一、项目架构 &gt; 二、数据库模型 三、技术选型及项目层级 项目层级：
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author"><img class="ui avatar image" src="/me/yy.jpg" alt="avatar" />Aaron</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>1 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  <a class="image" href="https://recordnote.github.io/spring-cloud-alibaba1/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84/">
-    
-    <img src="/img/2017.jpg" alt="小程序项目" />
-    
-  </a>
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/spring-cloud-alibaba1/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84/">小程序项目</a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">2021-02-01T14:21:26&#43;08:00</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      一、项目架构 &gt; 二、数据库模型 三、技术选型及项目层级 项目层级：
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author"><img class="ui avatar image" src="/me/yy.jpg" alt="avatar" />Aaron</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>1 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  <a class="image" href="https://recordnote.github.io/spring-cloud-alibaba/%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/">
-    
-    <img src="/img/2016.jpg" alt="微服务" />
-    
-  </a>
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/spring-cloud-alibaba/%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/">微服务</a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">2021-01-01T14:21:26&#43;08:00</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      一、单体架构 1、优点： 架构简单 开发、测试、部署方便 2、缺点： 复杂性高 部署慢，频率低 扩展能力受限 阻碍技术创新 二、微服务 1、简单定义： ​ 微服务架
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author"><img class="ui avatar image" src="/me/yy.jpg" alt="avatar" />Aaron</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>1 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  <a class="image" href="https://recordnote.github.io/spring-cloud-alibaba1/%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/">
-    
-    <img src="/img/2016.jpg" alt="微服务" />
-    
-  </a>
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/spring-cloud-alibaba1/%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/">微服务</a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">2021-01-01T14:21:26&#43;08:00</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      一、单体架构 1、优点： 架构简单 开发、测试、部署方便 2、缺点： 复杂性高 部署慢，频率低 扩展能力受限 阻碍技术创新 二、微服务 1、简单定义： ​ 微服务架
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author"><img class="ui avatar image" src="/me/yy.jpg" alt="avatar" />Aaron</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>1 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-
-  
 </div>
 
 
@@ -757,9 +574,40 @@
 
 
 
-<script src="/js/imagesloaded.pkgd.min.js"></script>
-<script src="/js/masonry.pkgd.min.js"></script>
-<script src="/js/grid.js"></script>
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
 
 
     
