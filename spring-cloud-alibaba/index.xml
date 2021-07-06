@@ -35,14 +35,5 @@
       <description>Spring Boot Actuator可以帮助你监控和管理Spring Boot应用，比如健康检查、审计、统计和HTTP追踪等。所有的这些特性可以通过JMX或者</description>
     </item>
     
-    <item>
-      <title>微服务</title>
-      <link>https://recordnote.github.io/spring-cloud-alibaba/test/</link>
-      <pubDate>Mon, 01 Feb 2021 14:21:26 +0800</pubDate>
-      
-      <guid>https://recordnote.github.io/spring-cloud-alibaba/test/</guid>
-      <description>测试图片显示</description>
-    </item>
-    
   </channel>
 </rss>
