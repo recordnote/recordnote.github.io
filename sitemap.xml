@@ -8,6 +8,24 @@
     <loc>https://recordnote.github.io/spring-cloud-alibaba/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84/</loc>
     <lastmod>2021-02-01T14:21:26+08:00</lastmod>
   </url><url>
+    <loc>https://recordnote.github.io/mq/mq-design/</loc>
+    <lastmod>2021-01-28T14:21:26+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/mq/how-to-ensure-the-reliable-transmission-of-messages/</loc>
+    <lastmod>2021-01-27T14:21:26+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/mq/mq-time-delay-and-expired-failure/</loc>
+    <lastmod>2021-01-27T14:21:26+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/mq/how-to-ensure-the-order-of-messages/</loc>
+    <lastmod>2021-01-26T14:21:26+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/mq/how-to-ensure-that-messages-are-not-repeatedly-consumed/</loc>
+    <lastmod>2021-01-25T14:21:26+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/mq/how-to-ensure-high-availability-of-message-queues/</loc>
+    <lastmod>2021-01-24T14:21:26+08:00</lastmod>
+  </url><url>
     <loc>https://recordnote.github.io/spring-cloud-alibaba/%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/</loc>
     <lastmod>2021-01-01T14:21:26+08:00</lastmod>
   </url><url>
@@ -43,6 +61,18 @@
   </url><url>
     <loc>https://recordnote.github.io/categories/%E6%9E%B6%E6%9E%84/</loc>
     <lastmod>2021-02-01T14:21:26+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/mq/</loc>
+    <lastmod>2021-01-28T14:21:26+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</loc>
+    <lastmod>2021-01-28T14:21:26+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/categories/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</loc>
+    <lastmod>2021-01-28T14:21:26+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/mq/why-mq/</loc>
+    <lastmod>2021-01-23T14:21:26+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/posts/build-a-chrome-extension-with-figwheel-main/</loc>
     <lastmod>2021-01-12T23:54:31+08:00</lastmod>
@@ -124,9 +154,5 @@
   </url><url>
     <loc>https://recordnote.github.io/categories/%E8%AF%BB%E4%B9%A6/</loc>
     <lastmod>2018-01-09T14:00:11+08:00</lastmod>
-  </url><url>
-    <loc>https://recordnote.github.io/mq/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</loc>
-  </url><url>
-    <loc>https://recordnote.github.io/mq/</loc>
   </url>
 </urlset>
