@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>spring常用注解 | Aaron 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Aaron" />
+<meta name="description" content="Aaron 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.84.0" />
+
+<link rel="canonical" href="https://recordnote.github.io/spring-cloud-alibaba/spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/" />
+
+
+<meta property="og:title" content="spring常用注解" />
+<meta property="og:description" content="一、@Resource和@Autowired的区别 1、@Autowired与@Resource都可以用来装配bean. 都可以写在字段上,或写" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/spring-cloud-alibaba/spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/" /><meta property="og:image" content="https://recordnote.github.io/me/background.jpg"/><meta property="article:section" content="spring-cloud-alibaba" />
+<meta property="article:published_time" content="2020-11-23T14:21:26&#43;08:00" />
+<meta property="article:modified_time" content="2020-11-23T14:21:26&#43;08:00" />
+
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/me/background.jpg"/>
+
+<meta name="twitter:title" content="spring常用注解"/>
+<meta name="twitter:description" content="一、@Resource和@Autowired的区别 1、@Autowired与@Resource都可以用来装配bean. 都可以写在字段上,或写"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一resource和autowired的区别">一、@Resource和@Autowired的区别</a></li>
+    <li><a href="#二repository-component-service-controller之间的区别与联系">二、@Repository @Component @Service @Controller之间的区别与联系</a>
+      <ul>
+        <li><a href="#其他网上资料">其他网上资料</a></li>
+        <li><a href="#总结">总结</a></li>
+      </ul>
+    </li>
+    <li><a href="#三postconstruct-和-predestroy">三、@PostConstruct 和 @PreDestroy</a></li>
+    <li><a href="#四restcontroller和controller的区别">四、@RestController和@Controller的区别</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">spring常用注解<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Aaron
+                
+              
+
+              | 
+                  <span data-format="luxon">2020-11-23T14:21:26&#43;08:00</span>
+                
+
+              | 11 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2020-11-23T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=spring%e5%b8%b8%e7%94%a8%e6%b3%a8%e8%a7%a3&url=https%3a%2f%2frecordnote.github.io%2fspring-cloud-alibaba%2fspring%25E5%25B8%25B8%25E7%2594%25A8%25E6%25B3%25A8%25E8%25A7%25A3%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fspring-cloud-alibaba%2fspring%25E5%25B8%25B8%25E7%2594%25A8%25E6%25B3%25A8%25E8%25A7%25A3%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/spring.jpg" />
+        
+
+        <h2 id="一resource和autowired的区别">一、@Resource和@Autowired的区别</h2>
+<p><strong>1、@Autowired与@Resource都可以用来装配bean. 都可以写在字段上,或写在setter方法上。</strong></p>
+<p>2、@Autowired默认<strong>按类型装配</strong>（这个注解是属于spring的）
+默认情况下必须要求依赖对象必须存在，如果要允许null值，可以设置它的<strong>required</strong>属性为false，如：
+@Autowired(required=false) ，如果我们想使用名称装配可以结合@Qualifier注解进行使用，如下：</p>
+<pre><code>@Autowired() @Qualifier(&quot;baseDao&quot;)    
+private BaseDao baseDao;
+</code></pre><p>3、@Resource <strong>是JDK1.6支持的注解</strong>，<strong>默认按照名称进行装配</strong></p>
+<p>@Resource装配顺序</p>
+<ol>
+<li>如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常</li>
+<li>如果指定了name，则从上下文中查找名称（id）匹配的bean进行装配，找不到则抛出异常</li>
+<li>如果指定了type，则从上下文中找到类型匹配的唯一bean进行装配，找不到或者找到多个，都会抛出异常</li>
+<li>如果既没有指定name，又没有指定type，则自动按照byName方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配
+但是需要注意的是，如果name属性一旦指定，就只会按照名称进行装配。</li>
+</ol>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/5bd467f90001df7905710540.jpg" alt="5bd467f90001df7905710540.jpg" style="zoom: 67%;" /></p>
+<p>只不过注解处理器我们使用的是Spring提供的，是一样的，无所谓解耦不解耦的说法，两个在便利程度上是等同的。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Resource</span><span style="color:#f92672">(</span>name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;baseDao&#34;</span><span style="color:#f92672">)</span>    
+<span style="color:#66d9ef">private</span> BaseDao baseDao<span style="color:#f92672">;</span>
+</code></pre></div><p><strong>byName</strong> 通过参数名 自动装配，如果一个bean的name 和另外一个bean的 property 相同，就自动装配。
+<strong>byType</strong> 通过参数的数据类型自动自动装配，如果一个bean的数据类型和另外一个bean的property属性的数据类型兼容，就自动装配</p>
+<hr>
+<p>我们可以通过 @Autowired / @Resource 在 Bean 类中使用自动注入功能，但是 Bean 还是在 XML 文件中通过 <bean> 进行定义 —— 也就是说，在 XML 配置文件中定义 Bean，通过@Autowired 或 @Resource 为 Bean 的成员变量、方法入参或构造函数入参提供自动注入的功能。
+比如下面的beans.xml ，定义了三个bean对象</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Boss</span> <span style="color:#f92672">{</span>    
+    <span style="color:#66d9ef">private</span> Car car<span style="color:#f92672">;</span>    
+    <span style="color:#66d9ef">private</span> Office office<span style="color:#f92672">;</span>    
+   <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>        
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;car:&#34;</span> <span style="color:#f92672">+</span> car <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;\n&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;office:&#34;</span> <span style="color:#f92672">+</span> office<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">
+<span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; ?&gt;</span>
+<span style="color:#f92672">&lt;beans</span> <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/beans&#34;</span>
+    <span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+     <span style="color:#a6e22e">xmlns:context=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/context&#34;</span>
+     <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/beans 
+</span><span style="color:#e6db74"> http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+</span><span style="color:#e6db74"> http://www.springframework.org/schema/context 
+</span><span style="color:#e6db74"> http://www.springframework.org/schema/context/spring-context-2.5.xsd&#34;</span><span style="color:#f92672">&gt;</span>
+
+    <span style="color:#f92672">&lt;context:annotation-config/&gt;</span> 
+
+    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;boss&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.Boss&#34;</span><span style="color:#f92672">/&gt;</span>
+    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;office&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.Office&#34;</span><span style="color:#f92672">&gt;</span>
+        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;officeNo&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;001&#34;</span><span style="color:#f92672">/&gt;</span>
+    <span style="color:#f92672">&lt;/bean&gt;</span>
+    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;car&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.Car&#34;</span> <span style="color:#a6e22e">scope=</span><span style="color:#e6db74">&#34;singleton&#34;</span><span style="color:#f92672">&gt;</span>
+        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;brand&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34; 红旗 CA72&#34;</span><span style="color:#f92672">/&gt;</span>
+        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;price&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;2000&#34;</span><span style="color:#f92672">/&gt;</span>
+    <span style="color:#f92672">&lt;/bean&gt;</span>
+<span style="color:#f92672">&lt;/beans&gt;</span>
+</code></pre></div><p>spring2.5提供了基于注解（Annotation-based）的配置，我们可以通过注解的方式来完成注入依赖。在Java代码中可以使用 @Resource或者@Autowired注解方式来进行注入。虽然@Resource和@Autowired都可以来完成注入依赖，但它们之间是有<strong>区别</strong>：</p>
+<p><font color='red'>a. @Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入</font>
+<font color='red'>b. @Autowired默认是按照类型装配注入的，如果想按照名称来转配注入，则需要结合@Qualifier一起使用</font>
+<font color='red'>c. @Resource注解是由JDK（1.6以上版本）提供，而@Autowired是由Spring提供@Resource的方式</font>
+<font color='red'>d. @Resource和@Autowired都可以书写标注在字段或者该字段的setter方法之上</font></p>
+<p>2、使用注解的方式，我们需要修改spring配置文件的头信息</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span><span style="color:#f92672">&lt;beans</span> <span style="color:#960050;background-color:#1e0010">http://www.springframework.org/schema/beans&#34;</span><span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span><span style="color:#a6e22e">xmlns:context=</span><span style="color:#e6db74">&#34;Index of /schema/context&#34;</span>
+       <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;Index of /schema/beans 
+</span><span style="color:#e6db74">http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+</span><span style="color:#e6db74">Index of /schema/context
+</span><span style="color:#e6db74">http://www.springframework.org/schema/context/spring-context-2.5.xsd&#34;</span><span style="color:#f92672">&gt;</span>
+    <span style="color:#f92672">&lt;context:annotation-config/&gt;&lt;/beans&gt;</span>
+   
+</code></pre></div><p>在基于注解方式配置Spring的配置文件中，你可能会见到</p>
+<pre><code>&lt;context:annotation-config/&gt;
+</code></pre><p>这样一条配置，他的作用是式地向 Spring 容器注册</p>
+<pre><code>AutowiredAnnotationBeanPostProcessor
+CommonAnnotationBeanPostProcessor
+PersistenceAnnotationBeanPostProcessor
+RequiredAnnotationBeanPostProcessor
+</code></pre><p>这 4 个BeanPostProcessor。</p>
+<p>注册这4个BeanPostProcessor的作用，就是为了你的系统能够识别相应的注解。</p>
+<p>例如：</p>
+<p>如果你想使用@Autowired注解，那么就必须事先在 Spring 容器中声明 AutowiredAnnotationBeanPostProcessor Bean。传统声明方式如下</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.beans.factory.annotation. AutowiredAnnotationBeanPostProcessor &#34;</span><span style="color:#f92672">/&gt;</span>
+</code></pre></div><p>如果想使用@ Resource 、@ PostConstruct、@ PreDestroy等注解就必须声明CommonAnnotationBeanPostProcessor</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.beans.factory.annotation. CommonAnnotationBeanPostProcessor&#34;</span><span style="color:#f92672">/&gt;</span>
+</code></pre></div><p>如果想使用@PersistenceContext注解，就必须声明PersistenceAnnotationBeanPostProcessor的Bean。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.beans.factory.annotation.PersistenceAnnotationBeanPostProcessor&#34;</span><span style="color:#f92672">/&gt;</span>
+</code></pre></div><p>如果想使用 @Required的注解，就必须声明RequiredAnnotationBeanPostProcessor的Bean。</p>
+<p>同样，传统的声明方式如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor&#34;</span><span style="color:#f92672">/&gt;</span>
+</code></pre></div><p>一般来说，这些注解我们还是比较常用，尤其是<strong>Antowired</strong>，在自动注入的时候更是经常使用，所以如果总是需要按照传统的方式一条一条配置显得有些繁琐和没有必要，<strong>于是spring给我们提供<a href="context:annotation-config/">context:annotation-config/</a>的简化配置方式，自动帮你完成声明。</strong></p>
+<p><strong>不过，我们使用注解一般都会配置扫描包路径选项</strong></p>
+<p><strong>&lt;context:component-scan base-package=”XX.XX”/&gt;</strong></p>
+<p><strong>该配置项其实也包含了自动注入上述processor的功能，因此当使用 <a href="context:component-scan/">context:component-scan/</a> 后，就可以将 <a href="context:annotation-config/">context:annotation-config/</a> 移除</strong></p>
+<p><strong>比如：</strong></p>
+<pre><code>&lt;context:component-scan base-package=&quot;carPoolingController, carPoolingService, carPoolingDao&quot; /&gt;
+</code></pre><p><strong>就把controller包下 service包下 dao包下的注解全部扫描了</strong></p>
+<p>3、修改以上配置文件的头信息后，我们就可以在Java代码通过注解方式来注入bean，看下面代码</p>
+<p>（1）@Resource</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StudentService3</span> <span style="color:#66d9ef">implements</span> IStudentService <span style="color:#f92672">{</span>    
+    <span style="color:#75715e">//@Resource(name=&#34;studentDao&#34;)放在此处也是可行的
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> IStudentDao studentDao<span style="color:#f92672">;</span>    
+    <span style="color:#66d9ef">private</span> String id<span style="color:#f92672">;</span>    
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setId</span><span style="color:#f92672">(</span>String id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>    
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> id<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><p>@Resource(name=&ldquo;studentDao&rdquo;) // 通过此注解完成从spring配置文件中查找名称为studentDao的bean来装配字段studentDao，如果spring配置文件中不存在 studentDao名称的bean则转向按照bean类型进行查找</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setStudentDao</span><span style="color:#f92672">(</span>IStudentDao studentDao<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>        
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">studentDao</span> <span style="color:#f92672">=</span> studentDao<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">saveStudent</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        studentDao<span style="color:#f92672">.</span><span style="color:#a6e22e">saveStudent</span><span style="color:#f92672">();</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;,ID 为：&#34;</span><span style="color:#f92672">+</span>id<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>配置文件添加如下信息</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;studentDao&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.dao.impl.StudentDao&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+<span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;studentService3&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.service.impl.StudentService3&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+</code></pre></div><p>(2)@Autowired</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StudentService3</span> <span style="color:#66d9ef">implements</span> IStudentService <span style="color:#f92672">{</span>  
+  	<span style="color:#75715e">//@Autowired放在此处也是可行的
+</span><span style="color:#75715e"></span> 	<span style="color:#66d9ef">private</span> IStudentDao studentDao<span style="color:#f92672">;</span>  
+    <span style="color:#66d9ef">private</span> String id<span style="color:#f92672">;</span>  
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setId</span><span style="color:#f92672">(</span>String id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>       
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> id<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>@Autowired</p>
+<p>//通过此注解完成从spring配置文件中 查找满足studentDao类型的bean
+//@Qualifier(&ldquo;studentDao&rdquo;)则按照名称进行来查找转配的</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setStudentDao</span><span style="color:#f92672">(</span>IStudentDao studentDao<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>       
+     <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">studentDao</span> <span style="color:#f92672">=</span> studentDao<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>  
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">saveStudent</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+       studentDao<span style="color:#f92672">.</span><span style="color:#a6e22e">saveStudent</span><span style="color:#f92672">();</span>
+       System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;,ID 为：&#34;</span><span style="color:#f92672">+</span>id<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>配置文件添加如下信息</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;studentDao&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.wch.dao.impl.StudentDao&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+<span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;studentService3&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.wch.service.impl.StudentService3&#34;</span> <span style="color:#f92672">/&gt;</span>
+</code></pre></div><hr>
+<p>当我们在xml里面为类配置注入对象时，会发现xml文件会越来越臃肿，维护起来很麻烦。这时候我们可以使用注解这种机制来为类配置注入对象。</p>
+<p><strong>原生java为我们提供了 javax.annotation.Resource这个注解。</strong></p>
+<p><strong>spring框架提供了org.springframework.beans.factory.annotation.Autowired。</strong></p>
+<p>一般情况下我们使用 javax.annotation.Resource这个注解，因为这样我们就能实现和spring框架的解藕（难以认同，因为注解处理器还是Spring提供的）。</p>
+<p>@Resource可以作用于字段和函数上。当作用于字段上的时候，如果我们只是简单的这样写</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Resource</span> PersonDao  p<span style="color:#f92672">;</span>
+</code></pre></div><p>这时候spring注入p的过程是
+1、查找xml中是否有id为p的元素
+2、如果没有找到，则看是否有name属性（@Resource name=“”），有则查找name
+3、否则查找PersonDao类型的元素</p>
+<p>@Resource可作用于set函数上。
+例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Resource</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setP</span><span style="color:#f92672">(</span>PersonDao p<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> 
+    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">p</span> <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>@Autowired注解是根据类型进行查找，比如PersonDao p，它会去xml文件里查找类型为PersonDao的元素</p>
+<h2 id="二repository-component-service-controller之间的区别与联系">二、@Repository @Component @Service @Controller之间的区别与联系</h2>
+<p>引用spring的官方文档中的一段描述：</p>
+<p>在Spring2.0之前的版本中，<code>@Repository</code>注解可以标记在任何的类上，用来表明该类是用来执行与数据库相关的操作（即dao对象），并支持自动处理数据库操作产生的异常</p>
+<p>在Spring2.5版本中，引入了更多的Spring类注解：<code>@Component</code>,<code>@Service</code>,<code>@Controller</code>。<code>@Component</code>是一个通用的Spring容器管理的单例bean组件。而<code>@Repository</code>, <code>@Service</code>, <code>@Controller</code>就是针对不同的使用场景所采取的特定功能化的注解组件。</p>
+<p>因此，当你的一个类被<code>@Component</code>所注解，那么就意味着同样可以用<code>@Repository</code>, <code>@Service</code>, <code>@Controller</code>来替代它，同时这些注解会具备有更多的功能，而且功能各异。</p>
+<p>最后，如果你不知道要在项目的业务层采用<code>@Service</code>还是<code>@Component</code>注解。那么，<code>@Service</code>是一个更好的选择。</p>
+<p>就如上文所说的，<code>@Repository</code>早已被支持了在你的持久层作为一个标记可以去自动处理数据库操作产生的异常（译者注：因为原生的java操作数据库所产生的异常只定义了几种，但是产生数据库异常的原因却有很多种，这样对于数据库操作的报错排查造成了一定的影响；而Spring拓展了原生的持久层异常，针对不同的产生原因有了更多的异常进行描述。所以，在注解了<code>@Repository</code>的类上如果数据库操作中抛出了异常，就能对其进行处理，转而抛出的是翻译后的spring专属数据库异常，方便我们对异常进行排查处理）。</p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@Component</td>
+<td>最普通的组件，可以被注入到spring容器进行管理</td>
+</tr>
+<tr>
+<td>@Repository</td>
+<td>作用于持久层</td>
+</tr>
+<tr>
+<td>@Service</td>
+<td>作用于业务逻辑层</td>
+</tr>
+<tr>
+<td>@Controller</td>
+<td>作用于表现层（spring-mvc的注解）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="其他网上资料">其他网上资料</h3>
+<p>这几个注解几乎可以说是一样的：因为被这些注解修饰的类就会被Spring扫描到并注入到Spring的bean容器中。</p>
+<p>这里，<font color='red'>有两个注解是不能被其他注解所互换的</font>：</p>
+<p><code>@Controller</code> <font color='red'>注解的bean会被spring-mvc框架所使用</font>
+<code>@Repository</code> <font color='red'>会被作为持久层操作（数据库）的bean来使用</font>
+如果想使用自定义的组件注解，那么只要在你定义的新注解中加上@Component即可：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Component</span> 
+<span style="color:#a6e22e">@Scope</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;prototype&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> ScheduleJob<span style="color:#f92672">{...}</span>
+</code></pre></div><p>这样，所有被<code>@ScheduleJob</code>注解的类就都可以注入到spring容器来进行管理。我们所需要做的，就是写一些新的代码来处理这个自定义注解（译者注：可以用反射的方法），进而执行我们想要执行的工作。</p>
+<p><code>@Component</code>就是跟<code>&lt;bean&gt;</code>一样，可以托管到Spring容器进行管理。</p>
+<p><code>@Service</code>, <code>@Controller</code> , <code>@Repository</code> = {<code>@Component</code> + 一些特定的功能}。这个就意味着这些注解在部分功能上是一样的。</p>
+<p>当然，下面三个注解被用于为我们的应用进行分层：</p>
+<p><code>@Controller</code>注解类进行前端请求的处理，转发，重定向。包括调用Service层的方法
+<code>@Service</code>注解类处理业务逻辑
+<code>@Repository</code>注解类作为DAO对象（数据访问对象，Data Access Objects），这些类可以直接对数据库进行操作
+有这些分层操作的话，代码之间就实现了松耦合，代码之间的调用也清晰明朗，便于项目的管理；假想一下，如果只用<code>@Controller</code>注解，那么所有的请求转发，业务处理，数据库操作代码都糅合在一个地方，那这样的代码该有多难拓展和维护。</p>
+<h3 id="总结">总结</h3>
+<p><code>@Component</code>, <code>@Service</code>, <code>@Controller</code>, <code>@Repository</code>是spring注解，注解后可以被spring框架所扫描并注入到spring容器来进行管理
+<code>@Component</code>是通用注解，其他三个注解是这个注解的拓展，并且具有了特定的功能
+<code>@Repository</code>注解在持久层中，具有将数据库操作抛出的原生异常翻译转化为spring的持久层异常的功能。
+<code>@Controller</code>层是spring-mvc的注解，具有将请求进行转发，重定向的功能。
+<code>@Service</code>层是业务逻辑层注解，这个注解只是标注该类处于业务逻辑层。
+用这些注解对应用进行分层之后，就能将请求处理，业务逻辑处理，数据库操作处理分离出来，为代码解耦，也方便了以后项目的维护和开发。</p>
+<h2 id="三postconstruct-和-predestroy">三、@PostConstruct 和 @PreDestroy</h2>
+<p>被@PostConstruct修饰的方法会在服务器加载Servlet的时候运行，并且只会被服务器执行一次。</p>
+<p>@PostConstruct修饰的方法在构造函数之后执行，init（）方法<strong>之前执行</strong>。</p>
+<p>@PreDestroy修饰的方法在destroy（）方法<strong>执行之后执行</strong></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/20160810191056385" alt="img" style="zoom: 80%;" /></p>
+<p>一般在项目中@PostConstruct主要应用场景是在初始化Servlet时加载一些缓存数据等。但是使用此注解时会影响到服务的启动时间。</p>
+<h2 id="四restcontroller和controller的区别">四、@RestController和@Controller的区别</h2>
+<p>@RestController的产生，从Spring 4.0以后产生的，用来将json/xml数据发送到前台页面，而不是返回视图页面。</p>
+<p>@RestController和@Controller的区别</p>
+<p>@RestController加在类上面的注解，使得类里面的每个方法都将json/xml返回数据加返回到前台页面中。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RestController</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>
+	<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
+	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say</span><span style="color:#f92672">(){</span>
+ 	   <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;gril&#34;</span><span style="color:#f92672">;</span>
+	<span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210712105341985.png" alt="image-20210712105341985" style="zoom: 67%;" /></p>
+<p>@Controller加在类上面的注解，使得类里面的每个方法都返回一个视图页面。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Controller</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>	
+	<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
+	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say</span><span style="color:#f92672">(){</span>
+   	 <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;gril&#34;</span><span style="color:#f92672">;</span>
+	<span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210712105407917.png" alt="image-20210712105407917" style="zoom:67%;" /></p>
+<p>@Controller和@ResponseBody（加在方法/类上面）一起使用，和@RestController的作用相同。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Controller</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>
+	<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
+	<span style="color:#a6e22e">@ResponseBody</span>
+	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say</span><span style="color:#f92672">(){</span><span style="color:#75715e">//返回json 数据  
+</span><span style="color:#75715e"></span>  	  <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;gril&#34;</span><span style="color:#f92672">;</span>
+	<span style="color:#f92672">}</span>
+	<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello1&#34;</span><span style="color:#f92672">)</span>
+	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say1</span><span style="color:#f92672">(){</span><span style="color:#75715e">//返回视图
+</span><span style="color:#75715e"></span>  	  <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;sys/index1&#34;</span><span style="color:#f92672">;</span>
+	<span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Controller</span>
+<span style="color:#a6e22e">@ResponseBody</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>
+   <span style="color:#75715e">// 都返回json数据到页面
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
+    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say</span><span style="color:#f92672">(){</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;gril&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello1&#34;</span><span style="color:#f92672">)</span>
+    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say1</span><span style="color:#f92672">(){</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;sys/index1&#34;</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div>
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2021 Aaron 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Aaron 的博客<span class="sub header">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/chrome-extension/" title="Chrome Extension">
+              Chrome Extension
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/clojurescript/" title="ClojureScript">
+              ClojureScript
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/figwheel-main/" title="Figwheel Main">
+              Figwheel Main
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="Spring">
+              Spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%B9%B4%E5%BA%A6/" title="年度">
+              年度
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Aaron 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是后端工程师</p>
+<p>写着玩：</p>
+<ul>
+<li>Clojure &amp; CLJS</li>
+<li>OCaml &amp; Reason &amp; ReScript</li>
+<li>Dart &amp; Swift</li>
+</ul>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Aaron" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Aaron" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Aaron" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Aaron" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Aaron" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Aaron" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>

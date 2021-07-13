@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>jdk8新特性-Stream常用方法和特性 | Aaron 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Aaron" />
+<meta name="description" content="Aaron 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.84.0" />
+
+<link rel="canonical" href="https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7-stream%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%92%8C%E7%89%B9%E6%80%A7/" />
+
+
+<meta property="og:title" content="jdk8新特性-Stream常用方法和特性" />
+<meta property="og:description" content="Stream介绍 先说下Stream的优势：它是java对集合操作的优化，相较于迭代器，使用Stream的速度非常快，并且它支持并行方式处理集" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7-stream%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%92%8C%E7%89%B9%E6%80%A7/" /><meta property="og:image" content="https://recordnote.github.io/img/java.png" /><meta property="article:section" content="java" />
+<meta property="article:published_time" content="2020-07-23T14:21:26&#43;08:00" />
+<meta property="article:modified_time" content="2020-07-23T14:21:26&#43;08:00" />
+
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/java.png"/>
+
+<meta name="twitter:title" content="jdk8新特性-Stream常用方法和特性"/>
+<meta name="twitter:description" content="Stream介绍 先说下Stream的优势：它是java对集合操作的优化，相较于迭代器，使用Stream的速度非常快，并且它支持并行方式处理集"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1生成流"><strong>1.生成流</strong></a></li>
+    <li><a href="#2流的操作">2.流的操作</a>
+      <ul>
+        <li><a href="#21中间操作intermediate-"><strong>2.1中间操作(intermediate )：</strong></a></li>
+        <li><a href="#22规约操作reduction-"><strong>2.2规约操作(*reduction* )：</strong></a></li>
+        <li><a href="#221reduce"><strong>2.2.1Reduce</strong></a></li>
+        <li><a href="#222collect"><strong>2.2.2Collect</strong></a></li>
+        <li><a href="#其他的末端操作api">其他的末端操作api：</a></li>
+      </ul>
+    </li>
+    <li><a href="#3stream的特性">3.Stream的特性</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">jdk8新特性-Stream常用方法和特性<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Aaron
+                
+              
+
+              | 
+                  <span data-format="luxon">2020-07-23T14:21:26&#43;08:00</span>
+                
+
+              | 9 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2020-07-23T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=jdk8%e6%96%b0%e7%89%b9%e6%80%a7-Stream%e5%b8%b8%e7%94%a8%e6%96%b9%e6%b3%95%e5%92%8c%e7%89%b9%e6%80%a7&url=https%3a%2f%2frecordnote.github.io%2fjava%2fjdk8%25E6%2596%25B0%25E7%2589%25B9%25E6%2580%25A7-stream%25E5%25B8%25B8%25E7%2594%25A8%25E6%2596%25B9%25E6%25B3%2595%25E5%2592%258C%25E7%2589%25B9%25E6%2580%25A7%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fjava%2fjdk8%25E6%2596%25B0%25E7%2589%25B9%25E6%2580%25A7-stream%25E5%25B8%25B8%25E7%2594%25A8%25E6%2596%25B9%25E6%25B3%2595%25E5%2592%258C%25E7%2589%25B9%25E6%2580%25A7%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/java.png" />
+        
+
+        <h1 id="stream介绍">Stream介绍</h1>
+<p>　　<strong>先说下Stream的优势：它是java对集合操作的优化，相较于迭代器，使用Stream的速度非常快，并且它支持并行方式处理集合中的数据，默认情况能充分利用cpu的资源。同时支持函数式编程，代码非常简洁。</strong></p>
+<p>　　<strong>Stream是一种用来计算数据的流，它本身并没有存储数据。你可以认为它是对数据源的一个映射或者视图。</strong></p>
+<p>　　<strong>它的工作流程是：获取数据源-&gt;进行一次或多次逻辑转换操作-&gt;进行归约操作形成新的流（最后可以将流转换成集合）。</strong></p>
+<h2 id="1生成流"><strong>1.生成流</strong></h2>
+<p>Stream的创建需要一个数据源（通常是一个容器或者数组）：</p>
+<p>例1：Stream<String> stream = Stream.of(&ldquo;I&rdquo;, &ldquo;got&rdquo;, &ldquo;you&rdquo;, &ldquo;too&rdquo;);</p>
+<p>例2：String [] strArray = new String[] {&ldquo;a&rdquo;, &ldquo;b&rdquo;, &ldquo;c&rdquo;};</p>
+<p>　　stream = Arrays.stream(strArray);</p>
+<p>例3：List<String> list = Arrays.asList(strArray);</p>
+<p>　　stream = list.stream();</p>
+<h2 id="2流的操作">2.流的操作</h2>
+<p>流的操作类型分2种：<strong>中间操作与聚合操作</strong>。</p>
+<h3 id="21中间操作intermediate-"><strong>2.1中间操作(intermediate )：</strong></h3>
+<p>中间操作就是对容器的处理过程，包括：排序（sorted&hellip;），筛选（filter,limit,distinct&hellip;），映射(map，flatMap&hellip;)等</p>
+<p><strong>2.1.1 排序操作(sorted)</strong>：（参考：https://www.cnblogs.com/a-du/p/8289537.html）</p>
+<p>sorted提供了2个接口：</p>
+<p>1、<code>sorted()</code> 默认使用自然序排序， 其中的元素必须实现<code>Comparable</code> 接口 。
+2、<code>sorted(Comparator&lt;? super T&gt; comparator)</code> ：我们可以使用lambada 来创建一个<code>Comparator</code> 实例。可以按照升序或着降序来排序元素。</p>
+<p>注意sorted是一个有状态的中间操作，即，只有全部执行完所有的数据才能知道结果。</p>
+<p>比如：将一些字符串在地址中按出现的顺序排列：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">　  String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+	List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+	aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+	aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+	aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+		aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+	aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+	aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">().</span><span style="color:#a6e22e">sorted</span><span style="color:#f92672">(</span>
+    Comparator<span style="color:#f92672">.</span><span style="color:#a6e22e">comparing</span><span style="color:#f92672">(</span>a<span style="color:#f92672">-&gt;</span>address<span style="color:#f92672">.</span><span style="color:#a6e22e">indexOf</span><span style="color:#f92672">(</span>a<span style="color:#f92672">))</span>
+　　<span style="color:#f92672">).</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span> <span style="color:#f92672">::</span> println<span style="color:#f92672">);</span>
+</code></pre></div><p>也可以像下面这样不使用比较器：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">().</span><span style="color:#a6e22e">sorted</span><span style="color:#f92672">((</span>a<span style="color:#f92672">,</span>b<span style="color:#f92672">)-&gt;</span>address<span style="color:#f92672">.</span><span style="color:#a6e22e">IndexOf</span><span style="color:#f92672">(</span>a<span style="color:#f92672">)-</span>address<span style="color:#f92672">.</span><span style="color:#a6e22e">IndexOf</span><span style="color:#f92672">(</span>b<span style="color:#f92672">)).</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span> <span style="color:#f92672">::</span> println<span style="color:#f92672">);</span>
+<span style="color:#75715e">//由大到小排序
+</span></code></pre></div><p>输出结果：</p>
+<p><img src="https://img2018.cnblogs.com/blog/1206153/201904/1206153-20190419093211937-1672755782.png" alt="img"></p>
+<p>注：1.这里仙林大学城这个字段没有出现，所以序号是-1，被排在最前面。</p>
+<p>　　2.Comparator.comparing();这个是比较器提供的一个方法，它返回的也是一个比较器，源码如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">,</span> U <span style="color:#66d9ef">extends</span> Comparable<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> U<span style="color:#f92672">&gt;&gt;</span> Comparator<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">comparing</span><span style="color:#f92672">(</span>
+            Function<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> T<span style="color:#f92672">,</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">extends</span> U<span style="color:#f92672">&gt;</span> keyExtractor<span style="color:#f92672">)</span>
+    <span style="color:#f92672">{</span>
+        Objects<span style="color:#f92672">.</span><span style="color:#a6e22e">requireNonNull</span><span style="color:#f92672">(</span>keyExtractor<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>Comparator<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span> Serializable<span style="color:#f92672">)</span>
+            <span style="color:#f92672">(</span>c1<span style="color:#f92672">,</span> c2<span style="color:#f92672">)</span> <span style="color:#f92672">-&gt;</span> keyExtractor<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>c1<span style="color:#f92672">).</span><span style="color:#a6e22e">compareTo</span><span style="color:#f92672">(</span>keyExtractor<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>c2<span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><p><strong>2.1.2 筛选操作(filter)</strong>：</p>
+<p><strong>上一步中，我们把一些字符串，按照在地址中出现的顺序排序。</strong></p>
+<p><strong>接下来我们可能想要进行筛选，把不在地址中，但是indexof为“-1”，排在最前面的数据筛选掉：</strong></p>
+<p>filter可以对集合进行筛选，它的参数可以是一个lambda表达式，流中的数据将会通过该lambda表达式返回新的流。</p>
+<p><strong>这里Stream有一个特性很重要，它像一个管道，可以将多个操作连接起来，并只执行一次for循环，这样大大提高了效率，即使第二次的流操作需要第一次流操作的结果，时间复杂度也只有一个for循环：</strong></p>
+<p>于是我可以在前面加个filter(),这样把“-1”过滤掉：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">().</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>a<span style="color:#f92672">-&gt;</span>address<span style="color:#f92672">.</span><span style="color:#a6e22e">indexOf</span><span style="color:#f92672">(</span>a<span style="color:#f92672">)!=-</span>1<span style="color:#f92672">).</span><span style="color:#a6e22e">sorted</span><span style="color:#f92672">(</span> 　　Comparator<span style="color:#f92672">.</span><span style="color:#a6e22e">comparing</span><span style="color:#f92672">(</span>a<span style="color:#f92672">-&gt;</span>address<span style="color:#f92672">.</span><span style="color:#a6e22e">indexOf</span><span style="color:#f92672">(</span>a<span style="color:#f92672">))</span> <span style="color:#f92672">).</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span> <span style="color:#f92672">::</span> println<span style="color:#f92672">);</span>
+</code></pre></div><p>输出结果：</p>
+<p><img src="https://img2018.cnblogs.com/blog/1206153/201904/1206153-20190423094210712-133072611.png" alt="img"></p>
+<p>注：<strong>foreach</strong>是一个终端操作，参数也是一个函数，它会迭代中间操作完成后的每一个数据，这里它将每个不为空的元素打印出来。</p>
+<p>其它的过滤操作还包括：</p>
+<p>limit(long maxSize):获得指定数量的流。</p>
+<p>distinct():通过hashCode和equals去除重复元素。</p>
+<p><strong>2.1.3 映射操作（map）</strong>：</p>
+<p>映射操作，就像一个管道，可以将流中的元素通过一个函数进行映射，返回一个新的元素。</p>
+<p>这样遍历映射，最终返回一个新的容器，<strong>注意：这里返回的新容器数据类型可以不与原容器类型相同：</strong></p>
+<p>举个例子：我们将address中每个元素的<strong>位置</strong>找出，并返回一个int类型的<strong>存储位置信息</strong>的数组：</p>
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#a6e22e">@Test</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+        List<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> aIntegers <span style="color:#f92672">=</span>aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">()</span>
+                <span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>str<span style="color:#f92672">-&gt;</span>mapFunc<span style="color:#f92672">(</span>address<span style="color:#f92672">,</span> str<span style="color:#f92672">)).</span><span style="color:#a6e22e">collect</span><span style="color:#f92672">(</span>Collectors<span style="color:#f92672">.</span><span style="color:#a6e22e">toList</span><span style="color:#f92672">());</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>aIntegers<span style="color:#f92672">);</span><span style="color:#75715e">//.forEach(System.out :: println);    
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+    
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">mapFunc</span><span style="color:#f92672">(</span>String address<span style="color:#f92672">,</span>String str<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> address<span style="color:#f92672">.</span><span style="color:#a6e22e">indexOf</span><span style="color:#f92672">(</span>str<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+</code></pre></div><p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<p>结果如下：</p>
+<p><img src="https://img2018.cnblogs.com/blog/1206153/201904/1206153-20190423110847293-860208025.png" alt="img"></p>
+<h3 id="22规约操作reduction-"><strong>2.2规约操作(*reduction* )：</strong></h3>
+<p><strong>之前的中间操作只是对流中数据的处理，最终我们还是要将它们整合输出为一个结果，比如，返回一个最大值，返回一个新的数组，或者将所有元素进行分组等，这就是规约（末端）操作的作用。</strong></p>
+<p><strong>我们常用的末端操作函数有****Reduce()和collect();</strong></p>
+<h3 id="221reduce"><strong>2.2.1Reduce</strong></h3>
+<p>reduce就是减少的意思，它会将集合中的所有值根据规则计算，最后只返回一个结果。</p>
+<p>它有三个变种，输入参数分别是一个参数、二个参数以及三个参数；</p>
+<p><strong>1.一个参数的Reduce</strong></p>
+<p>它的参数就是一个函数接口：Optional<T> reduce(BinaryOperator<T> accumulator)</p>
+<p>比如，我们找出数组中长度最大的一个数：</p>
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+        Optional<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> a <span style="color:#f92672">=</span>aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">()</span>
+                <span style="color:#f92672">.</span><span style="color:#a6e22e">reduce</span><span style="color:#f92672">((</span>s1<span style="color:#f92672">,</span> s2<span style="color:#f92672">)</span> <span style="color:#f92672">-&gt;</span> s1<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">()&gt;=</span>s2<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">()</span> <span style="color:#f92672">?</span> s1 <span style="color:#f92672">:</span> s2<span style="color:#f92672">);</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>a<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span><span style="color:#75715e">//仙林大学城
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</code></pre></div><p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<p>这里的Optional<T>就是一个容器，它可以避免空指针，具体可以百度，这里也可以返回一个String的。</p>
+<p><strong>2.两个参数的Reduce</strong></p>
+<p><strong>T reduce(T identity, BinaryOperator<T> accumulator)</strong></p>
+<p>2个参数其实除了一个函数接口以外，还包括一个固定的初始化的值，它会作为容器的第一个元素进入计算过程：</p>
+<p>例：将每个字符串拼接，并在之前加上“value:”：</p>
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<pre><code>public void test() {
+        String address = &quot;中山北路南京大学仙林校区&quot;;
+        List&lt;String&gt; aList = new ArrayList&lt;&gt;();
+        aList.add(&quot;南京&quot;);
+        aList.add(&quot;大学&quot;);
+        aList.add(&quot;仙林校区&quot;);
+        aList.add(&quot;仙林大学城&quot;);
+        aList.add(&quot;中山北路&quot;);
+        String t=&quot;value：&quot;;
+        String a =aList.stream()
+                .reduce(t, new BinaryOperator&lt;String&gt;() {
+                    @Override
+                    public String apply(String s, String s2) {
+                        return s.concat(s2);
+                    }
+                });    
+        System.out.println(a);
+    }
+</code></pre><p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<p>结果如下：</p>
+<p><img src="https://img2018.cnblogs.com/blog/1206153/201904/1206153-20190423170835332-1673061125.png" alt="img"></p>
+<p><strong>3.三个参数的情况主要是在并行（parallelStream）情况下使用：可以参考（https://blog.csdn.net/icarusliu/article/details/79504602），有需要可以了解下。</strong></p>
+<h3 id="222collect"><strong>2.2.2Collect</strong></h3>
+<p><strong>collect是一个非常常用的末端操作，它本身的参数很复杂，有3个：</strong></p>
+<p><R> R collect(Supplier<R> supplier, BiConsumer&lt;R,? super T&gt; accumulator, BiConsumer&lt;R,R&gt; combiner)；</p>
+<p>还好，考虑到我们日常使用，java8提供了一个收集器（Collectors），它是专门为collect方法量身打造的接口：</p>
+<p>我们常常使用collect将流转换成List,Map或Set:</p>
+<p><strong>1.转换成list:</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Stream<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> stream <span style="color:#f92672">=</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;I&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;love&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;you&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;too&#34;</span><span style="color:#f92672">);</span> 
+List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> stream<span style="color:#f92672">.</span><span style="color:#a6e22e">collect</span><span style="color:#f92672">(</span>Collectors<span style="color:#f92672">.</span><span style="color:#a6e22e">toList</span><span style="color:#f92672">());</span>
+</code></pre></div><p><strong>2.转换成Map:</strong></p>
+<p>我们可以使用Collector.toMap()接口:Collectors.toMap(keyMapper, valueMapper),这里就需要我们指定key和value分别是什么。</p>
+<p>例：我们将数组中的字符串作为key，字符串长度作为value，生成一个map：</p>
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+        String t<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;value:&#34;</span><span style="color:#f92672">;</span>
+        
+        Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Integer<span style="color:#f92672">&gt;</span> maps <span style="color:#f92672">=</span> 
+                aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">().</span><span style="color:#a6e22e">collect</span><span style="color:#f92672">(</span>Collectors<span style="color:#f92672">.</span><span style="color:#a6e22e">toMap</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">.</span><span style="color:#a6e22e">identity</span><span style="color:#f92672">(),</span> String<span style="color:#f92672">::</span>length<span style="color:#f92672">));</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>maps<span style="color:#f92672">);</span>
+</code></pre></div><p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<p>打印结果：</p>
+<p>{中山北路=4, 大学=2, 仙林大学城=5, 仙林校区=4, 南京=2}</p>
+<p>通常，我们在进行<strong>分组操作</strong>的时候也会将容器转换为Map,这里也说明一下：<strong>Collectors.groupingBy(classifier)</strong></p>
+<p><strong>groupingBy与sql的group by类似，就是一个分组函数，</strong></p>
+<p><strong>例：我们将数组中的字符串按长度分组：</strong></p>
+<p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">        String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+        String t<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;value:&#34;</span><span style="color:#f92672">;</span>
+        
+        Map<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;&gt;</span> maps <span style="color:#f92672">=</span> 
+                aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">().</span><span style="color:#a6e22e">collect</span><span style="color:#f92672">(</span>Collectors<span style="color:#f92672">.</span><span style="color:#a6e22e">groupingBy</span><span style="color:#f92672">(</span>String<span style="color:#f92672">::</span>length<span style="color:#f92672">));</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>maps<span style="color:#f92672">);</span>
+</code></pre></div><p><a href="javascript:void(0);"><img src="https://common.cnblogs.com/images/copycode.gif" alt="复制代码"></a></p>
+<p>打印结果：</p>
+<p>{2=[南京, 大学], 4=[仙林校区, 中山北路], 5=[仙林大学城]}</p>
+<h3 id="其他的末端操作api">其他的末端操作api：</h3>
+<p><strong>findFirst：返回第一个元素，常与orElse一起用: Stream.findFirst().orElse(null):返回第一个，如果没有则返回null</strong></p>
+<p><strong>allMatch：检查是否匹配所有元素:*<em>Stream.allMatch(str-&gt;str.equals(&ldquo;a&rdquo;))*</em></strong></p>
+<p><strong>anyMatch：检查是否至少匹配一个元素.</strong></p>
+<h2 id="3stream的特性">3.Stream的特性</h2>
+<p>1.<strong>中间操作惰性执行</strong>：一个流后面可以跟随0到多个中间操作，主要目的是打开流，并没有真正的去计算，而是做出某种程度的数据映射/过滤，然后返回一个新的流，交给下一个操作使用。这类操作都是惰性化的（lazy），就是说，仅仅调用到这类方法，并没有真正开始流的遍历，并没有消耗资源。</p>
+<p>还有多个中间操作的话，这里的时间复杂度并不是n个for循环，转换操作都是 lazy 的，<strong>多个转换操作只会在</strong> <strong>Terminal</strong> **操作的时候融合起来，一次循环完成。**可以这样简单的理解，Stream 里有个操作函数的集合，每次转换操作就是把转换函数放入这个集合中，在Terminal操作的时候循环 Stream 对应的集合，然后对每个元素执行所有的函数。</p>
+<p>2.<strong>流的末端操作只能有一次</strong>： 当这个操作执行后，流就被使用“光”了，无法再被操作。所以这必定是流的最后一个操作。之后如果想要操作就必须新打开流。</p>
+<p><strong>关于流被关闭不能再操作的异常：</strong></p>
+<p>这里曾经遇到过一个错误：<strong>stream has already been operated upon or closed</strong></p>
+<p>意思是流已经被关闭了，这是因为当我们使用末端操作之后，<strong>流就被关闭了，无法再次被调用</strong>，如果我们想重复调用，只能重新打开一个新的流。</p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2021 Aaron 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Aaron 的博客<span class="sub header">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/chrome-extension/" title="Chrome Extension">
+              Chrome Extension
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/clojurescript/" title="ClojureScript">
+              ClojureScript
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/figwheel-main/" title="Figwheel Main">
+              Figwheel Main
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="Spring">
+              Spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%B9%B4%E5%BA%A6/" title="年度">
+              年度
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Aaron 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是后端工程师</p>
+<p>写着玩：</p>
+<ul>
+<li>Clojure &amp; CLJS</li>
+<li>OCaml &amp; Reason &amp; ReScript</li>
+<li>Dart &amp; Swift</li>
+</ul>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Aaron" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Aaron" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Aaron" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Aaron" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Aaron" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Aaron" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>

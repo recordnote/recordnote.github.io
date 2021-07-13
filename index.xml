@@ -108,6 +108,33 @@
     </item>
     
     <item>
+      <title>spring常用注解</title>
+      <link>https://recordnote.github.io/spring-cloud-alibaba/spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/</link>
+      <pubDate>Mon, 23 Nov 2020 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/spring-cloud-alibaba/spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/</guid>
+      <description>一、@Resource和@Autowired的区别 1、@Autowired与@Resource都可以用来装配bean. 都可以写在字段上,或写</description>
+    </item>
+    
+    <item>
+      <title>jdk8新特性-Optional类</title>
+      <link>https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7-optional%E7%B1%BB/</link>
+      <pubDate>Thu, 23 Jul 2020 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7-optional%E7%B1%BB/</guid>
+      <description>1、定义 ​ Optional 类 (java.util.Optional) 是一个容器类，代表一个值存在或不存在，原来用 null 表示一个值不存在，现在用 Optional 可以更好的表达这个概念；并且可以避免空指针异常 2、常</description>
+    </item>
+    
+    <item>
+      <title>jdk8新特性-Stream常用方法和特性</title>
+      <link>https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7-stream%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%92%8C%E7%89%B9%E6%80%A7/</link>
+      <pubDate>Thu, 23 Jul 2020 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7-stream%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%92%8C%E7%89%B9%E6%80%A7/</guid>
+      <description>Stream介绍 先说下Stream的优势：它是java对集合操作的优化，相较于迭代器，使用Stream的速度非常快，并且它支持并行方式处理集</description>
+    </item>
+    
+    <item>
       <title>为什么使用消息队列</title>
       <link>https://recordnote.github.io/mq/why-mq/</link>
       <pubDate>Sat, 23 Jan 2021 14:21:26 +0800</pubDate>
