@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>sql如何拼接数据 | Aaron 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Aaron" />
+<meta name="description" content="Aaron 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.84.0" />
+
+<link rel="canonical" href="https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/sql%E5%A6%82%E4%BD%95%E6%8B%BC%E6%8E%A5%E6%95%B0%E6%8D%AE/" />
+
+
+<meta property="og:title" content="sql如何拼接数据" />
+<meta property="og:description" content="数据库中的例子表格： 1.符号 &#43; 在MySQL中支持使用加号拼接结果。在两个字段都是整型时，都会返回两个整型值得和，但是在两个字段中有一个为字符" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/sql%E5%A6%82%E4%BD%95%E6%8B%BC%E6%8E%A5%E6%95%B0%E6%8D%AE/" /><meta property="og:image" content="https://recordnote.github.io/img/shujuku.jpg" /><meta property="article:section" content="数据库" />
+<meta property="article:published_time" content="2021-02-23T14:21:26&#43;08:00" />
+<meta property="article:modified_time" content="2021-02-23T14:21:26&#43;08:00" />
+
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/shujuku.jpg"/>
+
+<meta name="twitter:title" content="sql如何拼接数据"/>
+<meta name="twitter:description" content="数据库中的例子表格： 1.符号 &#43; 在MySQL中支持使用加号拼接结果。在两个字段都是整型时，都会返回两个整型值得和，但是在两个字段中有一个为字符"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1符号-">1.符号 +</a></li>
+    <li><a href="#2concat">2.CONCAT</a></li>
+    <li><a href="#3concat_ws">3.CONCAT_WS</a></li>
+    <li><a href="#4根据字段拼接-group_contact">4.根据字段拼接 GROUP_CONTACT</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">sql如何拼接数据<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Aaron
+                
+              
+
+              | 
+                  <span data-format="luxon">2021-02-23T14:21:26&#43;08:00</span>
+                
+
+              | 2 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2021-02-23T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=sql%e5%a6%82%e4%bd%95%e6%8b%bc%e6%8e%a5%e6%95%b0%e6%8d%ae&url=https%3a%2f%2frecordnote.github.io%2f%25E6%2595%25B0%25E6%258D%25AE%25E5%25BA%2593%2fsql%25E5%25A6%2582%25E4%25BD%2595%25E6%258B%25BC%25E6%258E%25A5%25E6%2595%25B0%25E6%258D%25AE%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2f%25E6%2595%25B0%25E6%258D%25AE%25E5%25BA%2593%2fsql%25E5%25A6%2582%25E4%25BD%2595%25E6%258B%25BC%25E6%258E%25A5%25E6%2595%25B0%25E6%258D%25AE%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/shujuku.jpg" />
+        
+
+        <p>数据库中的例子表格：</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713153514969.png" alt="image-20210713153514969" style="zoom: 80%;" /></p>
+<h2 id="1符号-">1.符号 +</h2>
+<p>在MySQL中支持使用加号拼接结果。在两个字段都是整型时，都会返回两个整型值得和，但是在两个字段中有一个为字符串时，MySQL的返回结果不是拼接两字符串，而是默认字符串为零，再返回两个字段之和。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#f92672">//</span><span style="color:#960050;background-color:#1e0010">返回</span><span style="color:#ae81ff">157</span>
+<span style="color:#66d9ef">select</span> Score2 <span style="color:#f92672">+</span> Score1 <span style="color:#66d9ef">FROM</span> mytable <span style="color:#66d9ef">where</span> ID <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> ;
+<span style="color:#f92672">//</span><span style="color:#960050;background-color:#1e0010">返回</span><span style="color:#ae81ff">90</span>
+<span style="color:#66d9ef">select</span> Name <span style="color:#f92672">+</span> Score1 <span style="color:#66d9ef">from</span> mytable <span style="color:#66d9ef">where</span> ID <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> ;
+<span style="color:#960050;background-color:#1e0010">如上所示，因为</span>Name字段不是整型<span style="color:#960050;background-color:#1e0010">，所以相当于</span>Score1 <span style="color:#f92672">+</span> <span style="color:#ae81ff">0</span><span style="color:#960050;background-color:#1e0010">，所以返回值就是</span>Score1的值<span style="color:#960050;background-color:#1e0010">，即</span><span style="color:#ae81ff">90</span><span style="color:#960050;background-color:#1e0010">；另外，如果相加的两个字段全都是字符串，则返回</span><span style="color:#ae81ff">0</span><span style="color:#960050;background-color:#1e0010">。</span>
+</code></pre></div><h2 id="2concat">2.CONCAT</h2>
+<p>CONTACT的功能是直接将数据按照字符串格式拼接，类似于Sql Server中加号拼接字符串的功能。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">select</span> <span style="color:#a6e22e">CONCAT</span>(ID,Name,Score1) <span style="color:#66d9ef">from</span> MyTable <span style="color:#66d9ef">where</span> ID <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+<span style="color:#f92672">//</span><span style="color:#960050;background-color:#1e0010">返回值为</span> <span style="color:#ae81ff">1</span>A90;
+ps<span style="color:#960050;background-color:#1e0010">：</span>CONCAT后面括号中的参数只要有一个值为null<span style="color:#960050;background-color:#1e0010">，整个函数的返回值就会为</span><span style="color:#66d9ef">null</span><span style="color:#960050;background-color:#1e0010">。</span>
+</code></pre></div><p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713154351346.png" alt="image-20210713154351346"></p>
+<h2 id="3concat_ws">3.CONCAT_WS</h2>
+<p>CONOCAT_WS的用法和CONCAT类似，但是它的第一个参数为分隔符，在返回的值中，每一个参数之间都会有第一个参数作为分隔。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">select</span> <span style="color:#a6e22e">CONCAT_WS</span>(<span style="color:#e6db74">&#39;-&#39;</span>,ID,Name,Score1) <span style="color:#66d9ef">from</span> MyTable <span style="color:#66d9ef">where</span> ID <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+<span style="color:#f92672">//</span><span style="color:#960050;background-color:#1e0010">返回值为</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">-</span>A<span style="color:#f92672">-</span><span style="color:#ae81ff">90</span>;
+   <span style="color:#960050;background-color:#1e0010">如果</span>CONCAT_WS的第一个参数为null<span style="color:#960050;background-color:#1e0010">，则返回值为</span><span style="color:#66d9ef">null</span><span style="color:#960050;background-color:#1e0010">，如果后面的参数中有</span><span style="color:#66d9ef">null</span><span style="color:#960050;background-color:#1e0010">，则这些参数会被忽略，只返回其他参数和分隔符组成的字符串。</span>
+</code></pre></div><p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713154436517.png" alt="image-20210713154436517"></p>
+<h2 id="4根据字段拼接-group_contact">4.根据字段拼接 GROUP_CONTACT</h2>
+<p>在我们使用数据库时，会碰到这样一种情况：同一个Name的人有两条数据，但是他们的其他数据并不相同，而我们所需要的是同一个Name的人的Score1集合，即需要获得Name为A的所有的Score1并且希望将其拼接为一个字段，这里我们就需要用GROUP_CONCAT。</p>
+<p>函数语法如下：group_concat( 要连接的字段 )  [Order BY 排序字段 ASC/DESC]   [Separator &lsquo;分隔符&rsquo;]</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">select</span> Name,<span style="color:#a6e22e">GROUP_CONCAT</span>(Score1 <span style="color:#66d9ef">Separator</span> <span style="color:#e6db74">&#39;-&#39;</span>) <span style="color:#66d9ef">FROM</span> MyTable <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> Name;
+<span style="color:#75715e">-- 其中GROUP BY 后面的字段是Name，所有同一排序字段的数据会被拼接后存入同一字段中，并以相应的分隔符分分隔。
+</span><span style="color:#75715e"></span>  
+</code></pre></div><p>如上的sql语句，返回值为：</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713154527401.png" alt="image-20210713154527401" style="zoom: 80%;" /></p>
+<p>因为上面的数据中只有Name为A和D的两项数据有重复，所有他们的Score1是拼接出来的。</p>
+<p>ps：GROUP_CONCAT是有长度限制的，MySQL对其的默认长度限制为1024，可以使用如下语句来进行修改长度：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#34;%group_concat_max_len%&#34;</span><span style="color:#f92672">//</span><span style="color:#960050;background-color:#1e0010">查看长度</span>
+
+<span style="color:#66d9ef">SET</span> SESSION group_concat_max_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">102400</span>; <span style="color:#f92672">//</span><span style="color:#960050;background-color:#1e0010">修改长度</span>
+</code></pre></div>
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2021 Aaron 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Aaron 的博客<span class="sub header">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/chrome-extension/" title="Chrome Extension">
+              Chrome Extension
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/clojurescript/" title="ClojureScript">
+              ClojureScript
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/figwheel-main/" title="Figwheel Main">
+              Figwheel Main
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="Spring">
+              Spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%B9%B4%E5%BA%A6/" title="年度">
+              年度
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Aaron 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是后端工程师</p>
+<p>写着玩：</p>
+<ul>
+<li>Clojure &amp; CLJS</li>
+<li>OCaml &amp; Reason &amp; ReScript</li>
+<li>Dart &amp; Swift</li>
+</ul>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Aaron" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Aaron" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Aaron" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Aaron" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Aaron" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Aaron" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>
