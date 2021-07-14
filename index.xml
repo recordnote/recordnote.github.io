@@ -90,6 +90,15 @@
     </item>
     
     <item>
+      <title>hashcode总结</title>
+      <link>https://recordnote.github.io/java/hashcode/</link>
+      <pubDate>Sat, 23 Jan 2021 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/hashcode/</guid>
+      <description>一、hashcode是什么？ 1、hash和hash表是什么？ ​ 想要知道这个hashcode，首先得知道hash，通过百度百科看一下 ​ ​ has</description>
+    </item>
+    
+    <item>
       <title>单体架构与微服务架构</title>
       <link>https://recordnote.github.io/spring-cloud-alibaba/%E5%8D%95%E4%BD%93%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84/</link>
       <pubDate>Fri, 01 Jan 2021 14:21:26 +0800</pubDate>
