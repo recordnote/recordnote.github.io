@@ -404,12 +404,12 @@ List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt
 <p>意思是流已经被关闭了，这是因为当我们使用末端操作之后，<strong>流就被关闭了，无法再次被调用</strong>，如果我们想重复调用，只能重新打开一个新的流。</p>
 <h2 id="4双冒号">4.双冒号（::）</h2>
 <p>英文：double colon，双冒号（::）运算符在Java 8中被用作<strong>方法引用（method reference）</strong>，方法引用是与lambda表达式相关的一个重要特性。它提供了一种不执行方法的方法。为此，方法引用需要由兼容的函数接口组成的目标类型上下文。</p>
-<p>1、静态方法引用（static method）语法：classname::methodname 例如：Person::getAge
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">1、静态方法引用（static method）语法：classname::methodname 例如：Person::getAge
 2、对象的实例方法引用语法：instancename::methodname 例如：System.out::println
 3、对象的超类方法引用语法： super::methodname
 4、类构造器引用语法： classname::new 例如：ArrayList::new
-5、数组构造器引用语法： typename[]::new 例如： String[]:new</p>
-
+5、数组构造器引用语法： typename[]::new 例如： String[]:new
+</code></pre></div>
       </article>
     </section>
 
