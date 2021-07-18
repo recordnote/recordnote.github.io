@@ -18,6 +18,15 @@
     </item>
     
     <item>
+      <title>JVM 虚拟机</title>
+      <link>https://recordnote.github.io/jvm/jvm/</link>
+      <pubDate>Thu, 01 Apr 2021 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/jvm/jvm/</guid>
+      <description>1、JDK、JRE、JVM之间的区别？ 2、JVM类加载过程 3、 JDK1.6、JDK1.7、JDK1.8 内存模型演变 这些版本的 JVM 内存模型主要有</description>
+    </item>
+    
+    <item>
       <title>sql如何拼接数据</title>
       <link>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/sql%E5%A6%82%E4%BD%95%E6%8B%BC%E6%8E%A5%E6%95%B0%E6%8D%AE/</link>
       <pubDate>Tue, 23 Feb 2021 14:21:26 +0800</pubDate>
