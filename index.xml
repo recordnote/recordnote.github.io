@@ -27,6 +27,15 @@
     </item>
     
     <item>
+      <title>剑指offer算法题</title>
+      <link>https://recordnote.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%89%91%E6%8C%87offer/</link>
+      <pubDate>Mon, 01 Mar 2021 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%89%91%E6%8C%87offer/</guid>
+      <description>1、JZ1 二维数组中的查找 描述 在一个二维数组中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序</description>
+    </item>
+    
+    <item>
       <title>sql如何拼接数据</title>
       <link>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/sql%E5%A6%82%E4%BD%95%E6%8B%BC%E6%8E%A5%E6%95%B0%E6%8D%AE/</link>
       <pubDate>Tue, 23 Feb 2021 14:21:26 +0800</pubDate>
