@@ -26,8 +26,8 @@
 <meta property="og:description" content="1、JZ1 二维数组中的查找 描述 在一个二维数组中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%89%91%E6%8C%87offer/" /><meta property="og:image" content="https://recordnote.github.io/img/java.png" /><meta property="article:section" content="算法与数据结构" />
-<meta property="article:published_time" content="2021-03-01T14:21:26&#43;08:00" />
-<meta property="article:modified_time" content="2021-03-01T14:21:26&#43;08:00" />
+<meta property="article:published_time" content="2021-04-01T14:21:26&#43;08:00" />
+<meta property="article:modified_time" content="2021-05-22T14:21:26&#43;08:00" />
 
 
 
@@ -160,7 +160,14 @@
       </ul>
     </li>
     <li><a href="#7jz7-斐波那契数列">7、<strong>JZ7</strong> <strong>斐波那契数列</strong></a></li>
-    <li><a href="#8jz8-跳台阶">8、<strong>JZ8</strong> <strong>跳台阶</strong></a></li>
+    <li><a href="#8jz8-青蛙跳台阶">8、<strong>JZ8</strong> <strong>青蛙跳台阶</strong></a></li>
+    <li><a href="#9jz9-青蛙跳台阶扩展问题变态版">9、<strong>JZ9</strong> <strong>青蛙跳台阶扩展问题（变态版）</strong></a></li>
+    <li><a href="#10jz10-矩形覆盖">10、<strong>JZ10</strong> <strong>矩形覆盖</strong></a>
+      <ul>
+        <li><a href="#分析-1">分析：</a></li>
+        <li><a href="#题解">题解：</a></li>
+      </ul>
+    </li>
   </ul>
 </nav>
     </div>
@@ -182,15 +189,15 @@
               
 
               | 
-                  <span data-format="luxon">2021-03-01T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2021-04-01T14:21:26&#43;08:00</span>
                 
 
-              | 7 分钟阅读
+              | 9 分钟阅读
 
               
               | 更新于
                 
-                  <span data-format="luxon">2021-03-01T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2021-05-22T14:21:26&#43;08:00</span>
                 
               
             </span>
@@ -613,7 +620,7 @@ NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。</p>
         <span style="color:#66d9ef">return</span> c<span style="color:#f92672">;</span>
     <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><h2 id="8jz8-跳台阶">8、<strong>JZ8</strong> <strong>跳台阶</strong></h2>
+</code></pre></div><h2 id="8jz8-青蛙跳台阶">8、<strong>JZ8</strong> <strong>青蛙跳台阶</strong></h2>
 <p>描述</p>
 <p>一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。</p>
 <p>示例1</p>
@@ -630,7 +637,32 @@ NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。</p>
 <p>分析：</p>
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210720204449750.png" alt="image-20210720204449750"></p>
 <p><a href="https://blog.csdn.net/weixin_42292229/article/details/104505402">斐波那契数列（四种解法）</a></p>
-<p><strong>方法一：</strong>
+<pre><code>一阶：口
+1
+有1种跳法
+
+二阶：口口
+1  1
+2
+有2种跳法
+
+三阶：口口口
+ 1 1 1
+ 1 2
+ 2 1
+有3种跳法
+
+四阶口口口口
+1 1 1 1
+1 1 2
+1 2 1
+2 1
+2 2
+有5种跳法
+
+跳法规律  ： 1 2 3 5 .......
+f(n) = f(n-1) + f(n-2)
+</code></pre><p><strong>方法一：</strong>
 面试别写型递推版实现，时间复杂度 <em>O</em>(2^n)</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">JumpFloor</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> n<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
@@ -640,39 +672,161 @@ NOTE：给出的所有元素都大于0，若数组大小为0，请返回0。</p>
     <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><p><strong>方法二：</strong>
-面试推荐型，自底向上型循环求解，时间复杂度为 O(n)。</p>
+自底向上型循环求解，时间复杂度为 O(n)。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">JumpFloor</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> target<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// f[1] = 1, f[0] = 1 (f[0]是为了简便作答自己添加的)
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 1<span style="color:#f92672">,</span> b <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 2<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;=</span> target<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
-            <span style="color:#75715e">// 求f[i] = f[i - 1] + f[i - 2]
-</span><span style="color:#75715e"></span>            a <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b<span style="color:#f92672">;</span> <span style="color:#75715e">// 这里求得的 f[i] 可以用于下次循环求 f[i+1]
-</span><span style="color:#75715e"></span>            <span style="color:#75715e">// f[i - 1] = f[i] - f[i - 2]
-</span><span style="color:#75715e"></span>            b <span style="color:#f92672">=</span> a <span style="color:#f92672">-</span> b<span style="color:#f92672">;</span> <span style="color:#75715e">// 这里求得的 f[i-1] 可以用于下次循环求 f[i+1]
-</span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span>
-        <span style="color:#66d9ef">return</span> a<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p>有小伙伴表示，方法二不太容易理解，这里做一下简单解释。其实就是自底向上求递推式的过程，这里再给出方法二原始的版本。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">JumpFloor</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> target<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>target <span style="color:#f92672">&lt;=</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">return</span> 1<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">jumpFloor</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> target<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>target <span style="color:#f92672">==</span> 0 <span style="color:#f92672">||</span> target <span style="color:#f92672">==</span> 1 <span style="color:#f92672">||</span> target <span style="color:#f92672">==</span> 2<span style="color:#f92672">){</span>
+            <span style="color:#66d9ef">return</span> target<span style="color:#f92672">;</span>
         <span style="color:#f92672">}</span>
-        <span style="color:#75715e">// a 表示第 f[i-2] 项，b 表示第 f[i-1] 项
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 1<span style="color:#f92672">,</span> b <span style="color:#f92672">=</span> 1<span style="color:#f92672">,</span> c <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 2<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;=</span> target<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
-            c <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b<span style="color:#f92672">;</span> <span style="color:#75715e">// f[i] = f[i - 1] + f[i - 2];
-</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 为下一次循环求 f[i + 1] 做准备
-</span><span style="color:#75715e"></span>            a <span style="color:#f92672">=</span> b<span style="color:#f92672">;</span> <span style="color:#75715e">// f[i - 2] = f[i - 1]
-</span><span style="color:#75715e"></span>            b <span style="color:#f92672">=</span> c<span style="color:#f92672">;</span> <span style="color:#75715e">// f[i - 1] = f[i]
-</span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 1<span style="color:#f92672">,</span> b <span style="color:#f92672">=</span> 2<span style="color:#f92672">,</span> c <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 3<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;=</span> target<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+            c <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b<span style="color:#f92672">;</span>
+            a <span style="color:#f92672">=</span> b<span style="color:#f92672">;</span>
+            b <span style="color:#f92672">=</span> c<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
         <span style="color:#66d9ef">return</span> c<span style="color:#f92672">;</span>
     <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><p>其实，方法二就是将这里的<code>if</code>条件判断和变量<code>c</code>优化掉了而已。</p>
+</code></pre></div><h2 id="9jz9-青蛙跳台阶扩展问题变态版">9、<strong>JZ9</strong> <strong>青蛙跳台阶扩展问题（变态版）</strong></h2>
+<p>描述</p>
+<p>一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台阶(n为正整数)总共有多少种跳法。</p>
+<p>示例1</p>
+<p>输入：</p>
+<pre><code>3
+</code></pre><p>返回值：</p>
+<pre><code>4
+</code></pre><p>分析：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">4阶 口口口口
+1 1 1 1
+1 1 2
+1 2 1
+1 3
+2 1 1
+2 2
+3 1
+4
+总共8种跳法
 
+3阶 口口口
+1 1 1
+1 2
+2 1
+3
+总共4种跳法
+
+2阶 口口口
+1 1
+2
+总共2种跳法
+
+1阶 口
+1
+总共1种
+
+跳法： 1 2 4 8 ... 2^(n-1)
+
+</code></pre></div><p><strong>【分析】</strong>
+每个台阶可以看作一块木板，让青蛙跳上去，n个台阶就有n块木板，最后一块木板是青蛙到达的位子，
+必须存在，其他 (n-1) 块木板可以任意选择是否存在，则每个木板有存在和不存在两种选择，(n-1) 块木板
+就有 [2^(n-1)] 种跳法，可以直接得到结果。</p>
+<p>其实我们所要求的序列为：0,1,2,4,8,16,……</p>
+<p><strong><font color='red'>所以除了第一位外，其他位的数都是前一位的数去乘以2所得到的积。</font></strong></p>
+<p>题解：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e">*第一种写法
+</span><span style="color:#75715e">*/</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">jumpFloorII</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> target<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>target <span style="color:#f92672">==</span> 0<span style="color:#f92672">){</span>
+            <span style="color:#66d9ef">return</span> 0<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">int</span> sum <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;=</span> target <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+            sum <span style="color:#f92672">*=</span> 2<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">return</span> sum<span style="color:#f92672">;</span>
+        
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#75715e">/**
+</span><span style="color:#75715e">*第二种写法 递归
+</span><span style="color:#75715e">*/</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">jumpFloorII</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> target<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>target <span style="color:#f92672">==</span> 0<span style="color:#f92672">){</span>
+            <span style="color:#66d9ef">return</span> 0<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>target <span style="color:#f92672">==</span> 1<span style="color:#f92672">){</span>
+            <span style="color:#66d9ef">return</span> 1<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span><span style="color:#66d9ef">else</span><span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">return</span> 2<span style="color:#f92672">*</span>jumpFloorII<span style="color:#f92672">(</span>target <span style="color:#f92672">-</span> 1<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>   
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+
+</code></pre></div><h2 id="10jz10-矩形覆盖">10、<strong>JZ10</strong> <strong>矩形覆盖</strong></h2>
+<p>描述</p>
+<p>我们可以用2x1的小矩形横着或者竖着去覆盖更大的矩形。请问用n个2X1的小矩形无重叠地覆盖一个2xn的大矩形，从同一个方向看总共有多少种不同的方法？</p>
+<p>比如n=3时，2*3的矩形块有3种不同的覆盖方法(从同一个方向看)：</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210721141607160.png" alt="image-20210721141607160" style="zoom: 50%;" /></p>
+<p>输入描述：</p>
+<p>2*1的小矩形的总个数n</p>
+<p>返回值描述：</p>
+<p>覆盖一个2*n的大矩形总共有多少种不同的方法(从同一个方向看)</p>
+<p>示例1</p>
+<p>输入：</p>
+<pre><code>0
+</code></pre><p>返回值：</p>
+<pre><code>0
+</code></pre><p>示例2</p>
+<p>输入：</p>
+<pre><code>1
+</code></pre><p>返回值：</p>
+<pre><code>1
+</code></pre><p>示例3</p>
+<p>输入：</p>
+<pre><code>4
+</code></pre><p>返回值：</p>
+<pre><code>5
+</code></pre><h3 id="分析-1">分析：</h3>
+<p>递推</p>
+<p>对于这种题没有思路怎么办？</p>
+<p>那就对n 从小到大，一步步分析：</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210721160942885.png" alt="image-20210721160942885"></p>
+<p>n=1时，显然只有一种方法</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210721161015941.png" alt="image-20210721161015941"></p>
+<p>n=2时，如图有2种方法</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210721161028733.png" alt="image-20210721161028733"></p>
+<p>n=3，如图有3中方法</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210721161053281.png" style="zoom: 80%;" /></p>
+<p>n=4,如图有5种方法。</p>
+<p>如果到这里，还没有发现规律怎么办呢？</p>
+<p>那我们就再分析以下，从n=3到n=4，怎么来的呢？</p>
+<p>这里有2种情况：</p>
+<ul>
+<li>直接在n=3的情况下，再后面中添加一个竖着的。这个很显然成立，有3种情况</li>
+<li>然后横着的显然能添加到n-2的情况上，也就是在n=2后面，添加2个横着的。有2种情况</li>
+</ul>
+<p>通过以上分析，发现刚好和图中的个数一样。</p>
+<p>所以总结：f [n]表示2*n大矩阵 的方法数。</p>
+<p>可以得出：f[n] = f[n-1] + f[n-2]，初始条件f[1] = 1, f[2] =2</p>
+<p>所以代码可用递归，记忆递归，和动态规划和递推</p>
+<h3 id="题解">题解：</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Solution</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">rectCover</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> target<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>target <span style="color:#f92672">&lt;=</span> 2<span style="color:#f92672">){</span>
+            <span style="color:#66d9ef">return</span> target<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 1<span style="color:#f92672">,</span> b <span style="color:#f92672">=</span> 2<span style="color:#f92672">,</span> c <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">for</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 3<span style="color:#f92672">;</span>i<span style="color:#f92672">&lt;=</span> target<span style="color:#f92672">;</span>i<span style="color:#f92672">++){</span>
+            c <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b<span style="color:#f92672">;</span>
+            a <span style="color:#f92672">=</span> b<span style="color:#f92672">;</span>
+            b <span style="color:#f92672">=</span> c<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">return</span> b<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div>
       </article>
     </section>
 
