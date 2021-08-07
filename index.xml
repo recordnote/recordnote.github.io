@@ -18,6 +18,15 @@
     </item>
     
     <item>
+      <title>设计模式</title>
+      <link>https://recordnote.github.io/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Sat, 15 May 2021 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description>一，创建型/故事： 一个人“单例模式”根据一个工厂“工厂方法模式”的原型“原型模式”创建“建造者模式”出另一个工厂“抽象工厂”。 二，结构型/故</description>
+    </item>
+    
+    <item>
       <title>JVM 虚拟机</title>
       <link>https://recordnote.github.io/jvm/jvm/</link>
       <pubDate>Thu, 01 Apr 2021 14:21:26 +0800</pubDate>
