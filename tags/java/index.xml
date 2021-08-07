@@ -18,12 +18,30 @@
     </item>
     
     <item>
+      <title>多线程</title>
+      <link>https://recordnote.github.io/java/threadjuc/thread/</link>
+      <pubDate>Sat, 01 May 2021 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/threadjuc/thread/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>JVM 虚拟机</title>
       <link>https://recordnote.github.io/jvm/jvm/</link>
       <pubDate>Thu, 01 Apr 2021 14:21:26 +0800</pubDate>
       
       <guid>https://recordnote.github.io/jvm/jvm/</guid>
       <description>1、JDK、JRE、JVM之间的区别？ 2、JVM类加载过程 3、 JDK1.6、JDK1.7、JDK1.8 内存模型演变 这些版本的 JVM 内存模型主要有</description>
+    </item>
+    
+    <item>
+      <title>Java代理模式详解</title>
+      <link>https://recordnote.github.io/java/java%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Mon, 01 Mar 2021 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/java%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/</guid>
+      <description>1. 代理模式 代理模式是一种比较好理解的设计模式。简单来说就是 我们使用代理对象来代替对真实对象(real object)的访问，这样就可以在不修改</description>
     </item>
     
     <item>
@@ -51,6 +69,15 @@
       
       <guid>https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7-optional%E7%B1%BB/</guid>
       <description>1、定义 ​ Optional 类 (java.util.Optional) 是一个容器类，代表一个值存在或不存在，原来用 null 表示一个值不存在，现在用 Optional 可以更好的表达这个概念；并且可以避免空指针异常 2、常</description>
+    </item>
+    
+    <item>
+      <title>java基础知识</title>
+      <link>https://recordnote.github.io/java/java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
+      <pubDate>Mon, 23 Mar 2020 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
+      <description>Java 泛型了解么？什么是类型擦除？介绍一下常用的通配符？ Java 泛型（generics）是 JDK 5 中引入的一个新特性, 泛型提供了编译时类型安全检测机制，该</description>
     </item>
     
   </channel>
