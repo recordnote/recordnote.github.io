@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Sentinel（轻量级的流量控制、熔断降级Java库） | Aaron 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Aaron" />
+<meta name="description" content="Aaron 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.84.0" />
+
+<link rel="canonical" href="https://recordnote.github.io/spring-cloud-alibaba/sentinel%E8%BD%BB%E9%87%8F%E7%BA%A7%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E7%86%94%E6%96%AD%E9%99%8D%E7%BA%A7java%E5%BA%93/" />
+
+
+<meta property="og:title" content="Sentinel（轻量级的流量控制、熔断降级Java库）" />
+<meta property="og:description" content="​ 1、雪崩效应（级联失效、级联故障） 2、服务容错的思想 超时 限流 仓壁模式（类似于为每个被调用的服务端api接口设置相应数量的线程池，当某个接口" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/spring-cloud-alibaba/sentinel%E8%BD%BB%E9%87%8F%E7%BA%A7%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E7%86%94%E6%96%AD%E9%99%8D%E7%BA%A7java%E5%BA%93/" /><meta property="og:image" content="https://recordnote.github.io/img/2017.jpg" /><meta property="article:section" content="spring-cloud-alibaba" />
+<meta property="article:published_time" content="2021-03-01T14:21:26&#43;08:00" />
+<meta property="article:modified_time" content="2021-03-01T14:21:26&#43;08:00" />
+
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/2017.jpg"/>
+
+<meta name="twitter:title" content="Sentinel（轻量级的流量控制、熔断降级Java库）"/>
+<meta name="twitter:description" content="​ 1、雪崩效应（级联失效、级联故障） 2、服务容错的思想 超时 限流 仓壁模式（类似于为每个被调用的服务端api接口设置相应数量的线程池，当某个接口"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1雪崩效应级联失效级联故障">1、雪崩效应（级联失效、级联故障）</a></li>
+    <li><a href="#2服务容错的思想">2、服务容错的思想</a></li>
+    <li><a href="#sentinel控制台流控的三种模式">sentinel控制台流控的三种模式：</a></li>
+    <li><a href="#三种流控效果快速失败warm-up-排队等待">三种流控效果：快速失败、Warm Up、 排队等待</a></li>
+    <li><a href="#系统规则">系统规则</a></li>
+    <li><a href="#授权规则">授权规则</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#一流控规则">一、流控规则</a></li>
+    <li><a href="#二降级规则">二、降级规则</a></li>
+    <li><a href="#三热点规则">三、热点规则</a></li>
+    <li><a href="#四系统规则">四、系统规则</a></li>
+    <li><a href="#五授权规则">五、授权规则</a></li>
+    <li><a href="#sentinel与控制台通信原理">sentinel与控制台通信原理</a></li>
+    <li><a href="#控制台相关配置">控制台相关配置</a></li>
+    <li><a href="#sentinel-api">sentinel-api</a></li>
+    <li><a href="#规则持久化">规则持久化</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">Sentinel（轻量级的流量控制、熔断降级Java库）<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Aaron
+                
+              
+
+              | 
+                  <span data-format="luxon">2021-03-01T14:21:26&#43;08:00</span>
+                
+
+              | 3 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2021-03-01T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=Sentinel%ef%bc%88%e8%bd%bb%e9%87%8f%e7%ba%a7%e7%9a%84%e6%b5%81%e9%87%8f%e6%8e%a7%e5%88%b6%e3%80%81%e7%86%94%e6%96%ad%e9%99%8d%e7%ba%a7Java%e5%ba%93%ef%bc%89&url=https%3a%2f%2frecordnote.github.io%2fspring-cloud-alibaba%2fsentinel%25E8%25BD%25BB%25E9%2587%258F%25E7%25BA%25A7%25E7%259A%2584%25E6%25B5%2581%25E9%2587%258F%25E6%258E%25A7%25E5%2588%25B6%25E7%2586%2594%25E6%2596%25AD%25E9%2599%258D%25E7%25BA%25A7java%25E5%25BA%2593%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fspring-cloud-alibaba%2fsentinel%25E8%25BD%25BB%25E9%2587%258F%25E7%25BA%25A7%25E7%259A%2584%25E6%25B5%2581%25E9%2587%258F%25E6%258E%25A7%25E5%2588%25B6%25E7%2586%2594%25E6%2596%25AD%25E9%2599%258D%25E7%25BA%25A7java%25E5%25BA%2593%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/2017.jpg" />
+        
+
+        <p>​</p>
+<h2 id="1雪崩效应级联失效级联故障">1、雪崩效应（级联失效、级联故障）</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717141215463.png" alt="image-20210717141215463" style="zoom:50%;" /></p>
+<h2 id="2服务容错的思想">2、服务容错的思想</h2>
+<ul>
+<li>超时</li>
+<li>限流</li>
+<li>仓壁模式（类似于为每个被调用的服务端api接口设置相应数量的线程池，当某个接口达到线程池阈值，不影响其他api服务的调用）</li>
+<li>断路器模式</li>
+</ul>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717141907072.png" alt="image-20210717141907072" style="zoom:50%;" /></p>
+<h2 id="sentinel控制台流控的三种模式">sentinel控制台流控的三种模式：</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717150420349.png" alt="image-20210717150420349" style="zoom:50%;" /></p>
+<p><img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210717150503417.png" alt="image-20210717150503417" style="zoom:50%;" /></p>
+<h2 id="三种流控效果快速失败warm-up-排队等待">三种流控效果：快速失败、Warm Up、 排队等待</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717151512328.png" alt="image-20210717151512328" style="zoom: 33%;" /></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717151725306.png" alt="image-20210717151725306" style="zoom:33%;" /></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717151810731.png" alt="image-20210717151810731" style="zoom:33%;" /></p>
+<h2 id="系统规则">系统规则</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717155641451.png" alt="image-20210717155641451" style="zoom:50%;" /></p>
+<p>使用uptime命令可查看1分钟，5分钟和15分钟的系统负载：</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717155715368.png" alt="image-20210717155715368" style="zoom: 80%;" /></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717155342331.png" alt="image-20210717155342331" style="zoom: 50%;" /></p>
+<h2 id="授权规则">授权规则</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717160021812.png" alt="image-20210717160021812" style="zoom:50%;" /></p>
+<h1 id="alibaba-sentinel-规则参数总结"><strong>Alibaba Sentinel 规则参数总结</strong></h1>
+<h2 id="一流控规则">一、流控规则</h2>
+<p>1.1 配置</p>
+<p><img src="http://www.itmuch.com/images/spring-cloud-alibaba/sentinel/flow.png" alt="流控规则"></p>
+<p>1.2 参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Field</th>
+<th style="text-align:left">说明</th>
+<th style="text-align:left">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">resource</td>
+<td style="text-align:left">资源名，资源名是限流规则的作用对象</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">count</td>
+<td style="text-align:left">限流阈值</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">grade</td>
+<td style="text-align:left">限流阈值类型，QPS 或线程数模式</td>
+<td style="text-align:left">QPS 模式</td>
+</tr>
+<tr>
+<td style="text-align:left">limitApp</td>
+<td style="text-align:left">流控针对的调用来源</td>
+<td style="text-align:left"><code>default</code>，代表不区分调用来源</td>
+</tr>
+<tr>
+<td style="text-align:left">strategy</td>
+<td style="text-align:left">判断的根据是资源自身，还是根据其它关联资源 (<code>refResource</code>)，还是根据链路入口</td>
+<td style="text-align:left">根据资源本身</td>
+</tr>
+<tr>
+<td style="text-align:left">controlBehavior</td>
+<td style="text-align:left">流控效果（直接拒绝 / 排队等待 / 慢启动模式）</td>
+<td style="text-align:left">直接拒绝</td>
+</tr>
+</tbody>
+</table>
+<p>1.3 代码配置示例</p>
+<pre><code>private void initFlowQpsRule() {
+    List&lt;FlowRule&gt; rules = new ArrayList&lt;&gt;();
+    FlowRule rule = new FlowRule(resourceName);
+    // set limit qps to 20
+    rule.setCount(20);
+    rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+    rule.setLimitApp(&quot;default&quot;);
+    rules.add(rule);
+    FlowRuleManager.loadRules(rules);
+}
+</code></pre><p>1.4 参考：<code>https://github.com/alibaba/Sentinel/wiki/如何使用#流量控制规则-flowrule</code></p>
+<p>1.5 参考：<a href="https://github.com/alibaba/Sentinel/wiki/%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6">流量控制</a></p>
+<h2 id="二降级规则">二、降级规则</h2>
+<p>2.1 配置</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/degrade.png" alt="降级规则"></p>
+<p>2.2 参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Field</th>
+<th style="text-align:left">说明</th>
+<th style="text-align:left">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">resource</td>
+<td style="text-align:left">资源名，即限流规则的作用对象</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">count</td>
+<td style="text-align:left">阈值</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">grade</td>
+<td style="text-align:left">降级模式，根据 RT 降级还是根据异常比例降级</td>
+<td style="text-align:left">RT</td>
+</tr>
+<tr>
+<td style="text-align:left">timeWindow</td>
+<td style="text-align:left">降级的时间，单位为 s</td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<p>2.3 代码配置示例</p>
+<pre><code>private void initDegradeRule() {
+    List&lt;DegradeRule&gt; rules = new ArrayList&lt;&gt;();
+    DegradeRule rule = new DegradeRule();
+    rule.setResource(KEY);
+    // set threshold RT, 10 ms
+    rule.setCount(10);
+    rule.setGrade(RuleConstant.DEGRADE_GRADE_RT);
+    rule.setTimeWindow(10);
+    rules.add(rule);
+    DegradeRuleManager.loadRules(rules);
+}
+</code></pre><p>2.4 参考：<code>https://github.com/alibaba/Sentinel/wiki/如何使用#熔断降级规则-degraderule</code></p>
+<h2 id="三热点规则">三、热点规则</h2>
+<p>3.1 配置</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/hot.png" alt="热点规则"></p>
+<p>3.2 参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">属性</th>
+<th style="text-align:left">说明</th>
+<th style="text-align:left">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">resource</td>
+<td style="text-align:left">资源名，必填</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">count</td>
+<td style="text-align:left">限流阈值，必填</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">grade</td>
+<td style="text-align:left">限流模式</td>
+<td style="text-align:left">QPS 模式</td>
+</tr>
+<tr>
+<td style="text-align:left">durationInSec</td>
+<td style="text-align:left">统计窗口时间长度（单位为秒），1.6.0 版本开始支持</td>
+<td style="text-align:left">1s</td>
+</tr>
+<tr>
+<td style="text-align:left">controlBehavior</td>
+<td style="text-align:left">流控效果（支持快速失败和匀速排队模式），1.6.0 版本开始支持</td>
+<td style="text-align:left">快速失败</td>
+</tr>
+<tr>
+<td style="text-align:left">maxQueueingTimeMs</td>
+<td style="text-align:left">最大排队等待时长（仅在匀速排队模式生效），1.6.0 版本开始支持</td>
+<td style="text-align:left">0ms</td>
+</tr>
+<tr>
+<td style="text-align:left">paramIdx</td>
+<td style="text-align:left">热点参数的索引，必填，对应 <code>SphU.entry(xxx, args)</code> 中的参数索引位置</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">paramFlowItemList</td>
+<td style="text-align:left">参数例外项，可以针对指定的参数值单独设置限流阈值，不受前面 <code>count</code> 阈值的限制。<strong>仅支持基本类型</strong></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">clusterMode</td>
+<td style="text-align:left">是否是集群参数流控规则</td>
+<td style="text-align:left"><code>false</code></td>
+</tr>
+<tr>
+<td style="text-align:left">clusterConfig</td>
+<td style="text-align:left">集群流控相关配置</td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<p>3.3 代码配置示例</p>
+<pre><code>ParamFlowRule rule = new ParamFlowRule(resourceName)
+    .setParamIdx(0)
+    .setCount(5);
+// 针对 int 类型的参数 PARAM_B，单独设置限流 QPS 阈值为 10，而不是全局的阈值 5.
+ParamFlowItem item = new ParamFlowItem().setObject(String.valueOf(PARAM_B))
+    .setClassType(int.class.getName())
+    .setCount(10);
+rule.setParamFlowItemList(Collections.singletonList(item));
+
+ParamFlowRuleManager.loadRules(Collections.singletonList(rule));
+</code></pre><p>3.4 参考：<code>https://github.com/alibaba/Sentinel/wiki/热点参数限流</code></p>
+<h2 id="四系统规则">四、系统规则</h2>
+<p>4.1 配置</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/system.png" alt="系统规则"></p>
+<p>4.2 参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Field</th>
+<th style="text-align:left">说明</th>
+<th style="text-align:left">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">highestSystemLoad</td>
+<td style="text-align:left">最大的 <code>load1</code></td>
+<td style="text-align:left">-1 (不生效)</td>
+</tr>
+<tr>
+<td style="text-align:left">avgRt</td>
+<td style="text-align:left">所有入口流量的平均响应时间</td>
+<td style="text-align:left">-1 (不生效)</td>
+</tr>
+<tr>
+<td style="text-align:left">maxThread</td>
+<td style="text-align:left">入口流量的最大并发数</td>
+<td style="text-align:left">-1 (不生效)</td>
+</tr>
+<tr>
+<td style="text-align:left">qps</td>
+<td style="text-align:left">所有入口资源的 QPS</td>
+<td style="text-align:left">-1 (不生效)</td>
+</tr>
+</tbody>
+</table>
+<p>4.3 代码配置示例</p>
+<pre><code>private void initSystemRule() {
+    List&lt;SystemRule&gt; rules = new ArrayList&lt;&gt;();
+    SystemRule rule = new SystemRule();
+    rule.setHighestSystemLoad(10);
+    rules.add(rule);
+    SystemRuleManager.loadRules(rules);
+}
+</code></pre><p>4.4 参考：<code>https://github.com/alibaba/Sentinel/wiki/如何使用#系统保护规则-systemrule</code></p>
+<h2 id="五授权规则">五、授权规则</h2>
+<p>5.1 配置</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/auth.png" alt="授权规则"></p>
+<p>5.2 参数</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Field</th>
+<th style="text-align:left">说明</th>
+<th style="text-align:left">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">resource</td>
+<td style="text-align:left">资源名，即限流规则的作用对象</td>
+<td style="text-align:left">-</td>
+</tr>
+<tr>
+<td style="text-align:left">limitApp</td>
+<td style="text-align:left">对应的黑名单/白名单，不同 origin 用 <code>,</code> 分隔，如 <code>appA,appB</code></td>
+<td style="text-align:left">default，代表不区分调用来源</td>
+</tr>
+<tr>
+<td style="text-align:left">strategy</td>
+<td style="text-align:left">限制模式，<code>AUTHORITY_WHITE</code> 为白名单模式，<code>AUTHORITY_BLACK</code> 为黑名单模式，默认为白名单模式</td>
+<td style="text-align:left">AUTHORITY_WHITE</td>
+</tr>
+</tbody>
+</table>
+<p>5.3 代码配置示例</p>
+<pre><code>AuthorityRule rule = new AuthorityRule();
+rule.setResource(&quot;test&quot;);
+rule.setStrategy(RuleConstant.AUTHORITY_WHITE);
+rule.setLimitApp(&quot;appA,appB&quot;);
+AuthorityRuleManager.loadRules(Collections.singletonList(rule));
+</code></pre><p>5.4 参考：`<a href="https://github.com/alibaba/Sentinel/wiki/">https://github.com/alibaba/Sentinel/wiki/</a>如何使用#访问控制规则-authorityrule</p>
+<h2 id="sentinel与控制台通信原理">sentinel与控制台通信原理</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717161108537.png" alt="image-20210717161108537" style="zoom:50%;" /></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717161610202.png" alt="image-20210717161610202" style="zoom:33%;" /></p>
+<h2 id="控制台相关配置">控制台相关配置</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717161731701.png" alt="image-20210717161731701" style="zoom: 50%;" /></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717161914554.png" alt="image-20210717161914554" style="zoom:50%;" /></p>
+<p>使用例子：<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717162004595.png" alt="image-20210717162004595" style="zoom: 50%;" /></p>
+<h2 id="sentinel-api">sentinel-api</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717163500422.png" alt="image-20210717163500422" style="zoom:33%;" /></p>
+<p><img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210718160725207.png" alt="image-20210718160725207" style="zoom:67%;" /></p>
+<h2 id="规则持久化">规则持久化</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210718163113333.png" alt="image-20210718163113333" style="zoom:50%;" /></p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2021 Aaron 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Aaron 的博客<span class="sub header">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/chrome-extension/" title="Chrome Extension">
+              Chrome Extension
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/clojurescript/" title="ClojureScript">
+              ClojureScript
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/figwheel-main/" title="Figwheel Main">
+              Figwheel Main
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="Spring">
+              Spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%B9%B4%E5%BA%A6/" title="年度">
+              年度
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Aaron 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是后端工程师</p>
+<p>写着玩：</p>
+<ul>
+<li>Clojure &amp; CLJS</li>
+<li>OCaml &amp; Reason &amp; ReScript</li>
+<li>Dart &amp; Swift</li>
+</ul>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Aaron" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Aaron" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Aaron" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Aaron" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Aaron" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Aaron" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>
