@@ -81,6 +81,15 @@
     </item>
     
     <item>
+      <title>K8s</title>
+      <link>https://recordnote.github.io/%E8%BF%90%E7%BB%B4/k8s/</link>
+      <pubDate>Wed, 31 Mar 2021 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E8%BF%90%E7%BB%B4/k8s/</guid>
+      <description>k8s基本概念 k8s架构 Kubelet 节点代理，pod 管理，处理master中api-server下发的节点任务，每个节点都会启动 kubelet进程 容器</description>
+    </item>
+    
+    <item>
       <title>Java代理模式详解</title>
       <link>https://recordnote.github.io/java/java%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/</link>
       <pubDate>Mon, 01 Mar 2021 14:21:26 +0800</pubDate>

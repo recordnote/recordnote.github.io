@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>K8s | Aaron 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Aaron" />
+<meta name="description" content="Aaron 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.84.0" />
+
+<link rel="canonical" href="https://recordnote.github.io/%E8%BF%90%E7%BB%B4/k8s/" />
+
+
+<meta property="og:title" content="K8s" />
+<meta property="og:description" content="k8s基本概念 k8s架构 Kubelet 节点代理，pod 管理，处理master中api-server下发的节点任务，每个节点都会启动 kubelet进程 容器" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/%E8%BF%90%E7%BB%B4/k8s/" /><meta property="og:image" content="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fstatic.leiphone.com%2Fuploads%2Fnew%2Farticle%2Fpic%2F202103%2F603f005de7d9a.png%3FimageMogr2%2Fthumbnail%2F%21242x145r%2Fgravity%2FCenter%2Fcrop%2F242x145%2Fquality%2F90&refer=http%3A%2F%2Fstatic.leiphone.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1632990869&t=b9f193f7c67b216ce072731a814fc8ee" /><meta property="article:section" content="运维" />
+<meta property="article:published_time" content="2021-03-31T14:21:26&#43;08:00" />
+<meta property="article:modified_time" content="2021-03-31T14:21:26&#43;08:00" />
+
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fstatic.leiphone.com%2Fuploads%2Fnew%2Farticle%2Fpic%2F202103%2F603f005de7d9a.png%3FimageMogr2%2Fthumbnail%2F%21242x145r%2Fgravity%2FCenter%2Fcrop%2F242x145%2Fquality%2F90&refer=http%3A%2F%2Fstatic.leiphone.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1632990869&t=b9f193f7c67b216ce072731a814fc8ee"/>
+
+<meta name="twitter:title" content="K8s"/>
+<meta name="twitter:description" content="k8s基本概念 k8s架构 Kubelet 节点代理，pod 管理，处理master中api-server下发的节点任务，每个节点都会启动 kubelet进程 容器"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#k8s基本概念">k8s基本概念</a></li>
+    <li><a href="#k8s架构">k8s架构</a></li>
+    <li><a href="#kubelet">Kubelet</a></li>
+    <li><a href="#k8spod">k8sPod</a>
+      <ul>
+        <li><a href="#pod基本概念">Pod基本概念</a></li>
+        <li><a href="#pod存在的意义">Pod存在的意义</a></li>
+        <li><a href="#pod实现机制">Pod实现机制</a></li>
+        <li><a href="#pod容器分类与设计模式">Pod容器分类与设计模式</a></li>
+        <li><a href="#pod与controller的关系">Pod与controller的关系</a></li>
+      </ul>
+    </li>
+    <li><a href="#k8s控制器">k8s控制器</a>
+      <ul>
+        <li><a href="#deployment控制器功能与应用场景">Deployment控制器功能与应用场景</a></li>
+        <li><a href="#yaml字段解析">yaml字段解析</a></li>
+      </ul>
+    </li>
+    <li><a href="#应用升级和回滚">应用升级和回滚</a></li>
+    <li><a href="#service存在的意义">Service存在的意义</a></li>
+    <li><a href="#pod与service的关系">Pod与Service的关系</a></li>
+    <li><a href="#service类型">Service类型</a>
+      <ul>
+        <li><a href="#第一种">第一种</a></li>
+        <li><a href="#第二种">第二种</a></li>
+        <li><a href="#第三种主流-">第三种（主流 ）</a></li>
+      </ul>
+    </li>
+    <li><a href="#deployment和statefulset-有状态应用守护者">Deployment和StatefulSet-有状态应用守护者</a></li>
+    <li><a href="#ingress-controller">Ingress Controller</a></li>
+    <li><a href="#cicd">CICD</a>
+      <ul>
+        <li><a href="#传统模式"><strong>传统模式：</strong></a></li>
+        <li><a href="#使用k8s集成"><strong>使用k8s集成：</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#namespace命名空间">Namespace命名空间</a></li>
+    <li><a href="#resource多维度集群资源管理">Resource多维度集群资源管理</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#label标签">Label标签</a></li>
+    <li><a href="#scheduler调度策略">Scheduler调度策略</a></li>
+    <li><a href="#部署策略">部署策略</a></li>
+    <li><a href="#实现业务负载均衡四层和七层代理">实现业务负载均衡四层和七层代理</a></li>
+    <li><a href="#基于k8s开发一个容器管理平台">基于K8s开发一个容器管理平台</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">K8s<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Aaron
+                
+              
+
+              | 
+                  <span data-format="luxon">2021-03-31T14:21:26&#43;08:00</span>
+                
+
+              | 4 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2021-03-31T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=K8s&url=https%3a%2f%2frecordnote.github.io%2f%25E8%25BF%2590%25E7%25BB%25B4%2fk8s%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2f%25E8%25BF%2590%25E7%25BB%25B4%2fk8s%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+
+        <h2 id="k8s基本概念">k8s基本概念</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828105835156.png" alt="image-20210828105835156"></p>
+<h2 id="k8s架构">k8s架构</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827220754158.png" alt="x"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827220845054.png" alt="image-20210827220845054"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827091531306.png" alt="image-20210827091531306"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827091507432.png" alt="image-20210827091507432"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827093757348.png" alt="image-20210827093757348"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827093626787.png" alt="image-20210827093626787"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827101014984.png" alt="image-20210827101014984"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827101042761.png" alt="image-20210827101042761"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827101655048.png" alt="image-20210827101655048"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827102758422.png" alt="image-20210827102758422"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827103204036.png" alt="image-20210827103204036"></p>
+<p><img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210827215539933.png" alt="image-20210827215539933" style="zoom: 80%;" /></p>
+<h2 id="kubelet">Kubelet</h2>
+<ul>
+<li>
+<p><strong>节点代理</strong>，<strong>pod 管理</strong>，处理master中<strong>api-server</strong>下发的节点任务，每个节点都会启动 kubelet进程</p>
+</li>
+<li>
+<p><strong>容器健康检查</strong>：kubelet 创建了容器之后还要查看容器是否正常运行，如果容器运行出错，就要根据 pod 设置的重启策略进行处理。</p>
+</li>
+<li>
+<p><strong>容器监控</strong>：kubelet 会监控所在节点的资源使用情况，并定时向 master 报告，资源使用数据都是通过 cAdvisor 获取的。知道整个集群所有节点的资源情况，对于 pod 的调度和正常运行至关重要。</p>
+</li>
+</ul>
+<h2 id="k8spod">k8sPod</h2>
+<h3 id="pod基本概念">Pod基本概念</h3>
+<ul>
+<li>
+<p><strong>最小部署单元</strong></p>
+</li>
+<li>
+<p><strong>一组容器的集合</strong></p>
+</li>
+<li>
+<p><strong>一个Pod中的容器共享网络命名空间与存储</strong></p>
+</li>
+<li>
+<p><strong>Pod是短暂</strong></p>
+</li>
+</ul>
+<h3 id="pod存在的意义">Pod存在的意义</h3>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828165716277.png" alt="image-20210828165716277" style="zoom: 67%;" /></p>
+<h3 id="pod实现机制">Pod实现机制</h3>
+<ul>
+<li><strong>共享网络</strong>：在一个Pod中创建一个或者多个容器，前提会创建一个infrastructure Container(基础容器）维护整个Pod网络空间，其他创建容器会与该容器有联系，使用共同的网络（IP相同），相同的namespace。</li>
+<li><strong>共享存储</strong>：独立于Node之外的<strong>数据卷</strong></li>
+</ul>
+<h3 id="pod容器分类与设计模式">Pod容器分类与设计模式</h3>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828172744077.png" alt="image-20210828172744077" style="zoom: 80%;" /></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828174835675.png" alt="image-20210828174835675" style="zoom:80%;" /></p>
+<h3 id="pod与controller的关系">Pod与controller的关系</h3>
+<p>通过应用部署controller，controller通过label-selector关联Pod</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828175441008.png" alt="image-20210828175441008" style="zoom:67%;" /></p>
+<h2 id="k8s控制器">k8s控制器</h2>
+<h3 id="deployment控制器功能与应用场景">Deployment控制器功能与应用场景</h3>
+<ul>
+<li>部署无状态应用</li>
+<li>管理Pod与ReplicaSet</li>
+<li>具有上线部署、副本设定、滚动升级、回滚等功能</li>
+<li>提供声明式更新，例如只更新一个新的Image</li>
+</ul>
+<p>​    <strong>应用场景</strong>：Web服务、微服务</p>
+<h3 id="yaml字段解析">yaml字段解析</h3>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828180541134.png" alt="image-20210828180541134" style="zoom: 80%;" /></p>
+<h2 id="应用升级和回滚">应用升级和回滚</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828181613811.png" alt="image-20210828181613811"></p>
+<h2 id="service存在的意义">Service存在的意义</h2>
+<ul>
+<li>
+<p><strong>service是通过kube-proxy来实现的</strong></p>
+</li>
+<li>
+<p><strong>防止Pod失联（服务发现）</strong>{获取可用Pod的IP列表}</p>
+</li>
+<li>
+<p><strong>定义一组Pod的访问策略（负载均衡）</strong></p>
+</li>
+</ul>
+<h2 id="pod与service的关系">Pod与Service的关系</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828201922756.png" alt="image-20210828201922756"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828201938583.png" alt="image-20210828201938583"></p>
+<h2 id="service类型">Service类型</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828212256785.png" alt="image-20210828212256785"></p>
+<h3 id="第一种">第一种</h3>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828205053823.png" alt=" " style="zoom: 80%;" /></p>
+<h3 id="第二种">第二种</h3>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828205114006.png" alt="image-20210828205114006" style="zoom:80%;" /></p>
+<h3 id="第三种主流-">第三种（主流 ）</h3>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828205132983.png" alt="image-20210828205132983"></p>
+<h2 id="deployment和statefulset-有状态应用守护者">Deployment和StatefulSet-有状态应用守护者</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210831112312100.png" alt="image-20210831112312100" style="zoom:50%;" /></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210831112339399.png" alt="image-20210831112339399" style="zoom:50%;" /></p>
+<h2 id="ingress-controller">Ingress Controller</h2>
+<p><strong>意义</strong>：在Kubernetes中，服务和Pod的IP地址仅可以在集群网络内部使用，对于集群外的应用是不可见的。为了使外部的应用能够访问集群内的服务，在Kubernetes 目前 提供了以下几种方案：NodePort、LoadBalancer、Ingress</p>
+<p><strong>Ingress是基于域名，负载均衡还是用nginx</strong></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828225825215.png" alt="image-20210828225825215"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210829222500523.png" alt="image-20210829222500523"></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210831102146878.png" alt="image-20210831102146878" style="zoom: 80%;" /></p>
+<h2 id="cicd">CICD</h2>
+<h3 id="传统模式"><strong>传统模式：</strong></h3>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830113428034.png" alt=""></p>
+<p>ps：传统方式会将打包好的jar包</p>
+<h3 id="使用k8s集成"><strong>使用k8s集成：</strong></h3>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830113356921.png" alt="image-20210830113356921"></p>
+<p>ps：一次构建多环境部署，前提应用的<font color='red'><strong>配置不能写死</strong></font>，可配置在配置中心或者configmap</p>
+<h2 id="namespace命名空间">Namespace命名空间</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830171243493.png" alt="image-20210830171243493" style="zoom:50%;" /></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830171253906.png" alt="image-20210830171253906" style="zoom:50%;" /></p>
+<p>ps：通过服务命名隔离，但是通过cluster-ip或者是Pod的ip访问是不受限制的，属于**<font color='red'>单维度</font>。**</p>
+<h2 id="resource多维度集群资源管理">Resource多维度集群资源管理</h2>
+<h5 id="资源">资源：</h5>
+<ul>
+<li>CPU</li>
+<li>GPU</li>
+<li>内存</li>
+<li>持久化存储</li>
+</ul>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830171939588.png" alt="image-20210830171939588" style="zoom:50%;" /></p>
+<h5 id="核心设计">核心设计</h5>
+<ul>
+<li>Requests</li>
+<li>Limits</li>
+</ul>
+<p>样例：</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830172336223.png" alt="image-20210830172336223" style="zoom:67%;" /></p>
+<p>ps：cpu：100m相当于0.1核cpu，1cpu = 1000m</p>
+<h5 id="k8s会根据requests和limits判断服务等级"><strong>k8s</strong>会根据requests和limits判断<strong>服务等级</strong>：</h5>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830173102559.png" alt="image-20210830173102559" style="zoom:50%;" /></p>
+<h5 id="pod驱逐策略-eviction">Pod驱逐策略-Eviction</h5>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830173801152.png" alt="image-20210830173801152" style="zoom:50%;" /></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830173843104.png" alt="image-20210830173843104" style="zoom: 50%;" /></p>
+<h2 id="label标签">Label标签</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830174256398.png" alt="image-20210830174256398" style="zoom:50%;" /></p>
+<p>例如：Pod打上标签，ReplicaSer（RS）可以知道哪些是自己的，Service知道哪些是自己的</p>
+<h2 id="scheduler调度策略">Scheduler调度策略</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830175330847.png" alt="image-20210830175330847" style="zoom:67%;" /></p>
+<h2 id="部署策略">部署策略</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830180104543.png" alt="image-20210830180104543" style="zoom:50%;" /></p>
+<h2 id="实现业务负载均衡四层和七层代理">实现业务负载均衡四层和七层代理</h2>
+<p>  <strong>k8s下的service、cluster-ip、nodeport都是四层的负载均衡。</strong></p>
+<p>  Ingress-nginx是7层的负载均衡器 ，同时负责统一管理外部对k8s cluster中Service的请求。</p>
+<p>  负载均衡，就是根据请求的信息不同，来决定怎么样转发流量。</p>
+<p><strong>  四层负载均衡</strong>，就是根据请求的ip+端口，根据设定的规则，将请求转发到后端对应的IP+端口上。</p>
+<p> <strong> 七层负载均衡</strong>，则是在四层基础上，再去考虑应用层的特征。比如说一个WEB服务器的负载均衡，除了根据IP+80端口来判断之外，还可以根据七层URL，浏览器类别，来决定如何去转发流量。</p>
+<h2 id="基于k8s开发一个容器管理平台">基于K8s开发一个容器管理平台</h2>
+<p>  未完待续&hellip;..</p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2021 Aaron 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Aaron 的博客<span class="sub header">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/chrome-extension/" title="Chrome Extension">
+              Chrome Extension
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/clojurescript/" title="ClojureScript">
+              ClojureScript
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/figwheel-main/" title="Figwheel Main">
+              Figwheel Main
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="Spring">
+              Spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%B9%B4%E5%BA%A6/" title="年度">
+              年度
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Aaron 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是后端工程师</p>
+<p>写着玩：</p>
+<ul>
+<li>Clojure &amp; CLJS</li>
+<li>OCaml &amp; Reason &amp; ReScript</li>
+<li>Dart &amp; Swift</li>
+</ul>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Aaron" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Aaron" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Aaron" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Aaron" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Aaron" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Aaron" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>
