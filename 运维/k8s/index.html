@@ -190,6 +190,16 @@
     <li><a href="#scheduler调度策略">Scheduler调度策略</a></li>
     <li><a href="#部署策略">部署策略</a></li>
     <li><a href="#实现业务负载均衡四层和七层代理">实现业务负载均衡四层和七层代理</a></li>
+    <li><a href="#k8s常见的日志采集问题和解决方案">K8s常见的日志采集问题和解决方案</a>
+      <ul>
+        <li><a href="#常见方案">常见方案</a></li>
+      </ul>
+    </li>
+    <li><a href="#k8s的监控">K8s的监控</a>
+      <ul>
+        <li><a href="#prometheus">Prometheus</a></li>
+      </ul>
+    </li>
     <li><a href="#基于k8s开发一个容器管理平台">基于K8s开发一个容器管理平台</a></li>
   </ul>
 </nav>
@@ -393,6 +403,39 @@
 <p>  负载均衡，就是根据请求的信息不同，来决定怎么样转发流量。</p>
 <p><strong>  四层负载均衡</strong>，就是根据请求的ip+端口，根据设定的规则，将请求转发到后端对应的IP+端口上。</p>
 <p> <strong> 七层负载均衡</strong>，则是在四层基础上，再去考虑应用层的特征。比如说一个WEB服务器的负载均衡，除了根据IP+80端口来判断之外，还可以根据七层URL，浏览器类别，来决定如何去转发流量。</p>
+<h2 id="k8s常见的日志采集问题和解决方案">K8s常见的日志采集问题和解决方案</h2>
+<p>​    <img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901170636589.png" alt="image-20210901170636589" style="zoom: 33%;" /></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901170705490.png" alt="image-20210901170705490" style="zoom:50%;" /></p>
+<h3 id="常见方案">常见方案</h3>
+<h4 id="远程日志">远程日志</h4>
+<p><img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210901210053905.png" alt="image-20210901210053905" style="zoom: 67%;" /></p>
+<h4 id="sidecar">SideCar</h4>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210157926.png" alt="image-20210901210157926" style="zoom:67%;" /></p>
+<h4 id="logagent">LogAgent</h4>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210324348.png" alt="image-20210901210324348" style="zoom:50%;" /></p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210434834.png" alt="image-20210901210434834" style="zoom:50%;" /></p>
+<h4 id="logpilot">LogPilot</h4>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210544797.png" alt="image-20210901210544797" style="zoom:50%;" /></p>
+<h2 id="k8s的监控">K8s的监控</h2>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210712114.png" alt="image-20210901210712114" style="zoom:50%;" /></p>
+<h3 id="prometheus">Prometheus</h3>
+<ul>
+<li>一系列服务的组合</li>
+<li>系统和服务的监控报警平台</li>
+</ul>
+<h4 id="特征">特征</h4>
+<h5 id="img-srchttpsgiteecomaaronlynnpicturerawmasterimgimage-20210901210946438png-altimage-20210901210946438-stylezoom33-"><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210946438.png" alt="image-20210901210946438" style="zoom:33%;" /></h5>
+<h4 id="架构">架构</h4>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901211040147.png" alt="image-20210901211040147"></p>
+<h4 id="数据类型">数据类型</h4>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901211108838.png" alt="image-20210901211108838" style="zoom:50%;" /></p>
+<h4 id="数据来源">数据来源</h4>
+<h5 id="服务器基础指标">服务器基础指标</h5>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901212054932.png" alt="image-20210901212054932" style="zoom: 67%;" /></p>
+<h5 id="docker容器指标">docker容器指标</h5>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901212151458.png" alt="image-20210901212151458" style="zoom: 67%;" /></p>
+<p>k8s组件</p>
+<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901212351674.png" alt="image-20210901212351674"></p>
 <h2 id="基于k8s开发一个容器管理平台">基于K8s开发一个容器管理平台</h2>
 <p>  未完待续&hellip;..</p>
 
