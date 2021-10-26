@@ -153,6 +153,7 @@
     </li>
     <li><a href="#三postconstruct-和-predestroy">三、@PostConstruct 和 @PreDestroy</a></li>
     <li><a href="#四restcontroller和controller的区别">四、@RestController和@Controller的区别</a></li>
+    <li><a href="#五component和bean的区别">五、@Component和@Bean的区别</a></li>
   </ul>
 </nav>
     </div>
@@ -177,7 +178,7 @@
                   <span data-format="luxon">2020-11-23T14:21:26&#43;08:00</span>
                 
 
-              | 11 分钟阅读
+              | 12 分钟阅读
 
               
               | 更新于
@@ -471,7 +472,42 @@ RequiredAnnotationBeanPostProcessor
         <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;sys/index1&#34;</span><span style="color:#f92672">;</span>
     <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
-</code></pre></div>
+</code></pre></div><h2 id="五component和bean的区别">五、@Component和@Bean的区别</h2>
+<p>  Spring帮助我们管理Bean分为两个部分，一个是注册Bean，一个装配Bean。
+  完成这两个动作有三种方式，一种是使用自动配置的方式、一种是使用JavaConfig的方式，一种就是使用XML配置的方式。</p>
+<p>@Compent 作用就相当于 XML配置</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Component</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#f92672">{</span>
+    
+	<span style="color:#66d9ef">private</span> String name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;lkm&#34;</span><span style="color:#f92672">;</span>
+
+	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    	<span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+	<span style="color:#f92672">}</span>
+
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    	<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+	<span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>@Bean 需要在配置类中使用，即类上需要加上@Configuration注解</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebSocketConfig</span> <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Bean</span>
+    <span style="color:#66d9ef">public</span> Student <span style="color:#a6e22e">student</span><span style="color:#f92672">(){</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+
+<span style="color:#f92672">}</span>
+</code></pre></div><p>两者都可以通过@Autowired装配</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Autowired</span>
+Student student<span style="color:#f92672">;</span>
+</code></pre></div><p>那为什么有了@Compent,还需要@Bean呢？
+  如果你想要将第三方库中的组件装配到你的应用中，在这种情况下，是没有办法在它的类上添加@Component注解的，因此就不能使用自动化装配的方案了，但是我们可以使用@Bean,当然也可以使用XML配置。</p>
+<p><strong><font color='red'>区别：</font></strong></p>
+<p>@Component（@Controller、@Service、@Repository）通常是通过类路径扫描来自动侦测以及自动装配到Spring容器中。</p>
+<p>而@Bean注解通常是我们在标有该注解的方法中定义产生这个bean的逻辑。</p>
+<p>@Component 作用于类，@Bean作用于方法。</p>
+
       </article>
     </section>
 
@@ -516,7 +552,7 @@ RequiredAnnotationBeanPostProcessor
   
 
   <div class="content">
-    <h1 class="ui medium header">Aaron 的博客<span class="sub header">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+    <h1 class="ui medium header">Aaron 的博客<span class="sub header">A merry heart goes all the way.</span>
     </h1>
 
     <article class="ui horizontal list">
