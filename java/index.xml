@@ -56,7 +56,7 @@
     <item>
       <title>java基础知识</title>
       <link>https://recordnote.github.io/java/java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
-      <pubDate>Mon, 23 Mar 2020 14:21:26 +0800</pubDate>
+      <pubDate>Sat, 23 May 2020 14:21:26 +0800</pubDate>
       
       <guid>https://recordnote.github.io/java/java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</guid>
       <description>Java 泛型了解么？什么是类型擦除？介绍一下常用的通配符？ Java 泛型（generics）是 JDK 5 中引入的一个新特性, 泛型提供了编译时类型安全检测机制，该</description>
