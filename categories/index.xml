@@ -27,15 +27,6 @@
     </item>
     
     <item>
-      <title>杂谈</title>
-      <link>https://recordnote.github.io/categories/%E6%9D%82%E8%B0%88/</link>
-      <pubDate>Sat, 03 Jul 2021 14:21:26 +0800</pubDate>
-      
-      <guid>https://recordnote.github.io/categories/%E6%9D%82%E8%B0%88/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Java</title>
       <link>https://recordnote.github.io/categories/java/</link>
       <pubDate>Sat, 15 May 2021 14:21:26 +0800</pubDate>
@@ -50,6 +41,15 @@
       <pubDate>Wed, 31 Mar 2021 14:21:26 +0800</pubDate>
       
       <guid>https://recordnote.github.io/categories/%E8%BF%90%E7%BB%B4/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>杂谈</title>
+      <link>https://recordnote.github.io/categories/%E6%9D%82%E8%B0%88/</link>
+      <pubDate>Wed, 03 Mar 2021 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/categories/%E6%9D%82%E8%B0%88/</guid>
       <description></description>
     </item>
     
