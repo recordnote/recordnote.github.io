@@ -50,7 +50,7 @@
       <pubDate>Sat, 01 May 2021 14:21:26 +0800</pubDate>
       
       <guid>https://recordnote.github.io/java/threadjuc/thread/</guid>
-      <description></description>
+      <description>1、线程实现的方式及其优缺点？ 1）继承Thread类 2）实现Runnable接口 3）实现Callable（JDK&amp;gt;=1.5） 4）使用线</description>
     </item>
     
     <item>
