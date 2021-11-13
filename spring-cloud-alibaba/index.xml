@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;&lt;img alt=&#34;知识共享许可协议&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png&#34; /&gt;&lt;/a&gt;&lt;br /&gt;本作品采用&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议&lt;/a&gt;进行许可。&lt;br /&gt;&lt;br /&gt;背景使用了 &lt;a href=&#34;https://www.pexels.com/zh-cn/&#34; target=&#34;_blank&#34;&gt;Pexels&lt;/a&gt; 上 &lt;a href=&#34;https://www.pexels.com/zh-cn/Ungaro&#34; target=&#34;_blank&#34;&gt;Francesco Ungaro&lt;/a&gt; 拍摄的&lt;a href=&#34;https://www.pexels.com/zh-cn/photo/1454794/&#34; target=&#34;_blank&#34;&gt;图片&lt;/a&gt;。</copyright>
-    <lastBuildDate>Mon, 01 Mar 2021 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/spring-cloud-alibaba/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 20 Oct 2021 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/spring-cloud-alibaba/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Spring Cloud 总结</title>
+      <link>https://recordnote.github.io/spring-cloud-alibaba/springcloud%E7%BB%84%E4%BB%B6/</link>
+      <pubDate>Wed, 20 Oct 2021 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/spring-cloud-alibaba/springcloud%E7%BB%84%E4%BB%B6/</guid>
+      <description>首先我给大家看一张图，如果大家对这张图有些地方不太理解的话，我希望你们看完我这篇文章会恍然大悟。 什么是Spring cloud 构建分布式系统不需要复杂</description>
+    </item>
+    
     <item>
       <title>Sentinel（轻量级的流量控制、熔断降级Java库）</title>
       <link>https://recordnote.github.io/spring-cloud-alibaba/sentinel%E8%BD%BB%E9%87%8F%E7%BA%A7%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E7%86%94%E6%96%AD%E9%99%8D%E7%BA%A7java%E5%BA%93/</link>
