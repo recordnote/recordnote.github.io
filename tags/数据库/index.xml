@@ -26,5 +26,14 @@
       <description>数据库中的例子表格： 1.符号 + 在MySQL中支持使用加号拼接结果。在两个字段都是整型时，都会返回两个整型值得和，但是在两个字段中有一个为字符</description>
     </item>
     
+    <item>
+      <title>MyBatis相关</title>
+      <link>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/mybatis/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/mybatis/</guid>
+      <description>1、MyBatis中嵌套查询和嵌套结果的区别？ 最后一个问题是问Thread.sleep()和Object.wait()调用时线程处于什么状态</description>
+    </item>
+    
   </channel>
 </rss>
