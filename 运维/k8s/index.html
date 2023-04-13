@@ -17,7 +17,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.84.0" />
+<meta name="generator" content="Hugo 0.111.3">
 
 <link rel="canonical" href="https://recordnote.github.io/%E8%BF%90%E7%BB%B4/k8s/" />
 
@@ -26,9 +26,8 @@
 <meta property="og:description" content="k8s基本概念 k8s架构 Kubelet 节点代理，pod 管理，处理master中api-server下发的节点任务，每个节点都会启动 kubelet进程 容器" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/%E8%BF%90%E7%BB%B4/k8s/" /><meta property="og:image" content="https://recordnote.github.io/img/k8s.png" /><meta property="article:section" content="运维" />
-<meta property="article:published_time" content="2021-03-31T14:21:26&#43;08:00" />
-<meta property="article:modified_time" content="2021-03-31T14:21:26&#43;08:00" />
-
+<meta property="article:published_time" content="2022-03-31T14:21:26+08:00" />
+<meta property="article:modified_time" content="2022-03-31T14:21:26+08:00" />
 
 
 
@@ -222,7 +221,7 @@
               
 
               | 
-                  <span data-format="luxon">2021-03-31T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2022-03-31T14:21:26&#43;08:00</span>
                 
 
               | 4 分钟阅读
@@ -230,7 +229,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2021-03-31T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2022-03-31T14:21:26&#43;08:00</span>
                 
               
             </span>
@@ -272,7 +271,7 @@
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827101655048.png" alt="image-20210827101655048"></p>
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827102758422.png" alt="image-20210827102758422"></p>
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210827103204036.png" alt="image-20210827103204036"></p>
-<p><img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210827215539933.png" alt="image-20210827215539933" style="zoom: 80%;" /></p>
+<img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210827215539933.png" alt="image-20210827215539933" style="zoom: 80%;" />
 <h2 id="kubelet">Kubelet</h2>
 <ul>
 <li>
@@ -302,18 +301,18 @@
 </li>
 </ul>
 <h3 id="pod存在的意义">Pod存在的意义</h3>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828165716277.png" alt="image-20210828165716277" style="zoom: 67%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828165716277.png" alt="image-20210828165716277" style="zoom: 67%;" /> 
 <h3 id="pod实现机制">Pod实现机制</h3>
 <ul>
 <li><strong>共享网络</strong>：在一个Pod中创建一个或者多个容器，前提会创建一个infrastructure Container(基础容器）维护整个Pod网络空间，其他创建容器会与该容器有联系，使用共同的网络（IP相同），相同的namespace。</li>
 <li><strong>共享存储</strong>：独立于Node之外的<strong>数据卷</strong></li>
 </ul>
 <h3 id="pod容器分类与设计模式">Pod容器分类与设计模式</h3>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828172744077.png" alt="image-20210828172744077" style="zoom: 80%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828174835675.png" alt="image-20210828174835675" style="zoom:80%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828172744077.png" alt="image-20210828172744077" style="zoom: 80%;" /> 
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828174835675.png" alt="image-20210828174835675" style="zoom:80%;" /> 
 <h3 id="pod与controller的关系">Pod与controller的关系</h3>
 <p>通过应用部署controller，controller通过label-selector关联Pod</p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828175441008.png" alt="image-20210828175441008" style="zoom:67%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828175441008.png" alt="image-20210828175441008" style="zoom:67%;" /> 
 <h2 id="k8s控制器">k8s控制器</h2>
 <h3 id="deployment控制器功能与应用场景">Deployment控制器功能与应用场景</h3>
 <ul>
@@ -324,7 +323,7 @@
 </ul>
 <p>​    <strong>应用场景</strong>：Web服务、微服务</p>
 <h3 id="yaml字段解析">yaml字段解析</h3>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828180541134.png" alt="image-20210828180541134" style="zoom: 80%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828180541134.png" alt="image-20210828180541134" style="zoom: 80%;" /> 
 <h2 id="应用升级和回滚">应用升级和回滚</h2>
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828181613811.png" alt="image-20210828181613811"></p>
 <h2 id="service存在的意义">Service存在的意义</h2>
@@ -345,20 +344,20 @@
 <h2 id="service类型">Service类型</h2>
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828212256785.png" alt="image-20210828212256785"></p>
 <h3 id="第一种">第一种</h3>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828205053823.png" alt=" " style="zoom: 80%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828205053823.png" alt=" " style="zoom: 80%;" /> 
 <h3 id="第二种">第二种</h3>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828205114006.png" alt="image-20210828205114006" style="zoom:80%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828205114006.png" alt="image-20210828205114006" style="zoom:80%;" /> 
 <h3 id="第三种主流-">第三种（主流 ）</h3>
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828205132983.png" alt="image-20210828205132983"></p>
 <h2 id="deployment和statefulset-有状态应用守护者">Deployment和StatefulSet-有状态应用守护者</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210831112312100.png" alt="image-20210831112312100" style="zoom:50%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210831112339399.png" alt="image-20210831112339399" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210831112312100.png" alt="image-20210831112312100" style="zoom:50%;" /> 
+ <img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210831112339399.png" alt="image-20210831112339399" style="zoom:50%;" />
 <h2 id="ingress-controller">Ingress Controller</h2>
 <p><strong>意义</strong>：在Kubernetes中，服务和Pod的IP地址仅可以在集群网络内部使用，对于集群外的应用是不可见的。为了使外部的应用能够访问集群内的服务，在Kubernetes 目前 提供了以下几种方案：NodePort、LoadBalancer、Ingress</p>
 <p><strong>Ingress是基于域名，负载均衡还是用nginx</strong></p>
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210828225825215.png" alt="image-20210828225825215"></p>
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210829222500523.png" alt="image-20210829222500523"></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210831102146878.png" alt="image-20210831102146878" style="zoom: 80%;" /></p>
+ <img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210831102146878.png" alt="image-20210831102146878" style="zoom: 80%;" />  
 <h2 id="cicd">CICD</h2>
 <h3 id="传统模式"><strong>传统模式：</strong></h3>
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830113428034.png" alt=""></p>
@@ -367,8 +366,8 @@
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830113356921.png" alt="image-20210830113356921"></p>
 <p>ps：一次构建多环境部署，前提应用的<font color='red'><strong>配置不能写死</strong></font>，可配置在配置中心或者configmap</p>
 <h2 id="namespace命名空间">Namespace命名空间</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830171243493.png" alt="image-20210830171243493" style="zoom:50%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830171253906.png" alt="image-20210830171253906" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830171243493.png" alt="image-20210830171243493" style="zoom:50%;" /> 
+ <img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830171253906.png" alt="image-20210830171253906" style="zoom:50%;" /> 
 <p>ps：通过服务命名隔离，但是通过cluster-ip或者是Pod的ip访问是不受限制的，属于**<font color='red'>单维度</font>。**</p>
 <h2 id="resource多维度集群资源管理">Resource多维度集群资源管理</h2>
 <h5 id="资源">资源：</h5>
@@ -378,27 +377,27 @@
 <li>内存</li>
 <li>持久化存储</li>
 </ul>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830171939588.png" alt="image-20210830171939588" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830171939588.png" alt="image-20210830171939588" style="zoom:50%;" /> 
 <h5 id="核心设计">核心设计</h5>
 <ul>
 <li>Requests</li>
 <li>Limits</li>
 </ul>
 <p>样例：</p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830172336223.png" alt="image-20210830172336223" style="zoom:67%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830172336223.png" alt="image-20210830172336223" style="zoom:67%;" /> 
 <p>ps：cpu：100m相当于0.1核cpu，1cpu = 1000m</p>
 <h5 id="k8s会根据requests和limits判断服务等级"><strong>k8s</strong>会根据requests和limits判断<strong>服务等级</strong>：</h5>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830173102559.png" alt="image-20210830173102559" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830173102559.png" alt="image-20210830173102559" style="zoom:50%;" /> 
 <h5 id="pod驱逐策略-eviction">Pod驱逐策略-Eviction</h5>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830173801152.png" alt="image-20210830173801152" style="zoom:50%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830173843104.png" alt="image-20210830173843104" style="zoom: 50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830173801152.png" alt="image-20210830173801152" style="zoom:50%;" /> 
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830173843104.png" alt="image-20210830173843104" style="zoom: 50%;" />  
 <h2 id="label标签">Label标签</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830174256398.png" alt="image-20210830174256398" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830174256398.png" alt="image-20210830174256398" style="zoom:50%;" />  
 <p>例如：Pod打上标签，ReplicaSer（RS）可以知道哪些是自己的，Service知道哪些是自己的</p>
 <h2 id="scheduler调度策略">Scheduler调度策略</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830175330847.png" alt="image-20210830175330847" style="zoom:67%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830175330847.png" alt="image-20210830175330847" style="zoom:67%;" /> 
 <h2 id="部署策略">部署策略</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830180104543.png" alt="image-20210830180104543" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210830180104543.png" alt="image-20210830180104543" style="zoom:50%;" /> 
 <h2 id="实现业务负载均衡四层和七层代理">实现业务负载均衡四层和七层代理</h2>
 <p>  <strong>k8s下的service、cluster-ip、nodeport都是四层的负载均衡。</strong></p>
 <p>  Ingress-nginx是7层的负载均衡器 ，同时负责统一管理外部对k8s cluster中Service的请求。</p>
@@ -407,19 +406,19 @@
 <p> <strong> 七层负载均衡</strong>，则是在四层基础上，再去考虑应用层的特征。比如说一个WEB服务器的负载均衡，除了根据IP+80端口来判断之外，还可以根据七层URL，浏览器类别，来决定如何去转发流量。</p>
 <h2 id="k8s常见的日志采集问题和解决方案">K8s常见的日志采集问题和解决方案</h2>
 <p>​    <img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901170636589.png" alt="image-20210901170636589" style="zoom: 33%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901170705490.png" alt="image-20210901170705490" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901170705490.png" alt="image-20210901170705490" style="zoom:50%;" /> 
 <h3 id="常见方案">常见方案</h3>
 <h4 id="远程日志">远程日志</h4>
-<p><img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210901210053905.png" alt="image-20210901210053905" style="zoom: 67%;" /></p>
+<img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210901210053905.png" alt="image-20210901210053905" style="zoom: 67%;" /> 
 <h4 id="sidecar">SideCar</h4>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210157926.png" alt="image-20210901210157926" style="zoom:67%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210157926.png" alt="image-20210901210157926" style="zoom:67%;" /> 
 <h4 id="logagent">LogAgent</h4>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210324348.png" alt="image-20210901210324348" style="zoom:50%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210434834.png" alt="image-20210901210434834" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210324348.png" alt="image-20210901210324348" style="zoom:50%;" /> 
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210434834.png" alt="image-20210901210434834" style="zoom:50%;" /> 
 <h4 id="logpilot">LogPilot</h4>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210544797.png" alt="image-20210901210544797" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210544797.png" alt="image-20210901210544797" style="zoom:50%;" /> 
 <h2 id="k8s的监控">K8s的监控</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210712114.png" alt="image-20210901210712114" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901210712114.png" alt="image-20210901210712114" style="zoom:50%;" /> 
 <h3 id="prometheus">Prometheus</h3>
 <ul>
 <li>一系列服务的组合</li>
@@ -430,12 +429,12 @@
 <h4 id="架构">架构</h4>
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901211040147.png" alt="image-20210901211040147"></p>
 <h4 id="数据类型">数据类型</h4>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901211108838.png" alt="image-20210901211108838" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901211108838.png" alt="image-20210901211108838" style="zoom:50%;" /> 
 <h4 id="数据来源">数据来源</h4>
 <h5 id="服务器基础指标">服务器基础指标</h5>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901212054932.png" alt="image-20210901212054932" style="zoom: 67%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901212054932.png" alt="image-20210901212054932" style="zoom: 67%;" /> 
 <h5 id="docker容器指标">docker容器指标</h5>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901212151458.png" alt="image-20210901212151458" style="zoom: 67%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901212151458.png" alt="image-20210901212151458" style="zoom: 67%;" /> 
 <p>k8s组件</p>
 <p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210901212351674.png" alt="image-20210901212351674"></p>
 <h2 id="基于k8s开发一个容器管理平台">基于K8s开发一个容器管理平台</h2>
@@ -466,7 +465,7 @@
 
             <footer class="ui basic center aligned segment" style="background-color: transparent;">
               
-              <p>© 2019 - 2022 Aaron 的博客</p>
+              <p>© 2019 - 2023 Aaron 的博客</p>
               
 
               <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
@@ -629,7 +628,7 @@
       <div class="ui medium header">关于我</div>
       <p>Aaron 的 ❤️ 博客</p>
 <p>记录一些 🌈 生活上，技术上的事</p>
-<p>职业是后端工程师</p>
+<p>职业是JAVA全栈工程师</p>
 
     </article>
   </div>

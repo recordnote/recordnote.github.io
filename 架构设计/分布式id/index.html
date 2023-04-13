@@ -17,7 +17,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.84.0" />
+<meta name="generator" content="Hugo 0.111.3">
 
 <link rel="canonical" href="https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8Fid/" />
 
@@ -26,9 +26,8 @@
 <meta property="og:description" content="1.业务背景： 传统方案在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。如在美团点评的金融、支付、餐饮、酒店、猫眼电影等产品。对数" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8Fid/" /><meta property="og:image" content="https://recordnote.github.io/img/java.png" /><meta property="article:section" content="架构设计" />
-<meta property="article:published_time" content="2021-07-31T14:21:26&#43;08:00" />
-<meta property="article:modified_time" content="2021-07-31T14:21:26&#43;08:00" />
-
+<meta property="article:published_time" content="2022-07-31T14:21:26+08:00" />
+<meta property="article:modified_time" content="2022-07-31T14:21:26+08:00" />
 
 
 
@@ -178,7 +177,7 @@
               
 
               | 
-                  <span data-format="luxon">2021-07-31T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2022-07-31T14:21:26&#43;08:00</span>
                 
 
               | 2 分钟阅读
@@ -186,7 +185,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2021-07-31T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2022-07-31T14:21:26&#43;08:00</span>
                 
               
             </span>
@@ -216,7 +215,7 @@
 
         <h2 id="1业务背景">1.业务背景：</h2>
 <p>传统方案在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。如在美团点评的金融、支付、餐饮、酒店、猫眼电影等产品。对数据分库分表后需要有一个唯一ID来标识一条数据或消息。</p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210816230551142.png" alt="image-20210816230551142" style="zoom: 67%;" /></p>
+ <img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210816230551142.png" alt="image-20210816230551142" style="zoom: 67%;" /> 
 <h2 id="2一个最基本的分布式-id-需要满足下面这些要求">2.一个最基本的分布式 ID 需要满足下面这些要求：</h2>
 <ul>
 <li><strong>全局唯一</strong> ：ID 的全局唯一性肯定是首先要满足的！</li>
@@ -245,13 +244,13 @@
 </li>
 </ul>
 <h2 id="3方案">3.方案</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210817164217031.png" alt="image-20210817164217031" style="zoom:150%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210817164217031.png" alt="image-20210817164217031" style="zoom:150%;" />
 <h3 id="自研算法">自研算法：</h3>
 <p>时间戳（毫秒）+ 机器序列 + 自增数</p>
 <h3 id="号段模式">号段模式：</h3>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210816180817685.png" alt="image-20210816180817685" style="zoom: 67%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210816180817685.png" alt="image-20210816180817685" style="zoom: 67%;" /> 
 <h3 id="雪花算法">雪花算法：</h3>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210817194022780.png" alt="image-20210817194022780" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210817194022780.png" alt="image-20210817194022780" style="zoom:50%;" /> 
 <p>核心思想是： 使用41bit作为毫秒数，10bit作为机器的ID(5ge bit是数据中心，5个bit的机器ID),12bit 作为毫秒数内的流水号，最后一个符号位，永远是0.</p>
 <p>符号位：0（表示正数）</p>
 <p>工作进程位（类似服务器序号）：</p>
@@ -287,7 +286,7 @@
 
             <footer class="ui basic center aligned segment" style="background-color: transparent;">
               
-              <p>© 2019 - 2022 Aaron 的博客</p>
+              <p>© 2019 - 2023 Aaron 的博客</p>
               
 
               <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
@@ -450,7 +449,7 @@
       <div class="ui medium header">关于我</div>
       <p>Aaron 的 ❤️ 博客</p>
 <p>记录一些 🌈 生活上，技术上的事</p>
-<p>职业是后端工程师</p>
+<p>职业是JAVA全栈工程师</p>
 
     </article>
   </div>

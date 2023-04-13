@@ -17,7 +17,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.84.0" />
+<meta name="generator" content="Hugo 0.111.3">
 
 <link rel="canonical" href="https://recordnote.github.io/spring-cloud-alibaba/sentinel%E8%BD%BB%E9%87%8F%E7%BA%A7%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E7%86%94%E6%96%AD%E9%99%8D%E7%BA%A7java%E5%BA%93/" />
 
@@ -26,9 +26,8 @@
 <meta property="og:description" content="​ 1、雪崩效应（级联失效、级联故障） 2、服务容错的思想 超时 限流 仓壁模式（类似于为每个被调用的服务端api接口设置相应数量的线程池，当某个接口" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/spring-cloud-alibaba/sentinel%E8%BD%BB%E9%87%8F%E7%BA%A7%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E7%86%94%E6%96%AD%E9%99%8D%E7%BA%A7java%E5%BA%93/" /><meta property="og:image" content="https://recordnote.github.io/img/2017.jpg" /><meta property="article:section" content="spring-cloud-alibaba" />
-<meta property="article:published_time" content="2021-03-01T14:21:26&#43;08:00" />
-<meta property="article:modified_time" content="2021-03-01T14:21:26&#43;08:00" />
-
+<meta property="article:published_time" content="2022-03-01T14:21:26+08:00" />
+<meta property="article:modified_time" content="2022-03-01T14:21:26+08:00" />
 
 
 
@@ -183,7 +182,7 @@
               
 
               | 
-                  <span data-format="luxon">2021-03-01T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2022-03-01T14:21:26&#43;08:00</span>
                 
 
               | 3 分钟阅读
@@ -191,7 +190,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2021-03-01T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2022-03-01T14:21:26&#43;08:00</span>
                 
               
             </span>
@@ -221,7 +220,7 @@
 
         <p>​</p>
 <h2 id="1雪崩效应级联失效级联故障">1、雪崩效应（级联失效、级联故障）</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717141215463.png" alt="image-20210717141215463" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717141215463.png" alt="image-20210717141215463" style="zoom:50%;" />
 <h2 id="2服务容错的思想">2、服务容错的思想</h2>
 <ul>
 <li>超时</li>
@@ -229,21 +228,21 @@
 <li>仓壁模式（类似于为每个被调用的服务端api接口设置相应数量的线程池，当某个接口达到线程池阈值，不影响其他api服务的调用）</li>
 <li>断路器模式</li>
 </ul>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717141907072.png" alt="image-20210717141907072" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717141907072.png" alt="image-20210717141907072" style="zoom:50%;" /> 
 <h2 id="sentinel控制台流控的三种模式">sentinel控制台流控的三种模式：</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717150420349.png" alt="image-20210717150420349" style="zoom:50%;" /></p>
-<p><img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210717150503417.png" alt="image-20210717150503417" style="zoom:50%;" /></p>
+ <img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717150420349.png" alt="image-20210717150420349" style="zoom:50%;" />
+<img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210717150503417.png" alt="image-20210717150503417" style="zoom:50%;" /> 
 <h2 id="三种流控效果快速失败warm-up-排队等待">三种流控效果：快速失败、Warm Up、 排队等待</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717151512328.png" alt="image-20210717151512328" style="zoom: 33%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717151725306.png" alt="image-20210717151725306" style="zoom:33%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717151810731.png" alt="image-20210717151810731" style="zoom:33%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717151512328.png" alt="image-20210717151512328" style="zoom: 33%;" /> 
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717151725306.png" alt="image-20210717151725306" style="zoom:33%;" /> 
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717151810731.png" alt="image-20210717151810731" style="zoom:33%;" /> 
 <h2 id="系统规则">系统规则</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717155641451.png" alt="image-20210717155641451" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717155641451.png" alt="image-20210717155641451" style="zoom:50%;" /> 
 <p>使用uptime命令可查看1分钟，5分钟和15分钟的系统负载：</p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717155715368.png" alt="image-20210717155715368" style="zoom: 80%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717155342331.png" alt="image-20210717155342331" style="zoom: 50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717155715368.png" alt="image-20210717155715368" style="zoom: 80%;" /> 
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717155342331.png" alt="image-20210717155342331" style="zoom: 50%;" /> 
 <h2 id="授权规则">授权规则</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717160021812.png" alt="image-20210717160021812" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717160021812.png" alt="image-20210717160021812" style="zoom:50%;" /> 
 <h1 id="alibaba-sentinel-规则参数总结"><strong>Alibaba Sentinel 规则参数总结</strong></h1>
 <h2 id="一流控规则">一、流控规则</h2>
 <p>1.1 配置</p>
@@ -291,13 +290,13 @@
 </tbody>
 </table>
 <p>1.3 代码配置示例</p>
-<pre><code>private void initFlowQpsRule() {
+<pre tabindex="0"><code>private void initFlowQpsRule() {
     List&lt;FlowRule&gt; rules = new ArrayList&lt;&gt;();
     FlowRule rule = new FlowRule(resourceName);
     // set limit qps to 20
     rule.setCount(20);
     rule.setGrade(RuleConstant.FLOW_GRADE_QPS);
-    rule.setLimitApp(&quot;default&quot;);
+    rule.setLimitApp(&#34;default&#34;);
     rules.add(rule);
     FlowRuleManager.loadRules(rules);
 }
@@ -339,7 +338,7 @@
 </tbody>
 </table>
 <p>2.3 代码配置示例</p>
-<pre><code>private void initDegradeRule() {
+<pre tabindex="0"><code>private void initDegradeRule() {
     List&lt;DegradeRule&gt; rules = new ArrayList&lt;&gt;();
     DegradeRule rule = new DegradeRule();
     rule.setResource(KEY);
@@ -417,7 +416,7 @@
 </tbody>
 </table>
 <p>3.3 代码配置示例</p>
-<pre><code>ParamFlowRule rule = new ParamFlowRule(resourceName)
+<pre tabindex="0"><code>ParamFlowRule rule = new ParamFlowRule(resourceName)
     .setParamIdx(0)
     .setCount(5);
 // 针对 int 类型的参数 PARAM_B，单独设置限流 QPS 阈值为 10，而不是全局的阈值 5.
@@ -464,7 +463,7 @@ ParamFlowRuleManager.loadRules(Collections.singletonList(rule));
 </tbody>
 </table>
 <p>4.3 代码配置示例</p>
-<pre><code>private void initSystemRule() {
+<pre tabindex="0"><code>private void initSystemRule() {
     List&lt;SystemRule&gt; rules = new ArrayList&lt;&gt;();
     SystemRule rule = new SystemRule();
     rule.setHighestSystemLoad(10);
@@ -503,24 +502,24 @@ ParamFlowRuleManager.loadRules(Collections.singletonList(rule));
 </tbody>
 </table>
 <p>5.3 代码配置示例</p>
-<pre><code>AuthorityRule rule = new AuthorityRule();
-rule.setResource(&quot;test&quot;);
+<pre tabindex="0"><code>AuthorityRule rule = new AuthorityRule();
+rule.setResource(&#34;test&#34;);
 rule.setStrategy(RuleConstant.AUTHORITY_WHITE);
-rule.setLimitApp(&quot;appA,appB&quot;);
+rule.setLimitApp(&#34;appA,appB&#34;);
 AuthorityRuleManager.loadRules(Collections.singletonList(rule));
 </code></pre><p>5.4 参考：`<a href="https://github.com/alibaba/Sentinel/wiki/">https://github.com/alibaba/Sentinel/wiki/</a>如何使用#访问控制规则-authorityrule</p>
 <h2 id="sentinel与控制台通信原理">sentinel与控制台通信原理</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717161108537.png" alt="image-20210717161108537" style="zoom:50%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717161610202.png" alt="image-20210717161610202" style="zoom:33%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717161108537.png" alt="image-20210717161108537" style="zoom:50%;" /> 
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717161610202.png" alt="image-20210717161610202" style="zoom:33%;" /> 
 <h2 id="控制台相关配置">控制台相关配置</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717161731701.png" alt="image-20210717161731701" style="zoom: 50%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717161914554.png" alt="image-20210717161914554" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717161731701.png" alt="image-20210717161731701" style="zoom: 50%;" /> 
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717161914554.png" alt="image-20210717161914554" style="zoom:50%;" /> 
 <p>使用例子：<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717162004595.png" alt="image-20210717162004595" style="zoom: 50%;" /></p>
 <h2 id="sentinel-api">sentinel-api</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717163500422.png" alt="image-20210717163500422" style="zoom:33%;" /></p>
-<p><img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210718160725207.png" alt="image-20210718160725207" style="zoom:67%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210717163500422.png" alt="image-20210717163500422" style="zoom:33%;" /> 
+<img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210718160725207.png" alt="image-20210718160725207" style="zoom:67%;" /> 
 <h2 id="规则持久化">规则持久化</h2>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210718163113333.png" alt="image-20210718163113333" style="zoom:50%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210718163113333.png" alt="image-20210718163113333" style="zoom:50%;" /> 
 
       </article>
     </section>
@@ -547,7 +546,7 @@ AuthorityRuleManager.loadRules(Collections.singletonList(rule));
 
             <footer class="ui basic center aligned segment" style="background-color: transparent;">
               
-              <p>© 2019 - 2022 Aaron 的博客</p>
+              <p>© 2019 - 2023 Aaron 的博客</p>
               
 
               <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
@@ -710,7 +709,7 @@ AuthorityRuleManager.loadRules(Collections.singletonList(rule));
       <div class="ui medium header">关于我</div>
       <p>Aaron 的 ❤️ 博客</p>
 <p>记录一些 🌈 生活上，技术上的事</p>
-<p>职业是后端工程师</p>
+<p>职业是JAVA全栈工程师</p>
 
     </article>
   </div>

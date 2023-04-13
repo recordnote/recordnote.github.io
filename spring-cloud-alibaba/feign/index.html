@@ -17,7 +17,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.84.0" />
+<meta name="generator" content="Hugo 0.111.3">
 
 <link rel="canonical" href="https://recordnote.github.io/spring-cloud-alibaba/feign/" />
 
@@ -26,9 +26,8 @@
 <meta property="og:description" content="1、定义 Feign是Netflix开源的声明式HTTP客户端 全局代码&lt;全局属性&lt;细粒度代码&lt;细粒度属性 Feign常见问题总" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/spring-cloud-alibaba/feign/" /><meta property="og:image" content="https://recordnote.github.io/me/background.jpg"/><meta property="article:section" content="spring-cloud-alibaba" />
-<meta property="article:published_time" content="2021-01-01T14:21:26&#43;08:00" />
-<meta property="article:modified_time" content="2021-01-01T14:21:26&#43;08:00" />
-
+<meta property="article:published_time" content="2022-01-01T14:21:26+08:00" />
+<meta property="article:modified_time" content="2022-01-01T14:21:26+08:00" />
 
 
 
@@ -152,7 +151,7 @@
               
 
               | 
-                  <span data-format="luxon">2021-01-01T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2022-01-01T14:21:26&#43;08:00</span>
                 
 
               | 1 分钟阅读
@@ -160,7 +159,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2021-01-01T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2022-01-01T14:21:26&#43;08:00</span>
                 
               
             </span>
@@ -186,21 +185,21 @@
       <article class="main">
         
 
-        <p><img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210711232953255.png" alt="image-20210711232953255" style="zoom:50%;" /></p>
+        <img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210711232953255.png" alt="image-20210711232953255" style="zoom:50%;" /> 
 <p>1、定义</p>
 <p>Feign是Netflix开源的声明式HTTP客户端</p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713203828210.png" alt="image-20210713203828210" style="zoom: 50%;" /></p>
-<p><img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210713211815010.png" alt="image-20210713211815010" style="zoom:50%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713221604991.png" alt="image-20210713221604991" style="zoom:50%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713221555642.png" alt="image-20210713221555642" style="zoom:50%;" /></p>
-<p><img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210713221527351.png" alt="image-20210713221527351" style="zoom:50%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713221636929.png" alt="image-20210713221636929" style="zoom: 50%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713222023701.png" alt="image-20210713222023701" style="zoom:50%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713222040256.png" alt="image-20210713222040256" style="zoom: 33%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713203828210.png" alt="image-20210713203828210" style="zoom: 50%;" /> 
+<img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210713211815010.png" alt="image-20210713211815010" style="zoom:50%;" /> 
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713221604991.png" alt="image-20210713221604991" style="zoom:50%;" />
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713221555642.png" alt="image-20210713221555642" style="zoom:50%;" />
+<img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210713221527351.png" alt="image-20210713221527351" style="zoom:50%;" />
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713221636929.png" alt="image-20210713221636929" style="zoom: 50%;" />
+ <img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713222023701.png" alt="image-20210713222023701" style="zoom:50%;" />
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713222040256.png" alt="image-20210713222040256" style="zoom: 33%;" />
 <p>全局代码&lt;全局属性&lt;细粒度代码&lt;细粒度属性</p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713222003645.png" alt="image-20210713222003645" style="zoom:50%;" /></p>
-<p><img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210714211045155.png" alt="image-20210714211045155" style="zoom: 33%;" /></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210714211240276.png" alt="image-20210714211240276" style="zoom:33%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210713222003645.png" alt="image-20210713222003645" style="zoom:50%;" />
+<img src="C:/Users/Aaron/AppData/Roaming/Typora/typora-user-images/image-20210714211045155.png" alt="image-20210714211045155" style="zoom: 33%;" />
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210714211240276.png" alt="image-20210714211240276" style="zoom:33%;" />
 <p><a href="https://www.imooc.com/article/289005"><strong>Feign常见问题总结</strong></a></p>
 
       </article>
@@ -228,7 +227,7 @@
 
             <footer class="ui basic center aligned segment" style="background-color: transparent;">
               
-              <p>© 2019 - 2022 Aaron 的博客</p>
+              <p>© 2019 - 2023 Aaron 的博客</p>
               
 
               <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
@@ -391,7 +390,7 @@
       <div class="ui medium header">关于我</div>
       <p>Aaron 的 ❤️ 博客</p>
 <p>记录一些 🌈 生活上，技术上的事</p>
-<p>职业是后端工程师</p>
+<p>职业是JAVA全栈工程师</p>
 
     </article>
   </div>

@@ -17,7 +17,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.84.0" />
+<meta name="generator" content="Hugo 0.111.3">
 
 <link rel="canonical" href="https://recordnote.github.io/spring-cloud-alibaba/springcloud%E7%BB%84%E4%BB%B6/" />
 
@@ -26,9 +26,8 @@
 <meta property="og:description" content="首先我给大家看一张图，如果大家对这张图有些地方不太理解的话，我希望你们看完我这篇文章会恍然大悟。 什么是Spring cloud 构建分布式系统不需要复杂" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/spring-cloud-alibaba/springcloud%E7%BB%84%E4%BB%B6/" /><meta property="og:image" content="https://recordnote.github.io/img/springcloud.jfif" /><meta property="article:section" content="spring-cloud-alibaba" />
-<meta property="article:published_time" content="2021-10-20T14:21:26&#43;08:00" />
-<meta property="article:modified_time" content="2021-10-26T14:21:26&#43;08:00" />
-
+<meta property="article:published_time" content="2022-10-20T14:21:26+08:00" />
+<meta property="article:modified_time" content="2022-10-26T14:21:26+08:00" />
 
 
 
@@ -195,7 +194,7 @@
               
 
               | 
-                  <span data-format="luxon">2021-10-20T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2022-10-20T14:21:26&#43;08:00</span>
                 
 
               | 20 分钟阅读
@@ -203,7 +202,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2021-10-26T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2022-10-26T14:21:26&#43;08:00</span>
                 
               
             </span>
@@ -251,7 +250,7 @@
 <p>在没有中介的时候我们需要一个一个去寻找是否有房屋要出租的房东，这显然会非常的费力，一你找凭一个人的能力是找不到很多房源供你选择，再者你也懒得这么找下去(找了这么久，没有合适的只能将就)。<strong>这里的我们就相当于微服务中的 <code>Consumer</code> ，而那些房东就相当于微服务中的 <code>Provider</code> 。消费者 <code>Consumer</code> 需要调用提供者 <code>Provider</code> 提供的一些服务，就像我们现在需要租他们的房子一样。</strong></p>
 <p>但是如果只是租客和房东之间进行寻找的话，他们的效率是很低的，房东找不到租客赚不到钱，租客找不到房东住不了房。所以，后来房东肯定就想到了广播自己的房源信息(比如在街边贴贴小广告)，这样对于房东来说已经完成他的任务(将房源公布出去)，但是有两个问题就出现了。第一、其他不是租客的都能收到这种租房消息，这在现实世界没什么，但是在计算机的世界中就会出现 <strong>资源消耗</strong> 的问题了。第二、租客这样还是很难找到你，试想一下我需要租房，我还需要东一个西一个地去找街边小广告，麻不麻烦？</p>
 <p>那怎么办呢？我们当然不会那么傻乎乎的，第一时间就是去找 <strong>中介</strong> 呀，它为我们提供了统一房源的地方，我们消费者只需要跑到它那里去找就行了。而对于房东来说，他们也只需要把房源在中介那里发布就行了。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/image-20211113132010667.png" alt="image-20211113132010667" style="zoom:67%;" /></p>
+<img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/image-20211113132010667.png" alt="image-20211113132010667" style="zoom:67%;" />
 <p>那么现在，我们的模式就是这样的了。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/image-20211113131955700.png" alt="image-20211113131955700"></p>
 <p>但是，这个时候还会出现一些问题。</p>
@@ -291,24 +290,24 @@
 <p>不是讲 <code>Ribbon</code> 么？怎么扯到了 <code>RestTemplate</code> 了？你先别急，听我慢慢道来。</p>
 <p>我不听我不听我不听<img src="https://github.githubassets.com/images/icons/emoji/unicode/1f649.png" alt="hear_no_evil"><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f649.png" alt="hear_no_evil"><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f649.png" alt="hear_no_evil">。</p>
 <p>我就说一句！<strong><code>RestTemplate</code>是<code>Spring</code>提供的一个访问Http服务的客户端类</strong>，怎么说呢？就是微服务之间的调用是使用的 <code>RestTemplate</code> 。比如这个时候我们 消费者B 需要调用 提供者A 所提供的服务我们就需要这么写。如我下面的伪代码。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Autowired</span>
-<span style="color:#66d9ef">private</span> RestTemplate restTemplate<span style="color:#f92672">;</span>
-<span style="color:#75715e">// 这里是提供者A的ip地址，但是如果使用了 Eureka 那么就应该是提供者A的名称
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String SERVICE_PROVIDER_A <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://localhost:8081&#34;</span><span style="color:#f92672">;</span>
-
-<span style="color:#a6e22e">@PostMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/judge&#34;</span><span style="color:#f92672">)</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">judge</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@RequestBody</span> Request request<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    String url <span style="color:#f92672">=</span> SERVICE_PROVIDER_A <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/service1&#34;</span><span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">return</span> restTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">postForObject</span><span style="color:#f92672">(</span>url<span style="color:#f92672">,</span> request<span style="color:#f92672">,</span> Boolean<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>Copy to clipboardErrorCopied
-</code></pre></div><p>如果你对源码感兴趣的话，你会发现上面我们所讲的 <code>Eureka</code> 框架中的 <strong>注册</strong>、<strong>续约</strong> 等，底层都是使用的 <code>RestTemplate</code> 。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> RestTemplate restTemplate<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 这里是提供者A的ip地址，但是如果使用了 Eureka 那么就应该是提供者A的名称
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String SERVICE_PROVIDER_A <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://localhost:8081&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@PostMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/judge&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">judge</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@RequestBody</span> Request request<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    String url <span style="color:#f92672">=</span> SERVICE_PROVIDER_A <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/service1&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> restTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">postForObject</span><span style="color:#f92672">(</span>url<span style="color:#f92672">,</span> request<span style="color:#f92672">,</span> Boolean<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>Copy to clipboardErrorCopied
+</span></span></code></pre></div><p>如果你对源码感兴趣的话，你会发现上面我们所讲的 <code>Eureka</code> 框架中的 <strong>注册</strong>、<strong>续约</strong> 等，底层都是使用的 <code>RestTemplate</code> 。</p>
 <h3 id="为什么需要-ribbon">为什么需要 Ribbon？</h3>
 <p><code>Ribbon</code> 是 <code>Netflix</code> 公司的一个开源的负载均衡 项目，是一个客户端/进程内负载均衡器，<strong>运行在消费者端</strong>。</p>
 <p>我们再举个<img src="https://github.githubassets.com/images/icons/emoji/unicode/1f330.png" alt="chestnut">，比如我们设计了一个秒杀系统，但是为了整个系统的 <strong>高可用</strong> ，我们需要将这个系统做一个集群，而这个时候我们消费者就可以拥有多个秒杀系统的调用途径了，如下图。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/image-20211113132311599.png" alt="image-20211113132311599" style="zoom:80%;" /></p>
+<img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/image-20211113132311599.png" alt="image-20211113132311599" style="zoom:80%;" />
 <p>如果这个时候我们没有进行一些 <strong>均衡操作</strong> ，如果我们对 <code>秒杀系统1</code> 进行大量的调用，而另外两个基本不请求，就会导致 <code>秒杀系统1</code> 崩溃，而另外两个就变成了傀儡，那么我们为什么还要做集群，我们高可用体现的意义又在哪呢？</p>
 <p>所以 <code>Ribbon</code> 出现了，注意我们上面加粗的几个字——<strong>运行在消费者端</strong>。指的是，<code>Ribbon</code> 是运行在消费者端的负载均衡器，如下图。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/image-20211113132330076.png" alt="image-20211113132330076" style="zoom: 80%;" /></p>
+<img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/image-20211113132330076.png" alt="image-20211113132330076" style="zoom: 80%;" />
 <p>其工作原理就是 <code>Consumer</code> 端获取到了所有的服务列表之后，在其<strong>内部</strong>使用<strong>负载均衡算法</strong>，进行对多个系统的调用。</p>
 <h3 id="nginx-和-ribbon-的对比">Nginx 和 Ribbon 的对比</h3>
 <p>提到 <strong>负载均衡</strong> 就不得不提到大名鼎鼎的 <code>Nignx</code> 了，而和 <code>Ribbon</code> 不同的是，它是一种<strong>集中式</strong>的负载均衡器。</p>
@@ -327,50 +326,50 @@
 <li><strong><code>RetryRule</code></strong>: 重试策略。先按照 <code>RoundRobinRule</code> 策略获取 <code>provider</code>，若获取失败，则在指定的时限内重试。默认的时限为 500 毫秒。</li>
 </ul>
 <p>🐦🐦🐦 还有很多，这里不一一举<img src="https://github.githubassets.com/images/icons/emoji/unicode/1f330.png" alt="chestnut">了，你最需要知道的是默认轮询算法，并且可以更换默认的负载均衡算法，只需要在配置文件中做出修改就行。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">providerName</span>:
-  <span style="color:#f92672">ribbon</span>:
-    <span style="color:#f92672">NFLoadBalancerRuleClassName</span>: <span style="color:#ae81ff">com.netflix.loadbalancer.RandomRuleCopy to clipboardErrorCopied</span>
-</code></pre></div><p>当然，在 <code>Ribbon</code> 中你还可以<strong>自定义负载均衡算法</strong>，你只需要实现 <code>IRule</code> 接口，然后修改配置文件或者自定义 <code>Java Config</code> 类。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">providerName</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ribbon</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">NFLoadBalancerRuleClassName</span>: <span style="color:#ae81ff">com.netflix.loadbalancer.RandomRuleCopy to clipboardErrorCopied</span>
+</span></span></code></pre></div><p>当然，在 <code>Ribbon</code> 中你还可以<strong>自定义负载均衡算法</strong>，你只需要实现 <code>IRule</code> 接口，然后修改配置文件或者自定义 <code>Java Config</code> 类。</p>
 <h2 id="什么是-open-feign">什么是 Open Feign</h2>
 <p>有了 <code>Eureka</code> ，<code>RestTemplate</code> ，<code>Ribbon</code>， 我们就可以愉快地进行服务间的调用了，但是使用 <code>RestTemplate</code> 还是不方便，我们每次都要进行这样的调用。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Autowired</span>
-<span style="color:#66d9ef">private</span> RestTemplate restTemplate<span style="color:#f92672">;</span>
-<span style="color:#75715e">// 这里是提供者A的ip地址，但是如果使用了 Eureka 那么就应该是提供者A的名称
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String SERVICE_PROVIDER_A <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://localhost:8081&#34;</span><span style="color:#f92672">;</span>
-
-<span style="color:#a6e22e">@PostMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/judge&#34;</span><span style="color:#f92672">)</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">judge</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@RequestBody</span> Request request<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    String url <span style="color:#f92672">=</span> SERVICE_PROVIDER_A <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/service1&#34;</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 是不是太麻烦了？？？每次都要 url、请求、返回类型的 
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> restTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">postForObject</span><span style="color:#f92672">(</span>url<span style="color:#f92672">,</span> request<span style="color:#f92672">,</span> Boolean<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>Copy to clipboardErrorCopied
-</code></pre></div><p>这样每次都调用 <code>RestRemplate</code> 的 <code>API</code> 是否太麻烦，我能不能像<strong>调用原来代码一样进行各个服务间的调用呢？</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> RestTemplate restTemplate<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 这里是提供者A的ip地址，但是如果使用了 Eureka 那么就应该是提供者A的名称
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String SERVICE_PROVIDER_A <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://localhost:8081&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@PostMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/judge&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">judge</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@RequestBody</span> Request request<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    String url <span style="color:#f92672">=</span> SERVICE_PROVIDER_A <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/service1&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 是不是太麻烦了？？？每次都要 url、请求、返回类型的 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> restTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">postForObject</span><span style="color:#f92672">(</span>url<span style="color:#f92672">,</span> request<span style="color:#f92672">,</span> Boolean<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>Copy to clipboardErrorCopied
+</span></span></code></pre></div><p>这样每次都调用 <code>RestRemplate</code> 的 <code>API</code> 是否太麻烦，我能不能像<strong>调用原来代码一样进行各个服务间的调用呢？</strong></p>
 <p><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f4a1.png" alt="bulb"><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f4a1.png" alt="bulb"><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f4a1.png" alt="bulb">聪明的小朋友肯定想到了，那就用 <strong>映射</strong> 呀，就像域名和IP地址的映射。我们可以将被调用的服务代码映射到消费者端，这样我们就可以 **“无缝开发” **啦。</p>
 <blockquote>
 <p><code>OpenFeign</code> 也是运行在消费者端的，使用 <code>Ribbon</code> 进行负载均衡，所以 <code>OpenFeign</code> 直接内置了 <code>Ribbon</code>。</p>
 </blockquote>
 <p>在导入了 <code>Open Feign</code> 之后我们就可以进行愉快编写 <code>Consumer</code> 端代码了。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 使用 @FeignClient 注解来指定提供者的名字
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">@FeignClient</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;eureka-client-provider&#34;</span><span style="color:#f92672">)</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">TestClient</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 这里一定要注意需要使用的是提供者那端的请求相对路径，这里就相当于映射了
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/provider/xxx&#34;</span><span style="color:#f92672">,</span>
-    method <span style="color:#f92672">=</span> RequestMethod<span style="color:#f92672">.</span><span style="color:#a6e22e">POST</span><span style="color:#f92672">)</span>
-    CommonResponse<span style="color:#f92672">&lt;</span>List<span style="color:#f92672">&lt;</span>Plan<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">getPlans</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@RequestBody</span> planGetRequest request<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>Copy to clipboardErrorCopied
-</code></pre></div><p>然后我们在 <code>Controller</code> 就可以像原来调用 <code>Service</code> 层代码一样调用它了。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RestController</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TestController</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 这里就相当于原来自动注入的 Service
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Autowired</span>
-    <span style="color:#66d9ef">private</span> TestClient testClient<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// controller 调用 service 层代码
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/test&#34;</span><span style="color:#f92672">,</span> method <span style="color:#f92672">=</span> RequestMethod<span style="color:#f92672">.</span><span style="color:#a6e22e">POST</span><span style="color:#f92672">)</span>
-    <span style="color:#66d9ef">public</span> CommonResponse<span style="color:#f92672">&lt;</span>List<span style="color:#f92672">&lt;</span>Plan<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@RequestBody</span> planGetRequest request<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> testClient<span style="color:#f92672">.</span><span style="color:#a6e22e">getPlans</span><span style="color:#f92672">(</span>request<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>Copy to clipboardErrorCopied
-</code></pre></div><h2 id="必不可少的-hystrix">必不可少的 Hystrix</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 使用 @FeignClient 注解来指定提供者的名字
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@FeignClient</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;eureka-client-provider&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">TestClient</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 这里一定要注意需要使用的是提供者那端的请求相对路径，这里就相当于映射了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/provider/xxx&#34;</span><span style="color:#f92672">,</span>
+</span></span><span style="display:flex;"><span>    method <span style="color:#f92672">=</span> RequestMethod<span style="color:#f92672">.</span><span style="color:#a6e22e">POST</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    CommonResponse<span style="color:#f92672">&lt;</span>List<span style="color:#f92672">&lt;</span>Plan<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">getPlans</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@RequestBody</span> planGetRequest request<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>Copy to clipboardErrorCopied
+</span></span></code></pre></div><p>然后我们在 <code>Controller</code> 就可以像原来调用 <code>Service</code> 层代码一样调用它了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RestController</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TestController</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 这里就相当于原来自动注入的 Service
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> TestClient testClient<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// controller 调用 service 层代码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/test&#34;</span><span style="color:#f92672">,</span> method <span style="color:#f92672">=</span> RequestMethod<span style="color:#f92672">.</span><span style="color:#a6e22e">POST</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CommonResponse<span style="color:#f92672">&lt;</span>List<span style="color:#f92672">&lt;</span>Plan<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@RequestBody</span> planGetRequest request<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> testClient<span style="color:#f92672">.</span><span style="color:#a6e22e">getPlans</span><span style="color:#f92672">(</span>request<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>Copy to clipboardErrorCopied
+</span></span></code></pre></div><h2 id="必不可少的-hystrix">必不可少的 Hystrix</h2>
 <h3 id="什么是-hystrix之熔断和降级">什么是 Hystrix之熔断和降级</h3>
 <blockquote>
 <p>在分布式环境中，不可避免地会有许多服务依赖项中的某些失败。Hystrix是一个库，可通过添加等待时间容限和容错逻辑来帮助您控制这些分布式服务之间的交互。Hystrix通过隔离服务之间的访问点，停止服务之间的级联故障并提供后备选项来实现此目的，所有这些都可以提高系统的整体弹性。</p>
@@ -391,25 +390,25 @@
 <p>也就是我们上面服务B调用服务C在指定时间窗内，调用的失败率到达了一定的值，那么 <code>Hystrix</code> 则会自动将 服务B与C 之间的请求都断了，以免导致服务雪崩现象。</p>
 <p>其实这里所讲的 <strong>熔断</strong> 就是指的 <code>Hystrix</code> 中的 <strong>断路器模式</strong> ，你可以使用简单的 <code>@HystrixCommand</code> 注解来标注某个方法，这样 <code>Hystrix</code> 就会使用 <strong>断路器</strong> 来“包装”这个方法，每当调用时间超过指定时间时(默认为1000ms)，断路器将会中断对这个方法的调用。</p>
 <p>当然你可以对这个注解的很多属性进行设置，比如设置超时时间，像这样。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@HystrixCommand</span><span style="color:#f92672">(</span>
-    commandProperties <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#a6e22e">@HystrixProperty</span><span style="color:#f92672">(</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;execution.isolation.thread.timeoutInMilliseconds&#34;</span><span style="color:#f92672">,</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1200&#34;</span><span style="color:#f92672">)}</span>
-<span style="color:#f92672">)</span>
-<span style="color:#66d9ef">public</span> List<span style="color:#f92672">&lt;</span>Xxx<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">getXxxx</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// ...省略代码逻辑
-</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>Copy to clipboardErrorCopied
-</code></pre></div><p>但是，我查阅了一些博客，发现他们都将 <strong>熔断</strong> 和 <strong>降级</strong> 的概念混淆了，以我的理解，<strong>降级是为了更好的用户体验，当一个方法调用异常时，通过执行另一种代码逻辑来给用户友好的回复</strong>。这也就对应着 <code>Hystrix</code> 的 <strong>后备处理</strong> 模式。你可以通过设置 <code>fallbackMethod</code> 来给一个方法设置备用的代码逻辑。比如这个时候有一个热点新闻出现了，我们会推荐给用户查看详情，然后用户会通过id去查询新闻的详情，但是因为这条新闻太火了(比如最近什么*易对吧)，大量用户同时访问可能会导致系统崩溃，那么我们就进行 <strong>服务降级</strong> ，一些请求会做一些降级处理比如当前人数太多请稍后查看等等。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 指定了后备方法调用
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">@HystrixCommand</span><span style="color:#f92672">(</span>fallbackMethod <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;getHystrixNews&#34;</span><span style="color:#f92672">)</span>
-<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/get/news&#34;</span><span style="color:#f92672">)</span>
-<span style="color:#66d9ef">public</span> News <span style="color:#a6e22e">getNews</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@PathVariable</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">int</span> id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 调用新闻系统的获取新闻api 代码逻辑省略
-</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
-<span style="color:#75715e">// 
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> News <span style="color:#a6e22e">getHystrixNews</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@PathVariable</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">int</span> id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 做服务降级
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 返回当前人数太多，请稍后查看
-</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>Copy to clipboardErrorCopied
-</code></pre></div><h3 id="什么是hystrix之其他">什么是Hystrix之其他</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@HystrixCommand</span><span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>    commandProperties <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#a6e22e">@HystrixProperty</span><span style="color:#f92672">(</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;execution.isolation.thread.timeoutInMilliseconds&#34;</span><span style="color:#f92672">,</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1200&#34;</span><span style="color:#f92672">)}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> List<span style="color:#f92672">&lt;</span>Xxx<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">getXxxx</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...省略代码逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">}</span>Copy to clipboardErrorCopied
+</span></span></code></pre></div><p>但是，我查阅了一些博客，发现他们都将 <strong>熔断</strong> 和 <strong>降级</strong> 的概念混淆了，以我的理解，<strong>降级是为了更好的用户体验，当一个方法调用异常时，通过执行另一种代码逻辑来给用户友好的回复</strong>。这也就对应着 <code>Hystrix</code> 的 <strong>后备处理</strong> 模式。你可以通过设置 <code>fallbackMethod</code> 来给一个方法设置备用的代码逻辑。比如这个时候有一个热点新闻出现了，我们会推荐给用户查看详情，然后用户会通过id去查询新闻的详情，但是因为这条新闻太火了(比如最近什么*易对吧)，大量用户同时访问可能会导致系统崩溃，那么我们就进行 <strong>服务降级</strong> ，一些请求会做一些降级处理比如当前人数太多请稍后查看等等。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 指定了后备方法调用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@HystrixCommand</span><span style="color:#f92672">(</span>fallbackMethod <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;getHystrixNews&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/get/news&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> News <span style="color:#a6e22e">getNews</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@PathVariable</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">int</span> id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 调用新闻系统的获取新闻api 代码逻辑省略
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> News <span style="color:#a6e22e">getHystrixNews</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@PathVariable</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">int</span> id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 做服务降级
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 返回当前人数太多，请稍后查看
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">}</span>Copy to clipboardErrorCopied
+</span></span></code></pre></div><h3 id="什么是hystrix之其他">什么是Hystrix之其他</h3>
 <p>我在阅读 《Spring微服务实战》这本书的时候还接触到了一个 <strong>舱壁模式</strong> 的概念。在不使用舱壁模式的情况下，服务A调用服务B，这种调用默认的是 <strong>使用同一批线程来执行</strong> 的，而在一个服务出现性能问题的时候，就会出现所有线程被刷爆并等待处理工作，同时阻塞新请求，最终导致程序崩溃。而舱壁模式会将远程资源调用隔离在他们自己的线程池中，以便可以控制单个表现不佳的服务，而不会使该程序崩溃。</p>
 <p>具体其原理我推荐大家自己去了解一下，本篇文章中对 <strong>舱壁模式</strong> 不做过多解释。当然还有 <strong><code>Hystrix</code> 仪表盘</strong>，它是<strong>用来实时监控 <code>Hystrix</code> 的各项指标信息的</strong>，这里我将这个问题也抛出去，希望有不了解的可以自己去搜索一下。</p>
 <h2 id="微服务网关zuul">微服务网关——Zuul</h2>
@@ -444,35 +443,35 @@
 <p>这里的url为了让更多人看懂所以没有使用 restful 风格。</p>
 </blockquote>
 <p>上面的你理解了，那么就能理解关于 <code>Zuul</code> 最基本的配置了，看下面。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">server</span>:
-  <span style="color:#f92672">port</span>: <span style="color:#ae81ff">9000</span>
-<span style="color:#f92672">eureka</span>:
-  <span style="color:#f92672">client</span>:
-    <span style="color:#f92672">service-url</span>:
-      <span style="color:#75715e"># 这里只要注册 Eureka 就行了</span>
-      <span style="color:#f92672">defaultZone</span>: <span style="color:#ae81ff">http://localhost:9997/eurekaCopy to clipboardErrorCopied</span>
-</code></pre></div><p>然后在启动类上加入 <code>@EnableZuulProxy</code> 注解就行了。没错，就是那么简单<img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/1f603.png" alt="smiley">。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">server</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">port</span>: <span style="color:#ae81ff">9000</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">eureka</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">client</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">service-url</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e"># 这里只要注册 Eureka 就行了</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">defaultZone</span>: <span style="color:#ae81ff">http://localhost:9997/eurekaCopy to clipboardErrorCopied</span>
+</span></span></code></pre></div><p>然后在启动类上加入 <code>@EnableZuulProxy</code> 注解就行了。没错，就是那么简单<img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/1f603.png" alt="smiley">。</p>
 <h4 id="统一前缀">统一前缀</h4>
 <p>这个很简单，就是我们可以在前面加一个统一的前缀，比如我们刚刚调用的是 <code>localhost:9000/consumer1/studentInfo/update</code>，这个时候我们在 <code>yaml</code> 配置文件中添加如下。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">zuul</span>:
-  <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">/zuulCopy to clipboardErrorCopied</span>
-</code></pre></div><p>这样我们就需要通过 <code>localhost:9000/zuul/consumer1/studentInfo/update</code> 来进行访问了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">zuul</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">prefix</span>: <span style="color:#ae81ff">/zuulCopy to clipboardErrorCopied</span>
+</span></span></code></pre></div><p>这样我们就需要通过 <code>localhost:9000/zuul/consumer1/studentInfo/update</code> 来进行访问了。</p>
 <h4 id="路由策略配置">路由策略配置</h4>
 <p>你会发现前面的访问方式(直接使用服务名)，需要将微服务名称暴露给用户，会存在安全性问题。所以，可以自定义路径来替代微服务名称，即自定义路由策略。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">zuul</span>:
-  <span style="color:#f92672">routes</span>:
-    <span style="color:#f92672">consumer1</span>: <span style="color:#ae81ff">/FrancisQ1/**</span>
-    <span style="color:#f92672">consumer2</span>: <span style="color:#ae81ff">/FrancisQ2/**Copy to clipboardErrorCopied</span>
-</code></pre></div><p>这个时候你就可以使用 <code> </code>localhost:9000/zuul/FrancisQ1/studentInfo/update` 进行访问了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">zuul</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">routes</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">consumer1</span>: <span style="color:#ae81ff">/FrancisQ1/**</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">consumer2</span>: <span style="color:#ae81ff">/FrancisQ2/**Copy to clipboardErrorCopied</span>
+</span></span></code></pre></div><p>这个时候你就可以使用 <code> </code>localhost:9000/zuul/FrancisQ1/studentInfo/update` 进行访问了。</p>
 <h4 id="服务名屏蔽">服务名屏蔽</h4>
 <p>这个时候你别以为你好了，你可以试试，在你配置完路由策略之后使用微服务名称还是可以访问的，这个时候你需要将服务名屏蔽。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">zuul</span>:
-  <span style="color:#f92672">ignore-services</span>: <span style="color:#e6db74">&#34;*&#34;</span><span style="color:#ae81ff">Copy to clipboardErrorCopied</span>
-</code></pre></div><h4 id="路径屏蔽">路径屏蔽</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">zuul</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ignore-services</span>: <span style="color:#e6db74">&#34;*&#34;</span><span style="color:#ae81ff">Copy to clipboardErrorCopied</span>
+</span></span></code></pre></div><h4 id="路径屏蔽">路径屏蔽</h4>
 <p><code>Zuul</code> 还可以指定屏蔽掉的路径 URI，即只要用户请求中包含指定的 URI 路径，那么该请求将无法访问到指定的服务。通过该方式可以限制用户的权限。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">zuul</span>:
-  <span style="color:#f92672">ignore-patterns</span>: <span style="color:#75715e">**/auto/**Copy</span> <span style="color:#ae81ff">to clipboardErrorCopied</span>
-</code></pre></div><p>这样关于 auto 的请求我们就可以过滤掉了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">zuul</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ignore-patterns</span>: <span style="color:#75715e">**/auto/**Copy</span> <span style="color:#ae81ff">to clipboardErrorCopied</span>
+</span></span></code></pre></div><p>这样关于 auto 的请求我们就可以过滤掉了。</p>
 <blockquote>
 <p>** 代表匹配多级任意路径</p>
 <p>*代表匹配一级任意路径</p>
@@ -486,125 +485,125 @@
 <p>在给你们看代码之前我先给你们解释一下关于过滤器的一些注意点。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/zuul-sj22o93nfdsjkdsf2312244.jpg" alt="img"></p>
 <p>过滤器类型：<code>Pre</code>、<code>Routing</code>、<code>Post</code>。前置<code>Pre</code>就是在请求之前进行过滤，<code>Routing</code>路由过滤器就是我们上面所讲的路由策略，而<code>Post</code>后置过滤器就是在 <code>Response</code> 之前进行过滤的过滤器。你可以观察上图结合着理解，并且下面我会给出相应的注释。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 加入Spring容器
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">@Component</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PreRequestFilter</span> <span style="color:#66d9ef">extends</span> ZuulFilter <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 返回过滤器类型 这里是前置过滤器
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">filterType</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> FilterConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">PRE_TYPE</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#75715e">// 指定过滤顺序 越小越先执行，这里第一个执行
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 当然不是只真正第一个 在Zuul内置中有其他过滤器会先执行
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 那是写死的 比如 SERVLET_DETECTION_FILTER_ORDER = -3
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">filterOrder</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> 0<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#75715e">// 什么时候该进行过滤
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 这里我们可以进行一些判断，这样我们就可以过滤掉一些不符合规定的请求等等
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">shouldFilter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#75715e">// 如果过滤器允许通过则怎么进行处理
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> Object <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> ZuulException <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 这里我设置了全局的RequestContext并记录了请求开始时间
-</span><span style="color:#75715e"></span>        RequestContext ctx <span style="color:#f92672">=</span> RequestContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getCurrentContext</span><span style="color:#f92672">();</span>
-        ctx<span style="color:#f92672">.</span><span style="color:#a6e22e">set</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;startTime&#34;</span><span style="color:#f92672">,</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">());</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>Copy to clipboardErrorCopied
-<span style="color:#75715e">// lombok的日志
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">@Slf4j</span>
-<span style="color:#75715e">// 加入 Spring 容器
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">@Component</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AccessLogFilter</span> <span style="color:#66d9ef">extends</span> ZuulFilter <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 指定该过滤器的过滤类型
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 此时是后置过滤器
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">filterType</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> FilterConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">POST_TYPE</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#75715e">// SEND_RESPONSE_FILTER_ORDER 是最后一个过滤器
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 我们此过滤器在它之前执行
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">filterOrder</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> FilterConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">SEND_RESPONSE_FILTER_ORDER</span> <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">shouldFilter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#75715e">// 过滤时执行的策略
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> Object <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> ZuulException <span style="color:#f92672">{</span>
-        RequestContext context <span style="color:#f92672">=</span> RequestContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getCurrentContext</span><span style="color:#f92672">();</span>
-        HttpServletRequest request <span style="color:#f92672">=</span> context<span style="color:#f92672">.</span><span style="color:#a6e22e">getRequest</span><span style="color:#f92672">();</span>
-        <span style="color:#75715e">// 从RequestContext获取原先的开始时间 并通过它计算整个时间间隔
-</span><span style="color:#75715e"></span>        Long startTime <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Long<span style="color:#f92672">)</span> context<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;startTime&#34;</span><span style="color:#f92672">);</span>
-        <span style="color:#75715e">// 这里我可以获取HttpServletRequest来获取URI并且打印出来
-</span><span style="color:#75715e"></span>        String uri <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span><span style="color:#a6e22e">getRequestURI</span><span style="color:#f92672">();</span>
-        <span style="color:#66d9ef">long</span> duration <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">()</span> <span style="color:#f92672">-</span> startTime<span style="color:#f92672">;</span>
-        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;uri: &#34;</span> <span style="color:#f92672">+</span> uri <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;, duration: &#34;</span> <span style="color:#f92672">+</span> duration <span style="color:#f92672">/</span> 100 <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;ms&#34;</span><span style="color:#f92672">);</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>Copy to clipboardErrorCopied
-</code></pre></div><p>上面就简单实现了请求时间日志打印功能，你有没有感受到 <code>Zuul</code> 过滤功能的强大了呢？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 加入Spring容器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Component</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PreRequestFilter</span> <span style="color:#66d9ef">extends</span> ZuulFilter <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 返回过滤器类型 这里是前置过滤器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">filterType</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> FilterConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">PRE_TYPE</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 指定过滤顺序 越小越先执行，这里第一个执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 当然不是只真正第一个 在Zuul内置中有其他过滤器会先执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 那是写死的 比如 SERVLET_DETECTION_FILTER_ORDER = -3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">filterOrder</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 什么时候该进行过滤
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 这里我们可以进行一些判断，这样我们就可以过滤掉一些不符合规定的请求等等
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">shouldFilter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果过滤器允许通过则怎么进行处理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Object <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> ZuulException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 这里我设置了全局的RequestContext并记录了请求开始时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        RequestContext ctx <span style="color:#f92672">=</span> RequestContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getCurrentContext</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        ctx<span style="color:#f92672">.</span><span style="color:#a6e22e">set</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;startTime&#34;</span><span style="color:#f92672">,</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>Copy to clipboardErrorCopied
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// lombok的日志
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Slf4j</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 加入 Spring 容器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Component</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AccessLogFilter</span> <span style="color:#66d9ef">extends</span> ZuulFilter <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 指定该过滤器的过滤类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 此时是后置过滤器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">filterType</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> FilterConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">POST_TYPE</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// SEND_RESPONSE_FILTER_ORDER 是最后一个过滤器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 我们此过滤器在它之前执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">filterOrder</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> FilterConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">SEND_RESPONSE_FILTER_ORDER</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">shouldFilter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 过滤时执行的策略
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Object <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> ZuulException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        RequestContext context <span style="color:#f92672">=</span> RequestContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getCurrentContext</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        HttpServletRequest request <span style="color:#f92672">=</span> context<span style="color:#f92672">.</span><span style="color:#a6e22e">getRequest</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 从RequestContext获取原先的开始时间 并通过它计算整个时间间隔
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Long startTime <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Long<span style="color:#f92672">)</span> context<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;startTime&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 这里我可以获取HttpServletRequest来获取URI并且打印出来
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String uri <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span><span style="color:#a6e22e">getRequestURI</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> duration <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">()</span> <span style="color:#f92672">-</span> startTime<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;uri: &#34;</span> <span style="color:#f92672">+</span> uri <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;, duration: &#34;</span> <span style="color:#f92672">+</span> duration <span style="color:#f92672">/</span> <span style="color:#ae81ff">100</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;ms&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>Copy to clipboardErrorCopied
+</span></span></code></pre></div><p>上面就简单实现了请求时间日志打印功能，你有没有感受到 <code>Zuul</code> 过滤功能的强大了呢？</p>
 <p>没有？好的、那我们再来。</p>
 <h4 id="令牌桶限流">令牌桶限流</h4>
 <p>当然不仅仅是令牌桶限流方式，<code>Zuul</code> 只要是限流的活它都能干，这里我只是简单举个<img src="https://github.githubassets.com/images/icons/emoji/unicode/1f330.png" alt="chestnut">。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/image-20211113132517376.png" alt="image-20211113132517376" style="zoom:67%;" /></p>
+<img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/image-20211113132517376.png" alt="image-20211113132517376" style="zoom:67%;" />
 <p>我先来解释一下什么是 <strong>令牌桶限流</strong> 吧。</p>
 <p>首先我们会有个桶，如果里面没有满那么就会以一定 <strong>固定的速率</strong> 会往里面放令牌，一个请求过来首先要从桶中获取令牌，如果没有获取到，那么这个请求就拒绝，如果获取到那么就放行。很简单吧，啊哈哈、</p>
 <p>下面我们就通过 <code>Zuul</code> 的前置过滤器来实现一下令牌桶限流。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">package</span> com.lgq.zuul.filter<span style="color:#f92672">;</span>
-
-<span style="color:#f92672">import</span> com.google.common.util.concurrent.RateLimiter<span style="color:#f92672">;</span>
-<span style="color:#f92672">import</span> com.netflix.zuul.ZuulFilter<span style="color:#f92672">;</span>
-<span style="color:#f92672">import</span> com.netflix.zuul.context.RequestContext<span style="color:#f92672">;</span>
-<span style="color:#f92672">import</span> com.netflix.zuul.exception.ZuulException<span style="color:#f92672">;</span>
-<span style="color:#f92672">import</span> lombok.extern.slf4j.Slf4j<span style="color:#f92672">;</span>
-<span style="color:#f92672">import</span> org.springframework.cloud.netflix.zuul.filters.support.FilterConstants<span style="color:#f92672">;</span>
-<span style="color:#f92672">import</span> org.springframework.stereotype.Component<span style="color:#f92672">;</span>
-
-<span style="color:#a6e22e">@Component</span>
-<span style="color:#a6e22e">@Slf4j</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RouteFilter</span> <span style="color:#66d9ef">extends</span> ZuulFilter <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 定义一个令牌桶，每秒产生2个令牌，即每秒最多处理2个请求
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> RateLimiter RATE_LIMITER <span style="color:#f92672">=</span> RateLimiter<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">(</span>2<span style="color:#f92672">);</span>
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">filterType</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> FilterConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">PRE_TYPE</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">filterOrder</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>5<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> Object <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> ZuulException <span style="color:#f92672">{</span>
-        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;放行&#34;</span><span style="color:#f92672">);</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">shouldFilter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        RequestContext context <span style="color:#f92672">=</span> RequestContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getCurrentContext</span><span style="color:#f92672">();</span>
-        <span style="color:#66d9ef">if</span><span style="color:#f92672">(!</span>RATE_LIMITER<span style="color:#f92672">.</span><span style="color:#a6e22e">tryAcquire</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
-            log<span style="color:#f92672">.</span><span style="color:#a6e22e">warn</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;访问量超载&#34;</span><span style="color:#f92672">);</span>
-            <span style="color:#75715e">// 指定当前请求未通过过滤
-</span><span style="color:#75715e"></span>            context<span style="color:#f92672">.</span><span style="color:#a6e22e">setSendZuulResponse</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
-            <span style="color:#75715e">// 向客户端返回响应码429，请求数量过多
-</span><span style="color:#75715e"></span>            context<span style="color:#f92672">.</span><span style="color:#a6e22e">setResponseStatusCode</span><span style="color:#f92672">(</span>429<span style="color:#f92672">);</span>
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-        <span style="color:#f92672">}</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>Copy to clipboardErrorCopied
-</code></pre></div><p>这样我们就能将请求数量控制在一秒两个，有没有觉得很酷？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">package</span> com.lgq.zuul.filter<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.google.common.util.concurrent.RateLimiter<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.netflix.zuul.ZuulFilter<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.netflix.zuul.context.RequestContext<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.netflix.zuul.exception.ZuulException<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> lombok.extern.slf4j.Slf4j<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.cloud.netflix.zuul.filters.support.FilterConstants<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.stereotype.Component<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Component</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Slf4j</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RouteFilter</span> <span style="color:#66d9ef">extends</span> ZuulFilter <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 定义一个令牌桶，每秒产生2个令牌，即每秒最多处理2个请求
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> RateLimiter RATE_LIMITER <span style="color:#f92672">=</span> RateLimiter<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">(</span><span style="color:#ae81ff">2</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">filterType</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> FilterConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">PRE_TYPE</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">filterOrder</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">5</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Object <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> ZuulException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;放行&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">shouldFilter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        RequestContext context <span style="color:#f92672">=</span> RequestContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getCurrentContext</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span><span style="color:#f92672">(!</span>RATE_LIMITER<span style="color:#f92672">.</span><span style="color:#a6e22e">tryAcquire</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            log<span style="color:#f92672">.</span><span style="color:#a6e22e">warn</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;访问量超载&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 指定当前请求未通过过滤
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            context<span style="color:#f92672">.</span><span style="color:#a6e22e">setSendZuulResponse</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 向客户端返回响应码429，请求数量过多
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            context<span style="color:#f92672">.</span><span style="color:#a6e22e">setResponseStatusCode</span><span style="color:#f92672">(</span><span style="color:#ae81ff">429</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>Copy to clipboardErrorCopied
+</span></span></code></pre></div><p>这样我们就能将请求数量控制在一秒两个，有没有觉得很酷？</p>
 <h3 id="关于-zuul-的其他">关于 Zuul 的其他</h3>
 <p><code>Zuul</code> 的过滤器的功能肯定不止上面我所实现的两种，它还可以实现 <strong>权限校验</strong>，包括我上面提到的 <strong>灰度发布</strong> 等等。</p>
 <p>当然，<code>Zuul</code> 作为网关肯定也存在 <strong>单点问题</strong> ，如果我们要保证 <code>Zuul</code> 的高可用，我们就需要进行 <code>Zuul</code> 的集群配置，这个时候可以借助额外的一些负载均衡器比如 <code>Nginx</code> 。</p>
@@ -683,7 +682,7 @@
 
             <footer class="ui basic center aligned segment" style="background-color: transparent;">
               
-              <p>© 2019 - 2022 Aaron 的博客</p>
+              <p>© 2019 - 2023 Aaron 的博客</p>
               
 
               <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
@@ -846,7 +845,7 @@
       <div class="ui medium header">关于我</div>
       <p>Aaron 的 ❤️ 博客</p>
 <p>记录一些 🌈 生活上，技术上的事</p>
-<p>职业是后端工程师</p>
+<p>职业是JAVA全栈工程师</p>
 
     </article>
   </div>

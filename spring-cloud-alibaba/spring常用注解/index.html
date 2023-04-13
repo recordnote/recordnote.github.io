@@ -17,7 +17,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.84.0" />
+<meta name="generator" content="Hugo 0.111.3">
 
 <link rel="canonical" href="https://recordnote.github.io/spring-cloud-alibaba/spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/" />
 
@@ -26,9 +26,8 @@
 <meta property="og:description" content="一、@Resource和@Autowired的区别 1、@Autowired与@Resource都可以用来装配bean. 都可以写在字段上,或写" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/spring-cloud-alibaba/spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/" /><meta property="og:image" content="https://recordnote.github.io/me/background.jpg"/><meta property="article:section" content="spring-cloud-alibaba" />
-<meta property="article:published_time" content="2020-11-23T14:21:26&#43;08:00" />
-<meta property="article:modified_time" content="2020-11-23T14:21:26&#43;08:00" />
-
+<meta property="article:published_time" content="2022-11-23T14:21:26+08:00" />
+<meta property="article:modified_time" content="2022-11-23T14:21:26+08:00" />
 
 
 
@@ -175,7 +174,7 @@
               
 
               | 
-                  <span data-format="luxon">2020-11-23T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2022-11-23T14:21:26&#43;08:00</span>
                 
 
               | 12 分钟阅读
@@ -183,7 +182,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2020-11-23T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2022-11-23T14:21:26&#43;08:00</span>
                 
               
             </span>
@@ -216,7 +215,7 @@
 <p>2、@Autowired默认<strong>按类型装配</strong>（这个注解是属于spring的）
 默认情况下必须要求依赖对象必须存在，如果要允许null值，可以设置它的<strong>required</strong>属性为false，如：
 @Autowired(required=false) ，如果我们想使用名称装配可以结合@Qualifier注解进行使用，如下：</p>
-<pre><code>@Autowired() @Qualifier(&quot;baseDao&quot;)    
+<pre tabindex="0"><code>@Autowired() @Qualifier(&#34;baseDao&#34;)    
 private BaseDao baseDao;
 </code></pre><p>3、@Resource <strong>是JDK1.6支持的注解</strong>，<strong>默认按照名称进行装配</strong></p>
 <p>@Resource装配顺序</p>
@@ -227,61 +226,61 @@ private BaseDao baseDao;
 <li>如果既没有指定name，又没有指定type，则自动按照byName方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配
 但是需要注意的是，如果name属性一旦指定，就只会按照名称进行装配。</li>
 </ol>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/5bd467f90001df7905710540.jpg" alt="5bd467f90001df7905710540.jpg" style="zoom: 67%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/5bd467f90001df7905710540.jpg" alt="5bd467f90001df7905710540.jpg" style="zoom: 67%;" /> 
 <p>只不过注解处理器我们使用的是Spring提供的，是一样的，无所谓解耦不解耦的说法，两个在便利程度上是等同的。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Resource</span><span style="color:#f92672">(</span>name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;baseDao&#34;</span><span style="color:#f92672">)</span>    
-<span style="color:#66d9ef">private</span> BaseDao baseDao<span style="color:#f92672">;</span>
-</code></pre></div><p><strong>byName</strong> 通过参数名 自动装配，如果一个bean的name 和另外一个bean的 property 相同，就自动装配。
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Resource</span><span style="color:#f92672">(</span>name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;baseDao&#34;</span><span style="color:#f92672">)</span>    
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> BaseDao baseDao<span style="color:#f92672">;</span>
+</span></span></code></pre></div><p><strong>byName</strong> 通过参数名 自动装配，如果一个bean的name 和另外一个bean的 property 相同，就自动装配。
 <strong>byType</strong> 通过参数的数据类型自动自动装配，如果一个bean的数据类型和另外一个bean的property属性的数据类型兼容，就自动装配</p>
 <hr>
 <p>我们可以通过 @Autowired / @Resource 在 Bean 类中使用自动注入功能，但是 Bean 还是在 XML 文件中通过 <bean> 进行定义 —— 也就是说，在 XML 配置文件中定义 Bean，通过@Autowired 或 @Resource 为 Bean 的成员变量、方法入参或构造函数入参提供自动注入的功能。
 比如下面的beans.xml ，定义了三个bean对象</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Boss</span> <span style="color:#f92672">{</span>    
-    <span style="color:#66d9ef">private</span> Car car<span style="color:#f92672">;</span>    
-    <span style="color:#66d9ef">private</span> Office office<span style="color:#f92672">;</span>    
-   <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>        
-        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;car:&#34;</span> <span style="color:#f92672">+</span> car <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;\n&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;office:&#34;</span> <span style="color:#f92672">+</span> office<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">
-<span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; ?&gt;</span>
-<span style="color:#f92672">&lt;beans</span> <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/beans&#34;</span>
-    <span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
-     <span style="color:#a6e22e">xmlns:context=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/context&#34;</span>
-     <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/beans 
-</span><span style="color:#e6db74"> http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-</span><span style="color:#e6db74"> http://www.springframework.org/schema/context 
-</span><span style="color:#e6db74"> http://www.springframework.org/schema/context/spring-context-2.5.xsd&#34;</span><span style="color:#f92672">&gt;</span>
-
-    <span style="color:#f92672">&lt;context:annotation-config/&gt;</span> 
-
-    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;boss&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.Boss&#34;</span><span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;office&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.Office&#34;</span><span style="color:#f92672">&gt;</span>
-        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;officeNo&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;001&#34;</span><span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;/bean&gt;</span>
-    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;car&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.Car&#34;</span> <span style="color:#a6e22e">scope=</span><span style="color:#e6db74">&#34;singleton&#34;</span><span style="color:#f92672">&gt;</span>
-        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;brand&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34; 红旗 CA72&#34;</span><span style="color:#f92672">/&gt;</span>
-        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;price&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;2000&#34;</span><span style="color:#f92672">/&gt;</span>
-    <span style="color:#f92672">&lt;/bean&gt;</span>
-<span style="color:#f92672">&lt;/beans&gt;</span>
-</code></pre></div><p>spring2.5提供了基于注解（Annotation-based）的配置，我们可以通过注解的方式来完成注入依赖。在Java代码中可以使用 @Resource或者@Autowired注解方式来进行注入。虽然@Resource和@Autowired都可以来完成注入依赖，但它们之间是有<strong>区别</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Boss</span> <span style="color:#f92672">{</span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Car car<span style="color:#f92672">;</span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Office office<span style="color:#f92672">;</span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;car:&#34;</span> <span style="color:#f92672">+</span> car <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;\n&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;office:&#34;</span> <span style="color:#f92672">+</span> office<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; ?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;beans</span> <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/beans&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">xmlns:context=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/context&#34;</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/beans 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> http://www.springframework.org/schema/context 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> http://www.springframework.org/schema/context/spring-context-2.5.xsd&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;context:annotation-config/&gt;</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;boss&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.Boss&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;office&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.Office&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;officeNo&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;001&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;car&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.Car&#34;</span> <span style="color:#a6e22e">scope=</span><span style="color:#e6db74">&#34;singleton&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;brand&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34; 红旗 CA72&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;price&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;2000&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/beans&gt;</span>
+</span></span></code></pre></div><p>spring2.5提供了基于注解（Annotation-based）的配置，我们可以通过注解的方式来完成注入依赖。在Java代码中可以使用 @Resource或者@Autowired注解方式来进行注入。虽然@Resource和@Autowired都可以来完成注入依赖，但它们之间是有<strong>区别</strong>：</p>
 <p><font color='red'>a. @Autowired默认是按照类型装配注入的，如果想按照名称来转配注入，则需要结合@Qualifier一起使用</font>
 <font color='red'>b.@Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入 </font>
 <font color='red'>c. @Resource注解是由JDK（1.6以上版本）提供，而@Autowired是由Spring提供@Resource的方式</font>
 <font color='red'>d. @Resource和@Autowired都可以书写标注在字段或者该字段的setter方法之上</font></p>
 <p>2、使用注解的方式，我们需要修改spring配置文件的头信息</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span><span style="color:#f92672">&lt;beans</span> <span style="color:#960050;background-color:#1e0010">http://www.springframework.org/schema/beans&#34;</span><span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span><span style="color:#a6e22e">xmlns:context=</span><span style="color:#e6db74">&#34;Index of /schema/context&#34;</span>
-       <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;Index of /schema/beans 
-</span><span style="color:#e6db74">http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-</span><span style="color:#e6db74">Index of /schema/context
-</span><span style="color:#e6db74">http://www.springframework.org/schema/context/spring-context-2.5.xsd&#34;</span><span style="color:#f92672">&gt;</span>
-    <span style="color:#f92672">&lt;context:annotation-config/&gt;&lt;/beans&gt;</span>
-   
-</code></pre></div><p>在基于注解方式配置Spring的配置文件中，你可能会见到</p>
-<pre><code>&lt;context:annotation-config/&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span><span style="color:#f92672">&lt;beans</span> <span style="color:#960050;background-color:#1e0010">http://www.springframework.org/schema/beans&#34;</span><span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span><span style="color:#a6e22e">xmlns:context=</span><span style="color:#e6db74">&#34;Index of /schema/context&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;Index of /schema/beans 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Index of /schema/context
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">http://www.springframework.org/schema/context/spring-context-2.5.xsd&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;context:annotation-config/&gt;&lt;/beans&gt;</span>
+</span></span><span style="display:flex;"><span>   
+</span></span></code></pre></div><p>在基于注解方式配置Spring的配置文件中，你可能会见到</p>
+<pre tabindex="0"><code>&lt;context:annotation-config/&gt;
 </code></pre><p>这样一条配置，他的作用是式地向 Spring 容器注册</p>
-<pre><code>AutowiredAnnotationBeanPostProcessor
+<pre tabindex="0"><code>AutowiredAnnotationBeanPostProcessor
 CommonAnnotationBeanPostProcessor
 PersistenceAnnotationBeanPostProcessor
 RequiredAnnotationBeanPostProcessor
@@ -289,79 +288,79 @@ RequiredAnnotationBeanPostProcessor
 <p>注册这4个BeanPostProcessor的作用，就是为了你的系统能够识别相应的注解。</p>
 <p>例如：</p>
 <p>如果你想使用@Autowired注解，那么就必须事先在 Spring 容器中声明 AutowiredAnnotationBeanPostProcessor Bean。传统声明方式如下</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.beans.factory.annotation. AutowiredAnnotationBeanPostProcessor &#34;</span><span style="color:#f92672">/&gt;</span>
-</code></pre></div><p>如果想使用@ Resource 、@ PostConstruct、@ PreDestroy等注解就必须声明CommonAnnotationBeanPostProcessor</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.beans.factory.annotation. CommonAnnotationBeanPostProcessor&#34;</span><span style="color:#f92672">/&gt;</span>
-</code></pre></div><p>如果想使用@PersistenceContext注解，就必须声明PersistenceAnnotationBeanPostProcessor的Bean。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.beans.factory.annotation.PersistenceAnnotationBeanPostProcessor&#34;</span><span style="color:#f92672">/&gt;</span>
-</code></pre></div><p>如果想使用 @Required的注解，就必须声明RequiredAnnotationBeanPostProcessor的Bean。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.beans.factory.annotation. AutowiredAnnotationBeanPostProcessor &#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span></code></pre></div><p>如果想使用@ Resource 、@ PostConstruct、@ PreDestroy等注解就必须声明CommonAnnotationBeanPostProcessor</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.beans.factory.annotation. CommonAnnotationBeanPostProcessor&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span></code></pre></div><p>如果想使用@PersistenceContext注解，就必须声明PersistenceAnnotationBeanPostProcessor的Bean。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.beans.factory.annotation.PersistenceAnnotationBeanPostProcessor&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span></code></pre></div><p>如果想使用 @Required的注解，就必须声明RequiredAnnotationBeanPostProcessor的Bean。</p>
 <p>同样，传统的声明方式如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor&#34;</span><span style="color:#f92672">/&gt;</span>
-</code></pre></div><p>一般来说，这些注解我们还是比较常用，尤其是<strong>Antowired</strong>，在自动注入的时候更是经常使用，所以如果总是需要按照传统的方式一条一条配置显得有些繁琐和没有必要，<strong>于是spring给我们提供<a href="context:annotation-config/">context:annotation-config/</a>的简化配置方式，自动帮你完成声明。</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span></code></pre></div><p>一般来说，这些注解我们还是比较常用，尤其是<strong>Antowired</strong>，在自动注入的时候更是经常使用，所以如果总是需要按照传统的方式一条一条配置显得有些繁琐和没有必要，<strong>于是spring给我们提供<a href="context:annotation-config/">context:annotation-config/</a>的简化配置方式，自动帮你完成声明。</strong></p>
 <p><strong>不过，我们使用注解一般都会配置扫描包路径选项</strong></p>
 <p><strong>&lt;context:component-scan base-package=”XX.XX”/&gt;</strong></p>
 <p><strong>该配置项其实也包含了自动注入上述processor的功能，因此当使用 <a href="context:component-scan/">context:component-scan/</a> 后，就可以将 <a href="context:annotation-config/">context:annotation-config/</a> 移除</strong></p>
 <p><strong>比如：</strong></p>
-<pre><code>&lt;context:component-scan base-package=&quot;carPoolingController, carPoolingService, carPoolingDao&quot; /&gt;
+<pre tabindex="0"><code>&lt;context:component-scan base-package=&#34;carPoolingController, carPoolingService, carPoolingDao&#34; /&gt;
 </code></pre><p><strong>就把controller包下 service包下 dao包下的注解全部扫描了</strong></p>
 <p>3、修改以上配置文件的头信息后，我们就可以在Java代码通过注解方式来注入bean，看下面代码</p>
 <p>（1）@Resource</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StudentService3</span> <span style="color:#66d9ef">implements</span> IStudentService <span style="color:#f92672">{</span>    
-    <span style="color:#75715e">//@Resource(name=&#34;studentDao&#34;)放在此处也是可行的
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> IStudentDao studentDao<span style="color:#f92672">;</span>    
-    <span style="color:#66d9ef">private</span> String id<span style="color:#f92672">;</span>    
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setId</span><span style="color:#f92672">(</span>String id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>    
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> id<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-</code></pre></div><p>@Resource(name=&ldquo;studentDao&rdquo;) // 通过此注解完成从spring配置文件中查找名称为studentDao的bean来装配字段studentDao，如果spring配置文件中不存在 studentDao名称的bean则转向按照bean类型进行查找</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setStudentDao</span><span style="color:#f92672">(</span>IStudentDao studentDao<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>        
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">studentDao</span> <span style="color:#f92672">=</span> studentDao<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">saveStudent</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        studentDao<span style="color:#f92672">.</span><span style="color:#a6e22e">saveStudent</span><span style="color:#f92672">();</span>
-        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;,ID 为：&#34;</span><span style="color:#f92672">+</span>id<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p>配置文件添加如下信息</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;studentDao&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.dao.impl.StudentDao&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
-<span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;studentService3&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.service.impl.StudentService3&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
-</code></pre></div><p>(2)@Autowired</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StudentService3</span> <span style="color:#66d9ef">implements</span> IStudentService <span style="color:#f92672">{</span>  
-  	<span style="color:#75715e">//@Autowired放在此处也是可行的
-</span><span style="color:#75715e"></span> 	<span style="color:#66d9ef">private</span> IStudentDao studentDao<span style="color:#f92672">;</span>  
-    <span style="color:#66d9ef">private</span> String id<span style="color:#f92672">;</span>  
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setId</span><span style="color:#f92672">(</span>String id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>       
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> id<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p>@Autowired</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StudentService3</span> <span style="color:#66d9ef">implements</span> IStudentService <span style="color:#f92672">{</span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//@Resource(name=&#34;studentDao&#34;)放在此处也是可行的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> IStudentDao studentDao<span style="color:#f92672">;</span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String id<span style="color:#f92672">;</span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setId</span><span style="color:#f92672">(</span>String id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>    
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> id<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>@Resource(name=&ldquo;studentDao&rdquo;) // 通过此注解完成从spring配置文件中查找名称为studentDao的bean来装配字段studentDao，如果spring配置文件中不存在 studentDao名称的bean则转向按照bean类型进行查找</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setStudentDao</span><span style="color:#f92672">(</span>IStudentDao studentDao<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>        
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">studentDao</span> <span style="color:#f92672">=</span> studentDao<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">saveStudent</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        studentDao<span style="color:#f92672">.</span><span style="color:#a6e22e">saveStudent</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;,ID 为：&#34;</span><span style="color:#f92672">+</span>id<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>配置文件添加如下信息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;studentDao&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.dao.impl.StudentDao&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;studentService3&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.sss.service.impl.StudentService3&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+</span></span></code></pre></div><p>(2)@Autowired</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StudentService3</span> <span style="color:#66d9ef">implements</span> IStudentService <span style="color:#f92672">{</span>  
+</span></span><span style="display:flex;"><span>  	<span style="color:#75715e">//@Autowired放在此处也是可行的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> 	<span style="color:#66d9ef">private</span> IStudentDao studentDao<span style="color:#f92672">;</span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String id<span style="color:#f92672">;</span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setId</span><span style="color:#f92672">(</span>String id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>       
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> id<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>@Autowired</p>
 <p>//通过此注解完成从spring配置文件中 查找满足studentDao类型的bean
 //@Qualifier(&ldquo;studentDao&rdquo;)则按照名称进行来查找转配的</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setStudentDao</span><span style="color:#f92672">(</span>IStudentDao studentDao<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>       
-     <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">studentDao</span> <span style="color:#f92672">=</span> studentDao<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>  
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">saveStudent</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-       studentDao<span style="color:#f92672">.</span><span style="color:#a6e22e">saveStudent</span><span style="color:#f92672">();</span>
-       System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;,ID 为：&#34;</span><span style="color:#f92672">+</span>id<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p>配置文件添加如下信息</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;studentDao&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.wch.dao.impl.StudentDao&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
-<span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;studentService3&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.wch.service.impl.StudentService3&#34;</span> <span style="color:#f92672">/&gt;</span>
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setStudentDao</span><span style="color:#f92672">(</span>IStudentDao studentDao<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>       
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">studentDao</span> <span style="color:#f92672">=</span> studentDao<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>  
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">saveStudent</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>       studentDao<span style="color:#f92672">.</span><span style="color:#a6e22e">saveStudent</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>       System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;,ID 为：&#34;</span><span style="color:#f92672">+</span>id<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>配置文件添加如下信息</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;studentDao&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.wch.dao.impl.StudentDao&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;studentService3&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.wch.service.impl.StudentService3&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span></code></pre></div><hr>
 <p>当我们在xml里面为类配置注入对象时，会发现xml文件会越来越臃肿，维护起来很麻烦。这时候我们可以使用注解这种机制来为类配置注入对象。</p>
 <p><strong>原生java为我们提供了 javax.annotation.Resource这个注解。</strong></p>
 <p><strong>spring框架提供了org.springframework.beans.factory.annotation.Autowired。</strong></p>
 <p>一般情况下我们使用 javax.annotation.Resource这个注解，因为这样我们就能实现和spring框架的解藕（难以认同，因为注解处理器还是Spring提供的）。</p>
 <p>@Resource可以作用于字段和函数上。当作用于字段上的时候，如果我们只是简单的这样写</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Resource</span> PersonDao  p<span style="color:#f92672">;</span>
-</code></pre></div><p>这时候spring注入p的过程是
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Resource</span> PersonDao  p<span style="color:#f92672">;</span>
+</span></span></code></pre></div><p>这时候spring注入p的过程是
 1、查找xml中是否有id为p的元素
 2、如果没有找到，则看是否有name属性（@Resource name=“”），有则查找name
 3、否则查找PersonDao类型的元素</p>
 <p>@Resource可作用于set函数上。
 例如：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Resource</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setP</span><span style="color:#f92672">(</span>PersonDao p<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> 
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">p</span> <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p>@Autowired注解是根据类型进行查找，比如PersonDao p，它会去xml文件里查找类型为PersonDao的元素</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Resource</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setP</span><span style="color:#f92672">(</span>PersonDao p<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">p</span> <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>@Autowired注解是根据类型进行查找，比如PersonDao p，它会去xml文件里查找类型为PersonDao的元素</p>
 <h2 id="二repository-component-service-controller之间的区别与联系">二、@Repository @Component @Service @Controller之间的区别与联系</h2>
 <p>引用spring的官方文档中的一段描述：</p>
 <p>在Spring2.0之前的版本中，<code>@Repository</code>注解可以标记在任何的类上，用来表明该类是用来执行与数据库相关的操作（即dao对象），并支持自动处理数据库操作产生的异常</p>
@@ -401,10 +400,10 @@ RequiredAnnotationBeanPostProcessor
 <p><code>@Controller</code> <font color='red'>注解的bean会被spring-mvc框架所使用</font>
 <code>@Repository</code> <font color='red'>会被作为持久层操作（数据库）的bean来使用</font>
 如果想使用自定义的组件注解，那么只要在你定义的新注解中加上@Component即可：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Component</span> 
-<span style="color:#a6e22e">@Scope</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;prototype&#34;</span><span style="color:#f92672">)</span>
-<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> ScheduleJob<span style="color:#f92672">{...}</span>
-</code></pre></div><p>这样，所有被<code>@ScheduleJob</code>注解的类就都可以注入到spring容器来进行管理。我们所需要做的，就是写一些新的代码来处理这个自定义注解（译者注：可以用反射的方法），进而执行我们想要执行的工作。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Component</span> 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Scope</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;prototype&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> ScheduleJob<span style="color:#f92672">{...}</span>
+</span></span></code></pre></div><p>这样，所有被<code>@ScheduleJob</code>注解的类就都可以注入到spring容器来进行管理。我们所需要做的，就是写一些新的代码来处理这个自定义注解（译者注：可以用反射的方法），进而执行我们想要执行的工作。</p>
 <p><code>@Component</code>就是跟<code>&lt;bean&gt;</code>一样，可以托管到Spring容器进行管理。</p>
 <p><code>@Service</code>, <code>@Controller</code> , <code>@Repository</code> = {<code>@Component</code> + 一些特定的功能}。这个就意味着这些注解在部分功能上是一样的。</p>
 <p>当然，下面三个注解被用于为我们的应用进行分层：</p>
@@ -423,85 +422,85 @@ RequiredAnnotationBeanPostProcessor
 <p>被@PostConstruct修饰的方法会在服务器加载Servlet的时候运行，并且只会被服务器执行一次。</p>
 <p>@PostConstruct修饰的方法在构造函数之后执行，init（）方法<strong>之前执行</strong>。</p>
 <p>@PreDestroy修饰的方法在destroy（）方法<strong>执行之后执行</strong></p>
-<p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/20160810191056385" alt="img" style="zoom: 80%;" /></p>
+<img src="https://gitee.com/aaronlynn/picture/raw/master/img/20160810191056385" alt="img" style="zoom: 80%;" /> 
 <p>一般在项目中@PostConstruct主要应用场景是在初始化Servlet时加载一些缓存数据等。但是使用此注解时会影响到服务的启动时间。</p>
 <h2 id="四restcontroller和controller的区别">四、@RestController和@Controller的区别</h2>
 <p>@RestController的产生，从Spring 4.0以后产生的，用来将json/xml数据发送到前台页面，而不是返回视图页面。</p>
 <p>@RestController和@Controller的区别</p>
 <p>@RestController加在类上面的注解，使得类里面的每个方法都将json/xml返回数据加返回到前台页面中。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@RestController</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>
-	<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
-	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say</span><span style="color:#f92672">(){</span>
- 	   <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;gril&#34;</span><span style="color:#f92672">;</span>
-	<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210712105341985.png" alt="image-20210712105341985" style="zoom: 67%;" /></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@RestController</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span> 	   <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;gril&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210712105341985.png" alt="image-20210712105341985" style="zoom: 67%;" /> 
 <p>@Controller加在类上面的注解，使得类里面的每个方法都返回一个视图页面。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Controller</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>	
-	<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
-	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say</span><span style="color:#f92672">(){</span>
-   	 <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;gril&#34;</span><span style="color:#f92672">;</span>
-	<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210712105407917.png" alt="image-20210712105407917" style="zoom:67%;" /></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Controller</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>   	 <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;gril&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210712105407917.png" alt="image-20210712105407917" style="zoom:67%;" /> 
 <p>@Controller和@ResponseBody（加在方法/类上面）一起使用，和@RestController的作用相同。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Controller</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>
-	<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
-	<span style="color:#a6e22e">@ResponseBody</span>
-	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say</span><span style="color:#f92672">(){</span><span style="color:#75715e">//返回json 数据  
-</span><span style="color:#75715e"></span>  	  <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;gril&#34;</span><span style="color:#f92672">;</span>
-	<span style="color:#f92672">}</span>
-	<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello1&#34;</span><span style="color:#f92672">)</span>
-	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say1</span><span style="color:#f92672">(){</span><span style="color:#75715e">//返回视图
-</span><span style="color:#75715e"></span>  	  <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;sys/index1&#34;</span><span style="color:#f92672">;</span>
-	<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Controller</span>
-<span style="color:#a6e22e">@ResponseBody</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>
-   <span style="color:#75715e">// 都返回json数据到页面
-</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
-    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say</span><span style="color:#f92672">(){</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;gril&#34;</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello1&#34;</span><span style="color:#f92672">)</span>
-    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say1</span><span style="color:#f92672">(){</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;sys/index1&#34;</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><h2 id="五component和bean的区别">五、@Component和@Bean的区别</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Controller</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say</span><span style="color:#f92672">(){</span><span style="color:#75715e">//返回json 数据  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  	  <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;gril&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello1&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say1</span><span style="color:#f92672">(){</span><span style="color:#75715e">//返回视图
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  	  <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;sys/index1&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Controller</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@ResponseBody</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 都返回json数据到页面
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;gril&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/hello1&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">say1</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;sys/index1&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="五component和bean的区别">五、@Component和@Bean的区别</h2>
 <p>  Spring帮助我们管理Bean分为两个部分，一个是注册Bean，一个装配Bean。
   完成这两个动作有三种方式，一种是使用自动配置的方式、一种是使用JavaConfig的方式，一种就是使用XML配置的方式。</p>
 <p>@Compent 作用就相当于 XML配置</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Component</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#f92672">{</span>
-    
-	<span style="color:#66d9ef">private</span> String name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;lkm&#34;</span><span style="color:#f92672">;</span>
-
-	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    	<span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
-	<span style="color:#f92672">}</span>
-
-	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    	<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
-	<span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p>@Bean 需要在配置类中使用，即类上需要加上@Configuration注解</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebSocketConfig</span> <span style="color:#f92672">{</span>
-    <span style="color:#a6e22e">@Bean</span>
-    <span style="color:#66d9ef">public</span> Student <span style="color:#a6e22e">student</span><span style="color:#f92672">(){</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-
-<span style="color:#f92672">}</span>
-</code></pre></div><p>两者都可以通过@Autowired装配</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Autowired</span>
-Student student<span style="color:#f92672">;</span>
-</code></pre></div><p>那为什么有了@Compent,还需要@Bean呢？
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Component</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">private</span> String name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;lkm&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    	<span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    	<span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>@Bean 需要在配置类中使用，即类上需要加上@Configuration注解</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebSocketConfig</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Student <span style="color:#a6e22e">student</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>两者都可以通过@Autowired装配</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>Student student<span style="color:#f92672">;</span>
+</span></span></code></pre></div><p>那为什么有了@Compent,还需要@Bean呢？
   如果你想要将第三方库中的组件装配到你的应用中，在这种情况下，是没有办法在它的类上添加@Component注解的，因此就不能使用自动化装配的方案了，但是我们可以使用@Bean,当然也可以使用XML配置。</p>
 <p><strong><font color='red'>区别：</font></strong></p>
 <p>@Component（@Controller、@Service、@Repository）通常是通过类路径扫描来自动侦测以及自动装配到Spring容器中。</p>
@@ -533,7 +532,7 @@ Student student<span style="color:#f92672">;</span>
 
             <footer class="ui basic center aligned segment" style="background-color: transparent;">
               
-              <p>© 2019 - 2022 Aaron 的博客</p>
+              <p>© 2019 - 2023 Aaron 的博客</p>
               
 
               <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
@@ -696,7 +695,7 @@ Student student<span style="color:#f92672">;</span>
       <div class="ui medium header">关于我</div>
       <p>Aaron 的 ❤️ 博客</p>
 <p>记录一些 🌈 生活上，技术上的事</p>
-<p>职业是后端工程师</p>
+<p>职业是JAVA全栈工程师</p>
 
     </article>
   </div>

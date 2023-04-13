@@ -17,7 +17,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.84.0" />
+<meta name="generator" content="Hugo 0.111.3">
 
 <link rel="canonical" href="https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/oracle_plsql/" />
 
@@ -26,9 +26,8 @@
 <meta property="og:description" content="​ Procedure Language 实际上是Oracle对SQL语言的能力扩展,让SQL语言拥有了if条件判断 , for循环等处理。 一、PLSQL基本语法 1 DECLARE 2 -- 声明部分 3" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/oracle_plsql/" /><meta property="og:image" content="https://recordnote.github.io" /><meta property="article:section" content="数据库" />
-<meta property="article:published_time" content="2022-03-23T14:21:26&#43;08:00" />
-<meta property="article:modified_time" content="2022-03-23T14:21:26&#43;08:00" />
-
+<meta property="article:published_time" content="2023-03-23T14:21:26+08:00" />
+<meta property="article:modified_time" content="2023-03-23T14:21:26+08:00" />
 
 
 
@@ -175,7 +174,7 @@
               
 
               | 
-                  <span data-format="luxon">2022-03-23T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2023-03-23T14:21:26&#43;08:00</span>
                 
 
               | 9 分钟阅读
@@ -183,7 +182,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2022-03-23T14:21:26&#43;08:00</span>
+                  <span data-format="luxon">2023-03-23T14:21:26&#43;08:00</span>
                 
               
             </span>
@@ -213,121 +212,121 @@
 
         <p>​	<em><strong>Procedure Language 实际上是Oracle对SQL语言的能力扩展,让SQL语言拥有了if条件判断 , for循环等处理。</strong></em></p>
 <h3 id="一plsql基本语法">一、PLSQL基本语法</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">DECLARE</span> 
-<span style="color:#ae81ff">2</span>     <span style="color:#75715e">-- 声明部分
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">3</span>     <span style="color:#960050;background-color:#1e0010">变量名</span> <span style="color:#960050;background-color:#1e0010">变量类型</span> :<span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">初始值</span> 
-<span style="color:#ae81ff">4</span>     <span style="color:#960050;background-color:#1e0010">变量名</span> emp.sal <span style="color:#f92672">%</span> TYPE  <span style="color:#75715e">-- 引用类型的变量
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">5</span>           emp <span style="color:#f92672">%</span> rowtype <span style="color:#75715e">-- 记录型变量           
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">6</span> BEGIN
-<span style="color:#ae81ff">7</span>     <span style="color:#75715e">-- 业务逻辑
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">8</span> END ;
-</code></pre></div><h4 id="1变量的声明与使用">1、变量的声明与使用</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 已知数据类型的赋值声明 
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">DECLARE</span> 
- <span style="color:#ae81ff">3</span>     i NUMBER :<span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span> ;
- <span style="color:#ae81ff">4</span> BEGIN
- <span style="color:#ae81ff">5</span>     <span style="color:#75715e">-- 输出语句相当于 System.out.print();
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">6</span>     dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;Hello World!&#39;</span> <span style="color:#f92672">||</span> i) ;
- <span style="color:#ae81ff">7</span> END ;
- <span style="color:#ae81ff">8</span> 
- <span style="color:#ae81ff">9</span> <span style="color:#75715e">-- 未知数据类型的类型声明
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">10</span> <span style="color:#75715e">-- 输出7369的工资
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">11</span> 
-<span style="color:#ae81ff">12</span> <span style="color:#66d9ef">DECLARE</span> 
-<span style="color:#ae81ff">13</span>     vsal emp.sal <span style="color:#f92672">%</span> TYPE ;
-<span style="color:#ae81ff">14</span> BEGIN
-<span style="color:#ae81ff">15</span>     <span style="color:#75715e">-- 给变量赋值
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">16</span>     <span style="color:#66d9ef">SELECT</span> sal <span style="color:#66d9ef">INTO</span> vsal <span style="color:#66d9ef">FROM</span> emp <span style="color:#66d9ef">WHERE</span> empno <span style="color:#f92672">=</span> <span style="color:#ae81ff">7369</span> ; 
-<span style="color:#ae81ff">17</span>     dbms_output.<span style="color:#a6e22e">put_line</span>(vsal) ;
-<span style="color:#ae81ff">18</span> END ;
-<span style="color:#ae81ff">19</span> 
-<span style="color:#ae81ff">20</span> <span style="color:#75715e">-- 记录型变量声明与赋值
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">21</span> <span style="color:#75715e">-- 输出7369的所有信息
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">22</span> <span style="color:#66d9ef">DECLARE</span> 
-<span style="color:#ae81ff">23</span>     vrow emp <span style="color:#f92672">%</span> rowtype ;
-<span style="color:#ae81ff">24</span> BEGIN    
-<span style="color:#ae81ff">25</span>     <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">INTO</span> vrow <span style="color:#66d9ef">FROM</span> emp <span style="color:#66d9ef">WHERE</span> empno <span style="color:#f92672">=</span> <span style="color:#ae81ff">7369</span> ;
-<span style="color:#ae81ff">26</span>     dbms_output.<span style="color:#a6e22e">put_line</span>(vrow.empno<span style="color:#f92672">||</span><span style="color:#e6db74">&#39;   &#39;</span><span style="color:#f92672">||</span> vrow.ename);
-<span style="color:#ae81ff">27</span> END ;
-</code></pre></div><h4 id="2if条件判断语法与使用">2、if条件判断语法与使用</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 根据不同年龄输出信息
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">DECLARE</span>
- <span style="color:#ae81ff">3</span>     <span style="color:#75715e">-- 由客户端输入     
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">4</span>     age number :<span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>aaa;
- <span style="color:#ae81ff">5</span> BEGIN
- <span style="color:#ae81ff">6</span>     <span style="color:#66d9ef">IF</span> age <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">18</span> <span style="color:#66d9ef">THEN</span>
- <span style="color:#ae81ff">7</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;未成年人&#39;</span>);
- <span style="color:#ae81ff">8</span>     ELSIF age <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">18</span> <span style="color:#66d9ef">AND</span> age <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">24</span> <span style="color:#66d9ef">THEN</span>
- <span style="color:#ae81ff">9</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;年轻人&#39;</span>);
-<span style="color:#ae81ff">10</span>     ELSIF age <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">24</span> <span style="color:#66d9ef">AND</span> age <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">48</span> <span style="color:#66d9ef">THEN</span>
-<span style="color:#ae81ff">11</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;中年人&#39;</span>);
-<span style="color:#ae81ff">12</span>     <span style="color:#66d9ef">ELSE</span> 
-<span style="color:#ae81ff">13</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;老年人&#39;</span>);
-<span style="color:#ae81ff">14</span>     END <span style="color:#66d9ef">IF</span>;
-<span style="color:#ae81ff">15</span> END;
-</code></pre></div><h4 id="3三种循环">3、三种循环</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"> <span style="color:#ae81ff">1</span> <span style="color:#75715e">/*
-</span><span style="color:#75715e"> 2    三种循环
-</span><span style="color:#75715e"> 3    for 变量名 in 起始值..结束值  loop
-</span><span style="color:#75715e"> 4      
-</span><span style="color:#75715e"> 5    end loop; 
-</span><span style="color:#75715e"> 6   ----------------------------------
-</span><span style="color:#75715e"> 7    while 条件 loop
-</span><span style="color:#75715e"> 8      
-</span><span style="color:#75715e"> 9    end loop;
-</span><span style="color:#75715e">10   -----------------------------------    
-</span><span style="color:#75715e">11    loop
-</span><span style="color:#75715e">12      exit when 退出的条件
-</span><span style="color:#75715e">13      循环体
-</span><span style="color:#75715e">14    end loop;
-</span><span style="color:#75715e">15 */</span>
-<span style="color:#ae81ff">16</span> 
-<span style="color:#ae81ff">17</span> <span style="color:#75715e">-- for 循环
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">18</span> <span style="color:#75715e">-- 输出1-10
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">19</span> <span style="color:#66d9ef">DECLARE</span> 
-<span style="color:#ae81ff">20</span> 
-<span style="color:#ae81ff">21</span> BEGIN
-<span style="color:#ae81ff">22</span>     <span style="color:#66d9ef">FOR</span> i <span style="color:#66d9ef">IN</span> <span style="color:#ae81ff">1</span>..<span style="color:#ae81ff">10</span> <span style="color:#66d9ef">LOOP</span>
-<span style="color:#ae81ff">23</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(i);
-<span style="color:#ae81ff">24</span>     END <span style="color:#66d9ef">LOOP</span>;
-<span style="color:#ae81ff">25</span> END;
-<span style="color:#ae81ff">26</span> <span style="color:#75715e">-- 输出10-1
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">27</span> <span style="color:#66d9ef">DECLARE</span> 
-<span style="color:#ae81ff">28</span> 
-<span style="color:#ae81ff">29</span> BEGIN
-<span style="color:#ae81ff">30</span>     <span style="color:#66d9ef">FOR</span> i <span style="color:#66d9ef">IN</span> REVERSE <span style="color:#ae81ff">1</span>..<span style="color:#ae81ff">10</span> <span style="color:#66d9ef">LOOP</span>
-<span style="color:#ae81ff">31</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(i);
-<span style="color:#ae81ff">32</span>     END <span style="color:#66d9ef">LOOP</span>;
-<span style="color:#ae81ff">33</span> END;
-<span style="color:#ae81ff">34</span> 
-<span style="color:#ae81ff">35</span> <span style="color:#75715e">-- while 循环
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">36</span> <span style="color:#66d9ef">DECLARE</span> 
-<span style="color:#ae81ff">37</span>     i NUMBER :<span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
-<span style="color:#ae81ff">38</span> BEGIN
-<span style="color:#ae81ff">39</span>     <span style="color:#66d9ef">WHILE</span> i <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">10</span> <span style="color:#66d9ef">loop</span>
-<span style="color:#ae81ff">40</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(i);
-<span style="color:#ae81ff">41</span>         i :<span style="color:#f92672">=</span> i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
-<span style="color:#ae81ff">42</span>     END <span style="color:#66d9ef">LOOP</span>;
-<span style="color:#ae81ff">43</span> END;
-<span style="color:#ae81ff">44</span> 
-<span style="color:#ae81ff">45</span> <span style="color:#75715e">-- 简单循环
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">46</span> <span style="color:#66d9ef">DECLARE</span> 
-<span style="color:#ae81ff">47</span>     i NUMBER :<span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
-<span style="color:#ae81ff">48</span> BEGIN 
-<span style="color:#ae81ff">49</span>     <span style="color:#66d9ef">LOOP</span>
-<span style="color:#ae81ff">50</span>         <span style="color:#66d9ef">EXIT</span> <span style="color:#66d9ef">WHEN</span> i <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">10</span>;
-<span style="color:#ae81ff">51</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(i);
-<span style="color:#ae81ff">52</span>         i :<span style="color:#f92672">=</span> i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
-<span style="color:#ae81ff">53</span>     END <span style="color:#66d9ef">LOOP</span>;
-<span style="color:#ae81ff">54</span> END;
-</code></pre></div><h3 id="二游标">二、游标</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">DECLARE</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span>     <span style="color:#75715e">-- 声明部分
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">3</span>     <span style="color:#960050;background-color:#1e0010">变量名</span> <span style="color:#960050;background-color:#1e0010">变量类型</span> :<span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">初始值</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4</span>     <span style="color:#960050;background-color:#1e0010">变量名</span> emp.sal <span style="color:#f92672">%</span> TYPE  <span style="color:#75715e">-- 引用类型的变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">5</span>           emp <span style="color:#f92672">%</span> rowtype <span style="color:#75715e">-- 记录型变量           
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">6</span> BEGIN
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">7</span>     <span style="color:#75715e">-- 业务逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">8</span> END ;
+</span></span></code></pre></div><h4 id="1变量的声明与使用">1、变量的声明与使用</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 已知数据类型的赋值声明 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">DECLARE</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">3</span>     i NUMBER :<span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span> ;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">4</span> BEGIN
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">5</span>     <span style="color:#75715e">-- 输出语句相当于 System.out.print();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">6</span>     dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;Hello World!&#39;</span> <span style="color:#f92672">||</span> i) ;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">7</span> END ;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">8</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">9</span> <span style="color:#75715e">-- 未知数据类型的类型声明
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">10</span> <span style="color:#75715e">-- 输出7369的工资
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">11</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">12</span> <span style="color:#66d9ef">DECLARE</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">13</span>     vsal emp.sal <span style="color:#f92672">%</span> TYPE ;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">14</span> BEGIN
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">15</span>     <span style="color:#75715e">-- 给变量赋值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">16</span>     <span style="color:#66d9ef">SELECT</span> sal <span style="color:#66d9ef">INTO</span> vsal <span style="color:#66d9ef">FROM</span> emp <span style="color:#66d9ef">WHERE</span> empno <span style="color:#f92672">=</span> <span style="color:#ae81ff">7369</span> ; 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">17</span>     dbms_output.<span style="color:#a6e22e">put_line</span>(vsal) ;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">18</span> END ;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">19</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">20</span> <span style="color:#75715e">-- 记录型变量声明与赋值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">21</span> <span style="color:#75715e">-- 输出7369的所有信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">22</span> <span style="color:#66d9ef">DECLARE</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">23</span>     vrow emp <span style="color:#f92672">%</span> rowtype ;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">24</span> BEGIN    
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">25</span>     <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">INTO</span> vrow <span style="color:#66d9ef">FROM</span> emp <span style="color:#66d9ef">WHERE</span> empno <span style="color:#f92672">=</span> <span style="color:#ae81ff">7369</span> ;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">26</span>     dbms_output.<span style="color:#a6e22e">put_line</span>(vrow.empno<span style="color:#f92672">||</span><span style="color:#e6db74">&#39;   &#39;</span><span style="color:#f92672">||</span> vrow.ename);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">27</span> END ;
+</span></span></code></pre></div><h4 id="2if条件判断语法与使用">2、if条件判断语法与使用</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 根据不同年龄输出信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">DECLARE</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">3</span>     <span style="color:#75715e">-- 由客户端输入     
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">4</span>     age number :<span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>aaa;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">5</span> BEGIN
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">6</span>     <span style="color:#66d9ef">IF</span> age <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">18</span> <span style="color:#66d9ef">THEN</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">7</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;未成年人&#39;</span>);
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">8</span>     ELSIF age <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">18</span> <span style="color:#66d9ef">AND</span> age <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">24</span> <span style="color:#66d9ef">THEN</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">9</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;年轻人&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">10</span>     ELSIF age <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">24</span> <span style="color:#66d9ef">AND</span> age <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">48</span> <span style="color:#66d9ef">THEN</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">11</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;中年人&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">12</span>     <span style="color:#66d9ef">ELSE</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">13</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;老年人&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">14</span>     END <span style="color:#66d9ef">IF</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">15</span> END;
+</span></span></code></pre></div><h4 id="3三种循环">3、三种循环</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 2    三种循环
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 3    for 变量名 in 起始值..结束值  loop
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 4      
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 5    end loop; 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 6   ----------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 7    while 条件 loop
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 8      
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 9    end loop;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">10   -----------------------------------    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">11    loop
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">12      exit when 退出的条件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">13      循环体
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">14    end loop;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">15 */</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">16</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">17</span> <span style="color:#75715e">-- for 循环
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">18</span> <span style="color:#75715e">-- 输出1-10
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">19</span> <span style="color:#66d9ef">DECLARE</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">20</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">21</span> BEGIN
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">22</span>     <span style="color:#66d9ef">FOR</span> i <span style="color:#66d9ef">IN</span> <span style="color:#ae81ff">1</span>..<span style="color:#ae81ff">10</span> <span style="color:#66d9ef">LOOP</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">23</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(i);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">24</span>     END <span style="color:#66d9ef">LOOP</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">25</span> END;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">26</span> <span style="color:#75715e">-- 输出10-1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">27</span> <span style="color:#66d9ef">DECLARE</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">28</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">29</span> BEGIN
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">30</span>     <span style="color:#66d9ef">FOR</span> i <span style="color:#66d9ef">IN</span> REVERSE <span style="color:#ae81ff">1</span>..<span style="color:#ae81ff">10</span> <span style="color:#66d9ef">LOOP</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">31</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(i);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">32</span>     END <span style="color:#66d9ef">LOOP</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">33</span> END;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">34</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">35</span> <span style="color:#75715e">-- while 循环
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">36</span> <span style="color:#66d9ef">DECLARE</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">37</span>     i NUMBER :<span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">38</span> BEGIN
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">39</span>     <span style="color:#66d9ef">WHILE</span> i <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">10</span> <span style="color:#66d9ef">loop</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">40</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(i);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">41</span>         i :<span style="color:#f92672">=</span> i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">42</span>     END <span style="color:#66d9ef">LOOP</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">43</span> END;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">44</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">45</span> <span style="color:#75715e">-- 简单循环
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">46</span> <span style="color:#66d9ef">DECLARE</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">47</span>     i NUMBER :<span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">48</span> BEGIN 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">49</span>     <span style="color:#66d9ef">LOOP</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">50</span>         <span style="color:#66d9ef">EXIT</span> <span style="color:#66d9ef">WHEN</span> i <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">51</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(i);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">52</span>         i :<span style="color:#f92672">=</span> i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">53</span>     END <span style="color:#66d9ef">LOOP</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">54</span> END;
+</span></span></code></pre></div><h3 id="二游标">二、游标</h3>
 <h4 id="1游标概述">1、游标概述　　</h4>
 <h5 id="11-游标-光标指针-是对查询结果集的封装-相当于是jdbc中的resultset">1.1 游标: (光标/指针) 是对查询结果集的封装, 相当于是jdbc中的ResultSet</h5>
 <h5 id="12-语法">1.2 语法:</h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 声明游标
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">2</span>     <span style="color:#66d9ef">CURSOR</span> <span style="color:#960050;background-color:#1e0010">游标名</span> <span style="color:#66d9ef">IS</span> <span style="color:#960050;background-color:#1e0010">查询语句</span>;
-<span style="color:#ae81ff">3</span>     <span style="color:#66d9ef">CURSOR</span> <span style="color:#960050;background-color:#1e0010">游标名</span>(<span style="color:#960050;background-color:#1e0010">参数名</span> <span style="color:#960050;background-color:#1e0010">参数类型</span>) <span style="color:#66d9ef">IS</span> <span style="color:#960050;background-color:#1e0010">查询语句</span> <span style="color:#66d9ef">WHERE</span> <span style="color:#960050;background-color:#1e0010">列名</span> <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">参数名</span>;
-</code></pre></div><h5 id="13-开发步骤">1.3 开发步骤:</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 声明游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">2</span>     <span style="color:#66d9ef">CURSOR</span> <span style="color:#960050;background-color:#1e0010">游标名</span> <span style="color:#66d9ef">IS</span> <span style="color:#960050;background-color:#1e0010">查询语句</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span>     <span style="color:#66d9ef">CURSOR</span> <span style="color:#960050;background-color:#1e0010">游标名</span>(<span style="color:#960050;background-color:#1e0010">参数名</span> <span style="color:#960050;background-color:#1e0010">参数类型</span>) <span style="color:#66d9ef">IS</span> <span style="color:#960050;background-color:#1e0010">查询语句</span> <span style="color:#66d9ef">WHERE</span> <span style="color:#960050;background-color:#1e0010">列名</span> <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">参数名</span>;
+</span></span></code></pre></div><h5 id="13-开发步骤">1.3 开发步骤:</h5>
 <h6 id="1打开游标-open-游标名">1.打开游标 open 游标名</h6>
 <h6 id="2从游标中提取数据">2.从游标中提取数据:</h6>
 <blockquote>
@@ -337,83 +336,83 @@
 </blockquote>
 <h6 id="3关闭游标-close-游标名">3.关闭游标 close 游标名</h6>
 <h4 id="2使用示例">2、使用示例：</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 无参 
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">2</span> <span style="color:#75715e">-- 输出所有员工的信息
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">3</span> <span style="color:#66d9ef">DECLARE</span>
- <span style="color:#ae81ff">4</span>    <span style="color:#75715e">-- 声明游标
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">5</span>   <span style="color:#66d9ef">CURSOR</span> vemps <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> emp;
- <span style="color:#ae81ff">6</span>    <span style="color:#75715e">-- 声明变量
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">7</span>   vrow emp <span style="color:#f92672">%</span> rowtype;
- <span style="color:#ae81ff">8</span> BEGIN
- <span style="color:#ae81ff">9</span>    <span style="color:#f92672">--</span><span style="color:#ae81ff">1</span>. <span style="color:#960050;background-color:#1e0010">打开游标</span>
-<span style="color:#ae81ff">10</span>    open vemps;
-<span style="color:#ae81ff">11</span>    <span style="color:#f92672">--</span><span style="color:#ae81ff">2</span>. <span style="color:#960050;background-color:#1e0010">提取数据</span>
-<span style="color:#ae81ff">12</span>    <span style="color:#66d9ef">LOOP</span>
-<span style="color:#ae81ff">13</span>        <span style="color:#66d9ef">FETCH</span> vemps <span style="color:#66d9ef">INTO</span> vrow;
-<span style="color:#ae81ff">14</span>         <span style="color:#75715e">-- 判断是否有数据
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">15</span>        <span style="color:#66d9ef">EXIT</span> <span style="color:#66d9ef">WHEN</span> vemps <span style="color:#f92672">%</span> notfound;
-<span style="color:#ae81ff">16</span>         <span style="color:#75715e">-- 打印数据
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">17</span>        dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;姓名:&#39;</span><span style="color:#f92672">||</span>vrow.ename<span style="color:#f92672">||</span><span style="color:#e6db74">&#39;  工资:&#39;</span><span style="color:#f92672">||</span>vrow.sal);
-<span style="color:#ae81ff">18</span>    END <span style="color:#66d9ef">LOOP</span>;
-<span style="color:#ae81ff">19</span>    
-<span style="color:#ae81ff">20</span>    <span style="color:#75715e">-- 关闭游标
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">21</span>    CLOSE vemps;
-<span style="color:#ae81ff">22</span> END;
-<span style="color:#ae81ff">23</span> <span style="color:#f92672">--------------------------------------------------------------</span><span style="color:#75715e">-- 
-</span><span style="color:#75715e">24 -- for 变量游标        
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">25</span> <span style="color:#66d9ef">DECLARE</span>
-<span style="color:#ae81ff">26</span>    <span style="color:#75715e">-- 声明游标
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">27</span>    <span style="color:#66d9ef">CURSOR</span> vemps <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> emp;
-<span style="color:#ae81ff">28</span>    <span style="color:#75715e">-- 声明记录型变量
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">29</span>    vrow emp <span style="color:#f92672">%</span> rowtype;
-<span style="color:#ae81ff">30</span> BEGIN
-<span style="color:#ae81ff">31</span>    <span style="color:#75715e">-- 循环遍历游标
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">32</span>    <span style="color:#66d9ef">FOR</span> vrow <span style="color:#66d9ef">IN</span> vemps
-<span style="color:#ae81ff">33</span>    <span style="color:#66d9ef">LOOP</span>
-<span style="color:#ae81ff">34</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;姓名:&#39;</span><span style="color:#f92672">||</span>vrow.ename<span style="color:#f92672">||</span><span style="color:#e6db74">&#39; 工资:&#39;</span><span style="color:#f92672">||</span>vrow.sal);
-<span style="color:#ae81ff">35</span>    END <span style="color:#66d9ef">LOOP</span>;
-<span style="color:#ae81ff">36</span> END;
-<span style="color:#ae81ff">37</span> 
-<span style="color:#ae81ff">38</span> <span style="color:#75715e">-- ===============================================================
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">39</span> <span style="color:#75715e">-- 有参
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">40</span> <span style="color:#75715e">-- 输出指定部门的员工信息
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">41</span> <span style="color:#66d9ef">DECLARE</span>
-<span style="color:#ae81ff">42</span>    <span style="color:#75715e">-- 声明游标
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">43</span>    <span style="color:#66d9ef">CURSOR</span> <span style="color:#a6e22e">vemps</span>(vdeptno NUMBER) <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> emp <span style="color:#66d9ef">WHERE</span> deptno <span style="color:#f92672">=</span> vdeptno;
-<span style="color:#ae81ff">44</span>    <span style="color:#75715e">-- 声明记录型变量
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">45</span>    vrow emp <span style="color:#f92672">%</span> rowtype;
-<span style="color:#ae81ff">46</span> BEGIN
-<span style="color:#ae81ff">47</span>    <span style="color:#75715e">-- 1. 打开游标
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">48</span>    OPEN <span style="color:#a6e22e">vemps</span>(<span style="color:#ae81ff">20</span>);
-<span style="color:#ae81ff">49</span>    <span style="color:#75715e">-- 2.循环遍历游标
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">50</span>    <span style="color:#66d9ef">LOOP</span>
-<span style="color:#ae81ff">51</span>     <span style="color:#66d9ef">FETCH</span> vemps <span style="color:#66d9ef">into</span> vrow;
-<span style="color:#ae81ff">52</span>     <span style="color:#66d9ef">EXIT</span> <span style="color:#66d9ef">when</span> vemps <span style="color:#f92672">%</span> notfound;
-<span style="color:#ae81ff">53</span>       <span style="color:#75715e">-- 打印数据
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">54</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;姓名:&#39;</span><span style="color:#f92672">||</span>vrow.ename<span style="color:#f92672">||</span><span style="color:#e6db74">&#39; 工资:&#39;</span><span style="color:#f92672">||</span>vrow.sal);
-<span style="color:#ae81ff">55</span>    END <span style="color:#66d9ef">LOOP</span>;
-<span style="color:#ae81ff">56</span>    <span style="color:#75715e">-- 3. 关闭游标
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">57</span>    CLOSE vemps;
-<span style="color:#ae81ff">58</span> END;
-</code></pre></div><h3 id="三例外">三、例外</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 无参 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">2</span> <span style="color:#75715e">-- 输出所有员工的信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">3</span> <span style="color:#66d9ef">DECLARE</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">4</span>    <span style="color:#75715e">-- 声明游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">5</span>   <span style="color:#66d9ef">CURSOR</span> vemps <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> emp;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">6</span>    <span style="color:#75715e">-- 声明变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">7</span>   vrow emp <span style="color:#f92672">%</span> rowtype;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">8</span> BEGIN
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">9</span>    <span style="color:#f92672">--</span><span style="color:#ae81ff">1</span>. <span style="color:#960050;background-color:#1e0010">打开游标</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">10</span>    open vemps;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">11</span>    <span style="color:#f92672">--</span><span style="color:#ae81ff">2</span>. <span style="color:#960050;background-color:#1e0010">提取数据</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">12</span>    <span style="color:#66d9ef">LOOP</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">13</span>        <span style="color:#66d9ef">FETCH</span> vemps <span style="color:#66d9ef">INTO</span> vrow;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">14</span>         <span style="color:#75715e">-- 判断是否有数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">15</span>        <span style="color:#66d9ef">EXIT</span> <span style="color:#66d9ef">WHEN</span> vemps <span style="color:#f92672">%</span> notfound;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">16</span>         <span style="color:#75715e">-- 打印数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">17</span>        dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;姓名:&#39;</span><span style="color:#f92672">||</span>vrow.ename<span style="color:#f92672">||</span><span style="color:#e6db74">&#39;  工资:&#39;</span><span style="color:#f92672">||</span>vrow.sal);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">18</span>    END <span style="color:#66d9ef">LOOP</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">19</span>    
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">20</span>    <span style="color:#75715e">-- 关闭游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">21</span>    CLOSE vemps;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">22</span> END;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">23</span> <span style="color:#f92672">--------------------------------------------------------------</span><span style="color:#75715e">-- 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">24 -- for 变量游标        
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">25</span> <span style="color:#66d9ef">DECLARE</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">26</span>    <span style="color:#75715e">-- 声明游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">27</span>    <span style="color:#66d9ef">CURSOR</span> vemps <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> emp;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">28</span>    <span style="color:#75715e">-- 声明记录型变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">29</span>    vrow emp <span style="color:#f92672">%</span> rowtype;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">30</span> BEGIN
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">31</span>    <span style="color:#75715e">-- 循环遍历游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">32</span>    <span style="color:#66d9ef">FOR</span> vrow <span style="color:#66d9ef">IN</span> vemps
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">33</span>    <span style="color:#66d9ef">LOOP</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">34</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;姓名:&#39;</span><span style="color:#f92672">||</span>vrow.ename<span style="color:#f92672">||</span><span style="color:#e6db74">&#39; 工资:&#39;</span><span style="color:#f92672">||</span>vrow.sal);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">35</span>    END <span style="color:#66d9ef">LOOP</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">36</span> END;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">37</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">38</span> <span style="color:#75715e">-- ===============================================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">39</span> <span style="color:#75715e">-- 有参
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">40</span> <span style="color:#75715e">-- 输出指定部门的员工信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">41</span> <span style="color:#66d9ef">DECLARE</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">42</span>    <span style="color:#75715e">-- 声明游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">43</span>    <span style="color:#66d9ef">CURSOR</span> <span style="color:#a6e22e">vemps</span>(vdeptno NUMBER) <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> emp <span style="color:#66d9ef">WHERE</span> deptno <span style="color:#f92672">=</span> vdeptno;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">44</span>    <span style="color:#75715e">-- 声明记录型变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">45</span>    vrow emp <span style="color:#f92672">%</span> rowtype;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">46</span> BEGIN
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">47</span>    <span style="color:#75715e">-- 1. 打开游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">48</span>    OPEN <span style="color:#a6e22e">vemps</span>(<span style="color:#ae81ff">20</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">49</span>    <span style="color:#75715e">-- 2.循环遍历游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">50</span>    <span style="color:#66d9ef">LOOP</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">51</span>     <span style="color:#66d9ef">FETCH</span> vemps <span style="color:#66d9ef">into</span> vrow;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">52</span>     <span style="color:#66d9ef">EXIT</span> <span style="color:#66d9ef">when</span> vemps <span style="color:#f92672">%</span> notfound;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">53</span>       <span style="color:#75715e">-- 打印数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">54</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;姓名:&#39;</span><span style="color:#f92672">||</span>vrow.ename<span style="color:#f92672">||</span><span style="color:#e6db74">&#39; 工资:&#39;</span><span style="color:#f92672">||</span>vrow.sal);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">55</span>    END <span style="color:#66d9ef">LOOP</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">56</span>    <span style="color:#75715e">-- 3. 关闭游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">57</span>    CLOSE vemps;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">58</span> END;
+</span></span></code></pre></div><h3 id="三例外">三、例外</h3>
 <h4 id="1例外概述">1、例外概述</h4>
 <p>例外 (意外): 相当于是java异常</p>
 <p>　　语法:
 　　</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">declare</span> 
- <span style="color:#ae81ff">2</span>     <span style="color:#960050;background-color:#1e0010">声明部分</span> 
- <span style="color:#ae81ff">3</span> begin 
- <span style="color:#ae81ff">4</span>     <span style="color:#960050;background-color:#1e0010">业务逻辑</span>
- <span style="color:#ae81ff">5</span> exception 
- <span style="color:#ae81ff">6</span>     <span style="color:#960050;background-color:#1e0010">处理例外</span> 
- <span style="color:#ae81ff">7</span>     <span style="color:#66d9ef">when</span> <span style="color:#960050;background-color:#1e0010">例外</span><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">then</span> 
- <span style="color:#ae81ff">8</span> 
- <span style="color:#ae81ff">9</span>     <span style="color:#66d9ef">when</span> <span style="color:#960050;background-color:#1e0010">例外</span><span style="color:#ae81ff">2</span> <span style="color:#66d9ef">then</span> 
-<span style="color:#ae81ff">10</span> 
-<span style="color:#ae81ff">11</span>     <span style="color:#66d9ef">when</span> others <span style="color:#66d9ef">then</span> 
-<span style="color:#ae81ff">12</span> 
-<span style="color:#ae81ff">13</span> end;
-</code></pre></div><p>　　常见的系统的例外:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">declare</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">2</span>     <span style="color:#960050;background-color:#1e0010">声明部分</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">3</span> begin 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">4</span>     <span style="color:#960050;background-color:#1e0010">业务逻辑</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">5</span> exception 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">6</span>     <span style="color:#960050;background-color:#1e0010">处理例外</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">7</span>     <span style="color:#66d9ef">when</span> <span style="color:#960050;background-color:#1e0010">例外</span><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">then</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">8</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">9</span>     <span style="color:#66d9ef">when</span> <span style="color:#960050;background-color:#1e0010">例外</span><span style="color:#ae81ff">2</span> <span style="color:#66d9ef">then</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">10</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">11</span>     <span style="color:#66d9ef">when</span> others <span style="color:#66d9ef">then</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">12</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">13</span> end;
+</span></span></code></pre></div><p>　　常见的系统的例外:</p>
 <ul>
 <li>zero_divide : 除零例外</li>
 <li>value_error : 类型转换</li>
@@ -421,166 +420,166 @@
 <li>too_many_rows : 查询出多行记录,但是赋值给了单行变量</li>
 </ul>
 <h4 id="2例外使用示例">2、例外使用示例</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">DECLARE</span>
- <span style="color:#ae81ff">2</span>     i NUMBER;
- <span style="color:#ae81ff">3</span>     vrow emp <span style="color:#f92672">%</span> rowtype;
- <span style="color:#ae81ff">4</span> BEGIN
- <span style="color:#ae81ff">5</span> <span style="color:#75715e">--     i := 5/0;
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">6</span> <span style="color:#75715e">--     i := &#39;aaa&#39;;
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">7</span> <span style="color:#75715e">--     select * into vrow from emp where empno = 1234566;
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">8</span>     <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">into</span> vrow <span style="color:#66d9ef">from</span> emp;
- <span style="color:#ae81ff">9</span> EXCEPTION
-<span style="color:#ae81ff">10</span>     <span style="color:#66d9ef">WHEN</span> too_many_rows <span style="color:#66d9ef">THEN</span>
-<span style="color:#ae81ff">11</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;查询出多行记录,但是赋值给了单行变量&#39;</span>);
-<span style="color:#ae81ff">12</span>     <span style="color:#66d9ef">WHEN</span> no_data_found <span style="color:#66d9ef">THEN</span>
-<span style="color:#ae81ff">13</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;发生了没有找到数据例外&#39;</span>);
-<span style="color:#ae81ff">14</span>     <span style="color:#66d9ef">WHEN</span> value_error <span style="color:#66d9ef">THEN</span>
-<span style="color:#ae81ff">15</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;发生类型转换的例外&#39;</span>);
-<span style="color:#ae81ff">16</span>     <span style="color:#66d9ef">WHEN</span> zero_divide <span style="color:#66d9ef">THEN</span>
-<span style="color:#ae81ff">17</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;发生除零的例外&#39;</span>);
-<span style="color:#ae81ff">18</span>     <span style="color:#66d9ef">WHEN</span> others <span style="color:#66d9ef">THEN</span>
-<span style="color:#ae81ff">19</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;发生未知的例外&#39;</span>);
-<span style="color:#ae81ff">20</span> END;
-</code></pre></div><h4 id="3自定义例外">3、自定义例外</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">DECLARE</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">2</span>     i NUMBER;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">3</span>     vrow emp <span style="color:#f92672">%</span> rowtype;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">4</span> BEGIN
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">5</span> <span style="color:#75715e">--     i := 5/0;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">6</span> <span style="color:#75715e">--     i := &#39;aaa&#39;;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">7</span> <span style="color:#75715e">--     select * into vrow from emp where empno = 1234566;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">8</span>     <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">into</span> vrow <span style="color:#66d9ef">from</span> emp;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">9</span> EXCEPTION
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">10</span>     <span style="color:#66d9ef">WHEN</span> too_many_rows <span style="color:#66d9ef">THEN</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">11</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;查询出多行记录,但是赋值给了单行变量&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">12</span>     <span style="color:#66d9ef">WHEN</span> no_data_found <span style="color:#66d9ef">THEN</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">13</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;发生了没有找到数据例外&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">14</span>     <span style="color:#66d9ef">WHEN</span> value_error <span style="color:#66d9ef">THEN</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">15</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;发生类型转换的例外&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">16</span>     <span style="color:#66d9ef">WHEN</span> zero_divide <span style="color:#66d9ef">THEN</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">17</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;发生除零的例外&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">18</span>     <span style="color:#66d9ef">WHEN</span> others <span style="color:#66d9ef">THEN</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">19</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;发生未知的例外&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">20</span> END;
+</span></span></code></pre></div><h4 id="3自定义例外">3、自定义例外</h4>
 <p>　　语法：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">DECLARE</span> 
- <span style="color:#ae81ff">2</span>     <span style="color:#75715e">-- 声明例外
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">3</span>     <span style="color:#960050;background-color:#1e0010">例外名称</span> EXCEPTION ;
- <span style="color:#ae81ff">4</span> BEGIN
- <span style="color:#ae81ff">5</span>     <span style="color:#75715e">-- 抛出例外
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">6</span>     raise <span style="color:#960050;background-color:#1e0010">例外名称</span> ; 
- <span style="color:#ae81ff">7</span> EXCEPTION 
- <span style="color:#ae81ff">8</span>     <span style="color:#75715e">-- 捕获例外
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">9</span>     <span style="color:#66d9ef">WHEN</span> <span style="color:#960050;background-color:#1e0010">例外名称</span> <span style="color:#66d9ef">THEN</span>
-<span style="color:#ae81ff">10</span>     ....
-<span style="color:#ae81ff">11</span> END ;
-</code></pre></div><p>　　使用示例：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 查询指定编号的员工,若没有找到,则抛出自定义例外
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">DECLARE</span> 
- <span style="color:#ae81ff">3</span>     <span style="color:#75715e">-- 声明游标
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">4</span>     <span style="color:#66d9ef">CURSOR</span> vemps <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> emp <span style="color:#66d9ef">WHERE</span> empno <span style="color:#f92672">=</span> <span style="color:#ae81ff">1234</span> ; 
- <span style="color:#ae81ff">5</span>     <span style="color:#75715e">-- 记录型变量
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">6</span>     vrow vemps <span style="color:#f92672">%</span> rowtype ; 
- <span style="color:#ae81ff">7</span>     <span style="color:#75715e">-- 定义例外
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">8</span>     no_emp_found EXCEPTION ; 
- <span style="color:#ae81ff">9</span> BEGIN 
-<span style="color:#ae81ff">10</span>     <span style="color:#f92672">--</span><span style="color:#ae81ff">1</span>.<span style="color:#960050;background-color:#1e0010">打开游标</span>
-<span style="color:#ae81ff">11</span>     OPEN vemps ;
-<span style="color:#ae81ff">12</span>     <span style="color:#f92672">--</span><span style="color:#ae81ff">2</span>.<span style="color:#960050;background-color:#1e0010">提取记录</span> 
-<span style="color:#ae81ff">13</span>     <span style="color:#66d9ef">FETCH</span> vemps <span style="color:#66d9ef">INTO</span> vrow ;
-<span style="color:#ae81ff">14</span>     <span style="color:#75715e">-- 判断是否有数据 
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">15</span>     <span style="color:#66d9ef">IF</span> vemps <span style="color:#f92672">%</span> notfound <span style="color:#66d9ef">THEN</span> 
-<span style="color:#ae81ff">16</span>         <span style="color:#75715e">-- 抛出例外
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">17</span>         raise no_emp_found ; 
-<span style="color:#ae81ff">18</span>     END <span style="color:#66d9ef">IF</span> ; 
-<span style="color:#ae81ff">19</span>     <span style="color:#75715e">-- 关闭游标
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">20</span>     CLOSE vemps ; 
-<span style="color:#ae81ff">21</span> EXCEPTION 
-<span style="color:#ae81ff">22</span>     <span style="color:#66d9ef">WHEN</span> no_emp_found <span style="color:#66d9ef">THEN</span> 
-<span style="color:#ae81ff">23</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;没有找到对应的员工&#39;</span>) ; 
-<span style="color:#ae81ff">24</span> END ;
-</code></pre></div><h3 id="四存储过程">四、存储过程</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">DECLARE</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">2</span>     <span style="color:#75715e">-- 声明例外
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">3</span>     <span style="color:#960050;background-color:#1e0010">例外名称</span> EXCEPTION ;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">4</span> BEGIN
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">5</span>     <span style="color:#75715e">-- 抛出例外
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">6</span>     raise <span style="color:#960050;background-color:#1e0010">例外名称</span> ; 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">7</span> EXCEPTION 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">8</span>     <span style="color:#75715e">-- 捕获例外
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">9</span>     <span style="color:#66d9ef">WHEN</span> <span style="color:#960050;background-color:#1e0010">例外名称</span> <span style="color:#66d9ef">THEN</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">10</span>     ....
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">11</span> END ;
+</span></span></code></pre></div><p>　　使用示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 查询指定编号的员工,若没有找到,则抛出自定义例外
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">DECLARE</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">3</span>     <span style="color:#75715e">-- 声明游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">4</span>     <span style="color:#66d9ef">CURSOR</span> vemps <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> emp <span style="color:#66d9ef">WHERE</span> empno <span style="color:#f92672">=</span> <span style="color:#ae81ff">1234</span> ; 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">5</span>     <span style="color:#75715e">-- 记录型变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">6</span>     vrow vemps <span style="color:#f92672">%</span> rowtype ; 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">7</span>     <span style="color:#75715e">-- 定义例外
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">8</span>     no_emp_found EXCEPTION ; 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">9</span> BEGIN 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">10</span>     <span style="color:#f92672">--</span><span style="color:#ae81ff">1</span>.<span style="color:#960050;background-color:#1e0010">打开游标</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">11</span>     OPEN vemps ;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">12</span>     <span style="color:#f92672">--</span><span style="color:#ae81ff">2</span>.<span style="color:#960050;background-color:#1e0010">提取记录</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">13</span>     <span style="color:#66d9ef">FETCH</span> vemps <span style="color:#66d9ef">INTO</span> vrow ;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">14</span>     <span style="color:#75715e">-- 判断是否有数据 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">15</span>     <span style="color:#66d9ef">IF</span> vemps <span style="color:#f92672">%</span> notfound <span style="color:#66d9ef">THEN</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">16</span>         <span style="color:#75715e">-- 抛出例外
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">17</span>         raise no_emp_found ; 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">18</span>     END <span style="color:#66d9ef">IF</span> ; 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">19</span>     <span style="color:#75715e">-- 关闭游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">20</span>     CLOSE vemps ; 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">21</span> EXCEPTION 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">22</span>     <span style="color:#66d9ef">WHEN</span> no_emp_found <span style="color:#66d9ef">THEN</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">23</span>         dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;没有找到对应的员工&#39;</span>) ; 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">24</span> END ;
+</span></span></code></pre></div><h3 id="四存储过程">四、存储过程</h3>
 <h4 id="1概述">1、概述　　</h4>
 <p>　　存储过程: 实际上是将一段已经编译好的PLSQL代码片断,封装在数据库中。</p>
 <p>　　作用:</p>
 <h5 id="1-提高执行效率">1. 提高执行效率</h5>
 <h5 id="2-提高代码复用性">2. 提高代码复用性</h5>
 <p>　　语法:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">create</span> [<span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span>] <span style="color:#66d9ef">procedure</span> <span style="color:#960050;background-color:#1e0010">过程名称</span>[(<span style="color:#960050;background-color:#1e0010">参数</span><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">in</span><span style="color:#f92672">|</span><span style="color:#66d9ef">out</span> <span style="color:#960050;background-color:#1e0010">参数类型</span>,<span style="color:#960050;background-color:#1e0010">参数</span><span style="color:#ae81ff">2</span> <span style="color:#66d9ef">in</span><span style="color:#f92672">|</span><span style="color:#66d9ef">out</span> <span style="color:#960050;background-color:#1e0010">参数类型</span>)]
-<span style="color:#ae81ff">2</span> <span style="color:#66d9ef">is</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">as</span>
-<span style="color:#ae81ff">3</span> 　　<span style="color:#75715e">-- 声明　　　　
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">4</span> begin
-<span style="color:#ae81ff">5</span>  　 <span style="color:#75715e">-- 业务
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">6</span> end;
-</code></pre></div><h4 id="2使用示例-1">2、使用示例</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 给指定员工涨薪,并打印涨薪前和涨薪后的工资
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">2</span> <span style="color:#75715e">-- 员工编号 : 输入参数
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">3</span> <span style="color:#75715e">-- 涨多少 : 输入参数
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">4</span> <span style="color:#75715e">/*
-</span><span style="color:#75715e"> 5    1. 查询当前工
-</span><span style="color:#75715e"> 6    2. 打印涨薪前工资
-</span><span style="color:#75715e"> 7    3. 涨工资
-</span><span style="color:#75715e"> 8    4. 打印涨薪后的工资
-</span><span style="color:#75715e"> 9    5. 提交数据
-</span><span style="color:#75715e">10 */</span>
-<span style="color:#ae81ff">11</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">procedure</span> <span style="color:#a6e22e">proc_updatesal</span>(vempno <span style="color:#66d9ef">in</span> number,vcount <span style="color:#66d9ef">in</span> number)
-<span style="color:#ae81ff">12</span> <span style="color:#66d9ef">is</span>
-<span style="color:#ae81ff">13</span>    <span style="color:#75715e">-- 声明变量记录当前工资
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">14</span>    vsal number;    
-<span style="color:#ae81ff">15</span> begin
-<span style="color:#ae81ff">16</span>    <span style="color:#f92672">--</span><span style="color:#ae81ff">1</span>. <span style="color:#960050;background-color:#1e0010">查询当前工资</span>
-<span style="color:#ae81ff">17</span>    <span style="color:#66d9ef">select</span> sal <span style="color:#66d9ef">into</span> vsal <span style="color:#66d9ef">from</span> emp <span style="color:#66d9ef">where</span> empno<span style="color:#f92672">=</span>vempno;
-<span style="color:#ae81ff">18</span>    <span style="color:#f92672">--</span><span style="color:#ae81ff">2</span>. <span style="color:#960050;background-color:#1e0010">打印涨薪前工资</span>
-<span style="color:#ae81ff">19</span>    dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;涨薪前:&#39;</span><span style="color:#f92672">||</span>vsal);
-<span style="color:#ae81ff">20</span>    <span style="color:#f92672">--</span><span style="color:#ae81ff">3</span>. <span style="color:#960050;background-color:#1e0010">涨工资</span>
-<span style="color:#ae81ff">21</span>    <span style="color:#66d9ef">update</span> emp <span style="color:#66d9ef">set</span> sal<span style="color:#f92672">=</span>vsal<span style="color:#f92672">+</span>vcount <span style="color:#66d9ef">where</span> empno<span style="color:#f92672">=</span>vempno;
-<span style="color:#ae81ff">22</span>    <span style="color:#75715e">-- 4. 打印涨薪后的工资
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">23</span>    dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;涨薪后:&#39;</span><span style="color:#f92672">||</span>(vsal<span style="color:#f92672">+</span>vcount));
-<span style="color:#ae81ff">24</span>    <span style="color:#f92672">--</span><span style="color:#ae81ff">5</span>. <span style="color:#960050;background-color:#1e0010">提交数据</span>
-<span style="color:#ae81ff">25</span>    commit;
-<span style="color:#ae81ff">26</span> end;
-<span style="color:#ae81ff">27</span> 
-<span style="color:#ae81ff">28</span> <span style="color:#75715e">-- 调用存储过程
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">29</span> <span style="color:#75715e">-- 方式1:
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">30</span> <span style="color:#66d9ef">call</span> <span style="color:#a6e22e">proc_update_sal</span>(<span style="color:#ae81ff">7369</span>,<span style="color:#ae81ff">100</span>);
-<span style="color:#ae81ff">31</span> 
-<span style="color:#ae81ff">32</span> <span style="color:#75715e">-- 方式2:
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">33</span> <span style="color:#66d9ef">declare</span>
-<span style="color:#ae81ff">34</span> 
-<span style="color:#ae81ff">35</span> begin
-<span style="color:#ae81ff">36</span>    <span style="color:#a6e22e">proc_updatesal</span>(<span style="color:#ae81ff">7369</span>,<span style="color:#ae81ff">100</span>);
-<span style="color:#ae81ff">37</span> end;
-<span style="color:#ae81ff">38</span> 
-<span style="color:#ae81ff">39</span> s
-<span style="color:#ae81ff">40</span> <span style="color:#75715e">-- 获取指定编号员工的年薪
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">41</span> <span style="color:#75715e">/*
-</span><span style="color:#75715e">42    编号: in  输入
-</span><span style="color:#75715e">43    年薪: out 输出
-</span><span style="color:#75715e">44 */</span>
-<span style="color:#ae81ff">45</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">procedure</span> <span style="color:#a6e22e">proc_getyearsal</span>(vempno <span style="color:#66d9ef">in</span> number,vyearsal <span style="color:#66d9ef">out</span> number)
-<span style="color:#ae81ff">46</span> <span style="color:#66d9ef">is</span>
-<span style="color:#ae81ff">47</span>        
-<span style="color:#ae81ff">48</span> begin
-<span style="color:#ae81ff">49</span>   <span style="color:#66d9ef">select</span> sal<span style="color:#f92672">*</span><span style="color:#ae81ff">12</span><span style="color:#f92672">+</span><span style="color:#a6e22e">nvl</span>(comm,<span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">into</span> vyearsal <span style="color:#66d9ef">from</span> emp <span style="color:#66d9ef">where</span> empno<span style="color:#f92672">=</span>vempno;
-<span style="color:#ae81ff">50</span> end;
-<span style="color:#ae81ff">51</span> 
-<span style="color:#ae81ff">52</span> <span style="color:#75715e">-- plsql代码片断中调用
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">53</span> <span style="color:#66d9ef">declare</span>
-<span style="color:#ae81ff">54</span>    yearsal number;
-<span style="color:#ae81ff">55</span> begin
-<span style="color:#ae81ff">56</span>    <span style="color:#a6e22e">proc_getyearsal</span>(<span style="color:#ae81ff">7369</span>,yearsal);
-<span style="color:#ae81ff">57</span>    dbms_output.<span style="color:#a6e22e">put_line</span>(yearsal);
-<span style="color:#ae81ff">58</span> end;
-<span style="color:#ae81ff">59</span> 
-<span style="color:#ae81ff">60</span> 
-<span style="color:#ae81ff">61</span> <span style="color:#75715e">-- 封装存储过程,输出的是游标类型, 所有员工
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">62</span> <span style="color:#75715e">/*
-</span><span style="color:#75715e">63    sys_refcursor : 系统引用游标
-</span><span style="color:#75715e">64 */</span>
-<span style="color:#ae81ff">65</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">procedure</span> <span style="color:#a6e22e">proc_getemps</span>(vemps <span style="color:#66d9ef">out</span> sys_refcursor)
-<span style="color:#ae81ff">66</span> <span style="color:#66d9ef">is</span>
-<span style="color:#ae81ff">67</span> 
-<span style="color:#ae81ff">68</span> begin
-<span style="color:#ae81ff">69</span>     <span style="color:#75715e">-- 打开游标, 谁调用谁关闭
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">70</span>     open vemps <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> emp;   
-<span style="color:#ae81ff">71</span> end;
-<span style="color:#ae81ff">72</span> 
-<span style="color:#ae81ff">73</span> <span style="color:#66d9ef">declare</span>
-<span style="color:#ae81ff">74</span>   vemps sys_refcursor;
-<span style="color:#ae81ff">75</span>   vrow emp<span style="color:#f92672">%</span>rowtype;
-<span style="color:#ae81ff">76</span> begin
-<span style="color:#ae81ff">77</span>   <span style="color:#75715e">-- 调用存储过程
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">78</span>   <span style="color:#a6e22e">proc_getemps</span>(vemps);
-<span style="color:#ae81ff">79</span>   
-<span style="color:#ae81ff">80</span>   <span style="color:#66d9ef">loop</span>
-<span style="color:#ae81ff">81</span>      <span style="color:#66d9ef">fetch</span> vemps <span style="color:#66d9ef">into</span> vrow; 
-<span style="color:#ae81ff">82</span>      <span style="color:#66d9ef">exit</span> <span style="color:#66d9ef">when</span> vemps<span style="color:#f92672">%</span>notfound;  
-<span style="color:#ae81ff">83</span>      dbms_output.<span style="color:#a6e22e">put_line</span>(vrow.ename);
-<span style="color:#ae81ff">84</span>   end <span style="color:#66d9ef">loop</span>;
-<span style="color:#ae81ff">85</span>   <span style="color:#75715e">-- 关闭游标
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">86</span>   close vemps;
-<span style="color:#ae81ff">87</span> end;<span style="color:#960050;background-color:#1e0010">五、存储函数</span>
-</code></pre></div><h3 id="五存储函数概述">五、存储函数概述</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">create</span> [<span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span>] <span style="color:#66d9ef">procedure</span> <span style="color:#960050;background-color:#1e0010">过程名称</span>[(<span style="color:#960050;background-color:#1e0010">参数</span><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">in</span><span style="color:#f92672">|</span><span style="color:#66d9ef">out</span> <span style="color:#960050;background-color:#1e0010">参数类型</span>,<span style="color:#960050;background-color:#1e0010">参数</span><span style="color:#ae81ff">2</span> <span style="color:#66d9ef">in</span><span style="color:#f92672">|</span><span style="color:#66d9ef">out</span> <span style="color:#960050;background-color:#1e0010">参数类型</span>)]
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span> <span style="color:#66d9ef">is</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">as</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span> <span style="color:#960050;background-color:#1e0010">　　</span><span style="color:#75715e">-- 声明　　　　
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">4</span> begin
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">5</span>  <span style="color:#960050;background-color:#1e0010">　</span> <span style="color:#75715e">-- 业务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">6</span> end;
+</span></span></code></pre></div><h4 id="2使用示例-1">2、使用示例</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 给指定员工涨薪,并打印涨薪前和涨薪后的工资
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">2</span> <span style="color:#75715e">-- 员工编号 : 输入参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">3</span> <span style="color:#75715e">-- 涨多少 : 输入参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">4</span> <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 5    1. 查询当前工
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 6    2. 打印涨薪前工资
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 7    3. 涨工资
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 8    4. 打印涨薪后的工资
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 9    5. 提交数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">10 */</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">11</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">procedure</span> <span style="color:#a6e22e">proc_updatesal</span>(vempno <span style="color:#66d9ef">in</span> number,vcount <span style="color:#66d9ef">in</span> number)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">12</span> <span style="color:#66d9ef">is</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">13</span>    <span style="color:#75715e">-- 声明变量记录当前工资
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">14</span>    vsal number;    
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">15</span> begin
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">16</span>    <span style="color:#f92672">--</span><span style="color:#ae81ff">1</span>. <span style="color:#960050;background-color:#1e0010">查询当前工资</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">17</span>    <span style="color:#66d9ef">select</span> sal <span style="color:#66d9ef">into</span> vsal <span style="color:#66d9ef">from</span> emp <span style="color:#66d9ef">where</span> empno<span style="color:#f92672">=</span>vempno;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">18</span>    <span style="color:#f92672">--</span><span style="color:#ae81ff">2</span>. <span style="color:#960050;background-color:#1e0010">打印涨薪前工资</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">19</span>    dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;涨薪前:&#39;</span><span style="color:#f92672">||</span>vsal);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">20</span>    <span style="color:#f92672">--</span><span style="color:#ae81ff">3</span>. <span style="color:#960050;background-color:#1e0010">涨工资</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">21</span>    <span style="color:#66d9ef">update</span> emp <span style="color:#66d9ef">set</span> sal<span style="color:#f92672">=</span>vsal<span style="color:#f92672">+</span>vcount <span style="color:#66d9ef">where</span> empno<span style="color:#f92672">=</span>vempno;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">22</span>    <span style="color:#75715e">-- 4. 打印涨薪后的工资
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">23</span>    dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;涨薪后:&#39;</span><span style="color:#f92672">||</span>(vsal<span style="color:#f92672">+</span>vcount));
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">24</span>    <span style="color:#f92672">--</span><span style="color:#ae81ff">5</span>. <span style="color:#960050;background-color:#1e0010">提交数据</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">25</span>    commit;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">26</span> end;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">27</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">28</span> <span style="color:#75715e">-- 调用存储过程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">29</span> <span style="color:#75715e">-- 方式1:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">30</span> <span style="color:#66d9ef">call</span> <span style="color:#a6e22e">proc_update_sal</span>(<span style="color:#ae81ff">7369</span>,<span style="color:#ae81ff">100</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">31</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">32</span> <span style="color:#75715e">-- 方式2:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">33</span> <span style="color:#66d9ef">declare</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">34</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">35</span> begin
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">36</span>    <span style="color:#a6e22e">proc_updatesal</span>(<span style="color:#ae81ff">7369</span>,<span style="color:#ae81ff">100</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">37</span> end;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">38</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">39</span> s
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">40</span> <span style="color:#75715e">-- 获取指定编号员工的年薪
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">41</span> <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">42    编号: in  输入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">43    年薪: out 输出
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">44 */</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">45</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">procedure</span> <span style="color:#a6e22e">proc_getyearsal</span>(vempno <span style="color:#66d9ef">in</span> number,vyearsal <span style="color:#66d9ef">out</span> number)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">46</span> <span style="color:#66d9ef">is</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">47</span>        
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">48</span> begin
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">49</span>   <span style="color:#66d9ef">select</span> sal<span style="color:#f92672">*</span><span style="color:#ae81ff">12</span><span style="color:#f92672">+</span><span style="color:#a6e22e">nvl</span>(comm,<span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">into</span> vyearsal <span style="color:#66d9ef">from</span> emp <span style="color:#66d9ef">where</span> empno<span style="color:#f92672">=</span>vempno;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">50</span> end;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">51</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">52</span> <span style="color:#75715e">-- plsql代码片断中调用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">53</span> <span style="color:#66d9ef">declare</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">54</span>    yearsal number;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">55</span> begin
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">56</span>    <span style="color:#a6e22e">proc_getyearsal</span>(<span style="color:#ae81ff">7369</span>,yearsal);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">57</span>    dbms_output.<span style="color:#a6e22e">put_line</span>(yearsal);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">58</span> end;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">59</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">60</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">61</span> <span style="color:#75715e">-- 封装存储过程,输出的是游标类型, 所有员工
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">62</span> <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">63    sys_refcursor : 系统引用游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">64 */</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">65</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">procedure</span> <span style="color:#a6e22e">proc_getemps</span>(vemps <span style="color:#66d9ef">out</span> sys_refcursor)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">66</span> <span style="color:#66d9ef">is</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">67</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">68</span> begin
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">69</span>     <span style="color:#75715e">-- 打开游标, 谁调用谁关闭
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">70</span>     open vemps <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> emp;   
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">71</span> end;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">72</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">73</span> <span style="color:#66d9ef">declare</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">74</span>   vemps sys_refcursor;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">75</span>   vrow emp<span style="color:#f92672">%</span>rowtype;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">76</span> begin
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">77</span>   <span style="color:#75715e">-- 调用存储过程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">78</span>   <span style="color:#a6e22e">proc_getemps</span>(vemps);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">79</span>   
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">80</span>   <span style="color:#66d9ef">loop</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">81</span>      <span style="color:#66d9ef">fetch</span> vemps <span style="color:#66d9ef">into</span> vrow; 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">82</span>      <span style="color:#66d9ef">exit</span> <span style="color:#66d9ef">when</span> vemps<span style="color:#f92672">%</span>notfound;  
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">83</span>      dbms_output.<span style="color:#a6e22e">put_line</span>(vrow.ename);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">84</span>   end <span style="color:#66d9ef">loop</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">85</span>   <span style="color:#75715e">-- 关闭游标
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">86</span>   close vemps;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">87</span> end;<span style="color:#960050;background-color:#1e0010">五、存储函数</span>
+</span></span></code></pre></div><h3 id="五存储函数概述">五、存储函数概述</h3>
 <p>　　存储函数: 实际上是将一段已经编译好的PLSQL代码片断,封装在数据库中。</p>
 <h4 id="1作用">1、作用:</h4>
 <ol>
@@ -592,13 +591,13 @@
 </li>
 </ol>
 <p>　　语法:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">create</span> [<span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span>] function <span style="color:#960050;background-color:#1e0010">函数名称</span>(<span style="color:#960050;background-color:#1e0010">参数</span><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">in</span><span style="color:#f92672">|</span><span style="color:#66d9ef">out</span> <span style="color:#960050;background-color:#1e0010">参数类型</span>) <span style="color:#66d9ef">return</span> <span style="color:#960050;background-color:#1e0010">返回类型</span> 
-<span style="color:#ae81ff">2</span> <span style="color:#66d9ef">is</span> 
-<span style="color:#ae81ff">3</span> 
-<span style="color:#ae81ff">4</span> begin 
-<span style="color:#ae81ff">5</span> 
-<span style="color:#ae81ff">6</span> end;
-</code></pre></div><p>　　存储过程和存储函数:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">create</span> [<span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span>] function <span style="color:#960050;background-color:#1e0010">函数名称</span>(<span style="color:#960050;background-color:#1e0010">参数</span><span style="color:#ae81ff">1</span> <span style="color:#66d9ef">in</span><span style="color:#f92672">|</span><span style="color:#66d9ef">out</span> <span style="color:#960050;background-color:#1e0010">参数类型</span>) <span style="color:#66d9ef">return</span> <span style="color:#960050;background-color:#1e0010">返回类型</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span> <span style="color:#66d9ef">is</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4</span> begin 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">5</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">6</span> end;
+</span></span></code></pre></div><p>　　存储过程和存储函数:</p>
 <ol>
 <li>
 <p>函数有返回值,过程没有返回值</p>
@@ -617,25 +616,25 @@
 </li>
 </ol>
 <h4 id="2使用示例-2">2、使用示例</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 存储函数:获取年薪
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> function <span style="color:#a6e22e">func_getyearsal</span>(vempno number) <span style="color:#66d9ef">return</span> number
- <span style="color:#ae81ff">3</span> <span style="color:#66d9ef">is</span>
- <span style="color:#ae81ff">4</span>   vyearsal number;
- <span style="color:#ae81ff">5</span> begin
- <span style="color:#ae81ff">6</span>   <span style="color:#66d9ef">select</span> sal<span style="color:#f92672">*</span><span style="color:#ae81ff">12</span><span style="color:#f92672">+</span><span style="color:#a6e22e">nvl</span>(comm,<span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">into</span> vyearsal <span style="color:#66d9ef">from</span> emp <span style="color:#66d9ef">where</span> empno<span style="color:#f92672">=</span>vempno;
- <span style="color:#ae81ff">7</span>   <span style="color:#66d9ef">return</span> vyearsal;
- <span style="color:#ae81ff">8</span> end;
- <span style="color:#ae81ff">9</span> 
-<span style="color:#ae81ff">10</span> <span style="color:#75715e">-- 调用
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">11</span> <span style="color:#66d9ef">declare</span>
-<span style="color:#ae81ff">12</span>    yearsal number;
-<span style="color:#ae81ff">13</span> begin
-<span style="color:#ae81ff">14</span>    yearsal :<span style="color:#f92672">=</span> <span style="color:#a6e22e">func_getyearsal</span>(<span style="color:#ae81ff">7369</span>);
-<span style="color:#ae81ff">15</span>    dbms_output.<span style="color:#a6e22e">put_line</span>(yearsal);
-<span style="color:#ae81ff">16</span> end;
-<span style="color:#ae81ff">17</span> 
-<span style="color:#ae81ff">18</span> <span style="color:#66d9ef">select</span> emp.<span style="color:#f92672">*</span>,<span style="color:#a6e22e">func_getyearsal</span>(emp.empno) <span style="color:#66d9ef">from</span> emp;
-</code></pre></div><h3 id="六触发器">六、触发器</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span> <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 存储函数:获取年薪
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> function <span style="color:#a6e22e">func_getyearsal</span>(vempno number) <span style="color:#66d9ef">return</span> number
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">3</span> <span style="color:#66d9ef">is</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">4</span>   vyearsal number;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">5</span> begin
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">6</span>   <span style="color:#66d9ef">select</span> sal<span style="color:#f92672">*</span><span style="color:#ae81ff">12</span><span style="color:#f92672">+</span><span style="color:#a6e22e">nvl</span>(comm,<span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">into</span> vyearsal <span style="color:#66d9ef">from</span> emp <span style="color:#66d9ef">where</span> empno<span style="color:#f92672">=</span>vempno;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">7</span>   <span style="color:#66d9ef">return</span> vyearsal;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">8</span> end;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">9</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">10</span> <span style="color:#75715e">-- 调用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">11</span> <span style="color:#66d9ef">declare</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">12</span>    yearsal number;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">13</span> begin
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">14</span>    yearsal :<span style="color:#f92672">=</span> <span style="color:#a6e22e">func_getyearsal</span>(<span style="color:#ae81ff">7369</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">15</span>    dbms_output.<span style="color:#a6e22e">put_line</span>(yearsal);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">16</span> end;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">17</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">18</span> <span style="color:#66d9ef">select</span> emp.<span style="color:#f92672">*</span>,<span style="color:#a6e22e">func_getyearsal</span>(emp.empno) <span style="color:#66d9ef">from</span> emp;
+</span></span></code></pre></div><h3 id="六触发器">六、触发器</h3>
 <h4 id="1概述-1">　1、概述：</h4>
 <p>数据库触发器是一个与表相关的、存储的PL/SQL程序。每当一个特定的数据操作语句（insert，update，delete）在指定的表上发出是，Oracle自动地执行触发器中定义的语句序列。</p>
 <h4 id="2作用">　2、作用：</h4>
@@ -644,17 +643,17 @@
 <li>对表中的数据进行校验</li>
 </ul>
 <h4 id="3语法">　3、语法：</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">CREATE</span> [<span style="color:#66d9ef">OR</span> <span style="color:#66d9ef">REPLACE</span>] <span style="color:#66d9ef">TRIGGER</span> <span style="color:#960050;background-color:#1e0010">触发器名称</span> 
- <span style="color:#ae81ff">2</span> <span style="color:#960050;background-color:#1e0010">{</span><span style="color:#66d9ef">BEFORE</span> <span style="color:#f92672">|</span> AFTER<span style="color:#960050;background-color:#1e0010">}</span>
- <span style="color:#ae81ff">3</span> <span style="color:#960050;background-color:#1e0010">{</span><span style="color:#66d9ef">INSERT</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">UPDATE</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">DELETE</span><span style="color:#960050;background-color:#1e0010">}</span> 
- <span style="color:#ae81ff">4</span> <span style="color:#66d9ef">ON</span> <span style="color:#960050;background-color:#1e0010">表名</span> 
- <span style="color:#ae81ff">5</span> [ <span style="color:#66d9ef">FOR</span> <span style="color:#66d9ef">EACH</span> ROW [<span style="color:#66d9ef">WHEN</span>(<span style="color:#960050;background-color:#1e0010">条件</span>)]]
- <span style="color:#ae81ff">6</span> <span style="color:#66d9ef">DECLARE</span>
- <span style="color:#ae81ff">7</span>     ....
- <span style="color:#ae81ff">8</span> BEGIN
- <span style="color:#ae81ff">9</span>     PLSQL块
-<span style="color:#ae81ff">10</span> END <span style="color:#960050;background-color:#1e0010">触发器名</span>;
-</code></pre></div><h4 id="4触发器的类型">　　4、触发器的类型</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">CREATE</span> [<span style="color:#66d9ef">OR</span> <span style="color:#66d9ef">REPLACE</span>] <span style="color:#66d9ef">TRIGGER</span> <span style="color:#960050;background-color:#1e0010">触发器名称</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">2</span> <span style="color:#960050;background-color:#1e0010">{</span><span style="color:#66d9ef">BEFORE</span> <span style="color:#f92672">|</span> AFTER<span style="color:#960050;background-color:#1e0010">}</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">3</span> <span style="color:#960050;background-color:#1e0010">{</span><span style="color:#66d9ef">INSERT</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">UPDATE</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">DELETE</span><span style="color:#960050;background-color:#1e0010">}</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">4</span> <span style="color:#66d9ef">ON</span> <span style="color:#960050;background-color:#1e0010">表名</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">5</span> [ <span style="color:#66d9ef">FOR</span> <span style="color:#66d9ef">EACH</span> ROW [<span style="color:#66d9ef">WHEN</span>(<span style="color:#960050;background-color:#1e0010">条件</span>)]]
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">6</span> <span style="color:#66d9ef">DECLARE</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">7</span>     ....
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">8</span> BEGIN
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">9</span>     PLSQL<span style="color:#960050;background-color:#1e0010">块</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">10</span> END <span style="color:#960050;background-color:#1e0010">触发器名</span>;
+</span></span></code></pre></div><h4 id="4触发器的类型">　　4、触发器的类型</h4>
 <ul>
 <li>行级触发器：一条SQL语句，影响了多少行记录，触发器就会执行多少次；
 <ul>
@@ -669,123 +668,123 @@
 <li>语句级触发器：一条SQL语句，无论影响了多少行记录，都只触发一次；</li>
 </ul>
 <h4 id="5使用示例">　　5、使用示例</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">  <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 若用户向表中插入数据之后, 打印一句话
-</span><span style="color:#75715e"></span>  <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">trigger</span> tri_test1
-  <span style="color:#ae81ff">3</span> after
-  <span style="color:#ae81ff">4</span> <span style="color:#66d9ef">insert</span> 
-  <span style="color:#ae81ff">5</span> <span style="color:#66d9ef">on</span> emp
-  <span style="color:#ae81ff">6</span> <span style="color:#66d9ef">declare</span>
-  <span style="color:#ae81ff">7</span> 
-  <span style="color:#ae81ff">8</span> begin
-  <span style="color:#ae81ff">9</span>    dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;有人插入了....&#39;</span>);
- <span style="color:#ae81ff">10</span> end;
- <span style="color:#ae81ff">11</span> 
- <span style="color:#ae81ff">12</span> <span style="color:#66d9ef">insert</span> <span style="color:#66d9ef">into</span> <span style="color:#a6e22e">emp</span>(empno,ename) <span style="color:#66d9ef">values</span>(<span style="color:#ae81ff">9527</span>,<span style="color:#e6db74">&#39;华安&#39;</span>);
- <span style="color:#ae81ff">13</span> <span style="color:#75715e">-- 执行一条更新工资的语句
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">14</span> 
- <span style="color:#ae81ff">15</span> <span style="color:#75715e">-- 周二老板不在,不能办理员工入职(不能向员工表中插入数据)
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">16</span> <span style="color:#75715e">-- 触发器
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">17</span> <span style="color:#75715e">-- before insert
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">18</span> <span style="color:#75715e">-- 判断今天是否是周二
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">19</span> <span style="color:#66d9ef">select</span> <span style="color:#a6e22e">trim</span>(<span style="color:#a6e22e">to_char</span>(sysdate,<span style="color:#e6db74">&#39;day&#39;</span>)) <span style="color:#66d9ef">from</span> <span style="color:#66d9ef">dual</span>;
- <span style="color:#ae81ff">20</span> 
- <span style="color:#ae81ff">21</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">trigger</span> tri_checkday
- <span style="color:#ae81ff">22</span> <span style="color:#66d9ef">before</span>
- <span style="color:#ae81ff">23</span> <span style="color:#66d9ef">insert</span>
- <span style="color:#ae81ff">24</span> <span style="color:#66d9ef">on</span> emp
- <span style="color:#ae81ff">25</span> <span style="color:#66d9ef">declare</span>
- <span style="color:#ae81ff">26</span>    vday <span style="color:#a6e22e">varchar2</span>(<span style="color:#ae81ff">20</span>);
- <span style="color:#ae81ff">27</span> begin
- <span style="color:#ae81ff">28</span>    <span style="color:#75715e">-- 查询当前周几
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">29</span>    <span style="color:#66d9ef">select</span> <span style="color:#a6e22e">trim</span>(<span style="color:#a6e22e">to_char</span>(sysdate,<span style="color:#e6db74">&#39;day&#39;</span>)) <span style="color:#66d9ef">into</span> vday <span style="color:#66d9ef">from</span> <span style="color:#66d9ef">dual</span>;
- <span style="color:#ae81ff">30</span>    <span style="color:#75715e">-- 判断是否为周二,若为周二,则需要中断插入操作
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">31</span>    <span style="color:#66d9ef">if</span> vday <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;tuesday&#39;</span> <span style="color:#66d9ef">then</span>
- <span style="color:#ae81ff">32</span>      <span style="color:#75715e">--                   -20000 - -20999
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">33</span>      <span style="color:#a6e22e">raise_application_error</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">20001</span>,<span style="color:#e6db74">&#39;周二老板不在,不能插入&#39;</span>);
- <span style="color:#ae81ff">34</span>    end <span style="color:#66d9ef">if</span>;
- <span style="color:#ae81ff">35</span> end;
- <span style="color:#ae81ff">36</span> 
- <span style="color:#ae81ff">37</span> <span style="color:#66d9ef">insert</span> <span style="color:#66d9ef">into</span> <span style="color:#a6e22e">emp</span>(empno,ename) <span style="color:#66d9ef">values</span>(<span style="color:#ae81ff">9527</span>,<span style="color:#e6db74">&#39;华安&#39;</span>);
- <span style="color:#ae81ff">38</span> 
- <span style="color:#ae81ff">39</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> emp;
- <span style="color:#ae81ff">40</span> 
- <span style="color:#ae81ff">41</span> <span style="color:#75715e">-- 语句级触发器
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">42</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">trigger</span> tri_test3
- <span style="color:#ae81ff">43</span> <span style="color:#66d9ef">before</span>
- <span style="color:#ae81ff">44</span> <span style="color:#66d9ef">update</span>
- <span style="color:#ae81ff">45</span> <span style="color:#66d9ef">on</span> emp
- <span style="color:#ae81ff">46</span> <span style="color:#66d9ef">declare</span>
- <span style="color:#ae81ff">47</span> 
- <span style="color:#ae81ff">48</span> begin
- <span style="color:#ae81ff">49</span>   dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;语句级触发器&#39;</span>); 
- <span style="color:#ae81ff">50</span> end;
- <span style="color:#ae81ff">51</span> 
- <span style="color:#ae81ff">52</span> <span style="color:#75715e">-- 行级触发器
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">53</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">trigger</span> tri_test4
- <span style="color:#ae81ff">54</span> <span style="color:#66d9ef">before</span>
- <span style="color:#ae81ff">55</span> <span style="color:#66d9ef">update</span>
- <span style="color:#ae81ff">56</span> <span style="color:#66d9ef">on</span> emp
- <span style="color:#ae81ff">57</span> <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">each</span> row
- <span style="color:#ae81ff">58</span> <span style="color:#66d9ef">declare</span>
- <span style="color:#ae81ff">59</span> 
- <span style="color:#ae81ff">60</span> begin
- <span style="color:#ae81ff">61</span>   dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;行级触发器,旧的工资:&#39;</span><span style="color:#f92672">||</span>:old.sal<span style="color:#f92672">||</span><span style="color:#e6db74">&#39;  新的工资:&#39;</span><span style="color:#f92672">||</span>:new.sal); 
- <span style="color:#ae81ff">62</span> end;
- <span style="color:#ae81ff">63</span> 
- <span style="color:#ae81ff">64</span> <span style="color:#66d9ef">update</span> emp <span style="color:#66d9ef">set</span> sal<span style="color:#f92672">=</span>sal<span style="color:#f92672">+</span><span style="color:#ae81ff">100</span>;
- <span style="color:#ae81ff">65</span> 
- <span style="color:#ae81ff">66</span> <span style="color:#75715e">-- 6个月 ---&gt; 人事 加薪 ---&gt; 加10块钱 ---&gt; 老板签字
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">67</span> <span style="color:#75715e">-- 校验员工薪资 调整后的工资一定要 大于 薪资调整前的工资
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">68</span> <span style="color:#75715e">-- 触发器:  before update on emp
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">69</span> <span style="color:#75715e">-- 行级触发器
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">70</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">trigger</span> tri_checksal
- <span style="color:#ae81ff">71</span> <span style="color:#66d9ef">before</span>
- <span style="color:#ae81ff">72</span> <span style="color:#66d9ef">update</span>
- <span style="color:#ae81ff">73</span> <span style="color:#66d9ef">on</span> emp
- <span style="color:#ae81ff">74</span> <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">each</span> row
- <span style="color:#ae81ff">75</span> <span style="color:#66d9ef">declare</span>
- <span style="color:#ae81ff">76</span> 
- <span style="color:#ae81ff">77</span> begin
- <span style="color:#ae81ff">78</span>   <span style="color:#75715e">-- 调整后的工资 &lt;= 薪资调整前的工资 ,则中断更新操作
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">79</span>   <span style="color:#75715e">-- :new.sal    &lt;= :old.sal
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">80</span>   <span style="color:#66d9ef">if</span> :new.sal <span style="color:#f92672">&lt;=</span> :old.sal <span style="color:#66d9ef">then</span>
- <span style="color:#ae81ff">81</span>      <span style="color:#a6e22e">raise_application_error</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">20002</span>,<span style="color:#e6db74">&#39;坑爹的,降薪啦!&#39;</span>);
- <span style="color:#ae81ff">82</span>   end <span style="color:#66d9ef">if</span>;
- <span style="color:#ae81ff">83</span> end;
- <span style="color:#ae81ff">84</span> 
- <span style="color:#ae81ff">85</span> <span style="color:#66d9ef">update</span> emp <span style="color:#66d9ef">set</span> sal<span style="color:#f92672">=</span>sal<span style="color:#f92672">-</span><span style="color:#ae81ff">100</span>;
- <span style="color:#ae81ff">86</span> 
- <span style="color:#ae81ff">87</span> <span style="color:#75715e">/*
-</span><span style="color:#75715e"> 88      使用触发器模拟类似auto_increment功能
-</span><span style="color:#75715e"> 89      当用户插入的时候,若为sid为null,则给sid赋值一个编号
-</span><span style="color:#75715e"> 90 */</span>
- <span style="color:#ae81ff">91</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">table</span> <span style="color:#a6e22e">stu</span>(
- <span style="color:#ae81ff">92</span>      sid number <span style="color:#66d9ef">primary</span> <span style="color:#66d9ef">key</span>,
- <span style="color:#ae81ff">93</span>      name <span style="color:#a6e22e">varchar2</span>(<span style="color:#ae81ff">20</span>)
- <span style="color:#ae81ff">94</span> );
- <span style="color:#ae81ff">95</span> 
- <span style="color:#ae81ff">96</span> <span style="color:#75715e">-- 创建一个序列
-</span><span style="color:#75715e"></span> <span style="color:#ae81ff">97</span> <span style="color:#66d9ef">create</span> sequence seq_stu;
- <span style="color:#ae81ff">98</span> 
- <span style="color:#ae81ff">99</span> <span style="color:#75715e">-- 触发器: before insert on stu
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">100</span> <span style="color:#75715e">-- 行级触发器
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">101</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">trigger</span> tri_auto
-<span style="color:#ae81ff">102</span> <span style="color:#66d9ef">before</span>
-<span style="color:#ae81ff">103</span> <span style="color:#66d9ef">insert</span> 
-<span style="color:#ae81ff">104</span> <span style="color:#66d9ef">on</span> stu
-<span style="color:#ae81ff">105</span> <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">each</span> row
-<span style="color:#ae81ff">106</span> <span style="color:#66d9ef">declare</span>
-<span style="color:#ae81ff">107</span> 
-<span style="color:#ae81ff">108</span> begin
-<span style="color:#ae81ff">109</span>    <span style="color:#75715e">-- 从序列中查询一个数字出来,赋值给sid
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">110</span>    <span style="color:#66d9ef">select</span> seq_stu.nextval <span style="color:#66d9ef">into</span> :new.sid <span style="color:#66d9ef">from</span> <span style="color:#66d9ef">dual</span>;
-<span style="color:#ae81ff">111</span> end;
-<span style="color:#ae81ff">112</span> 
-<span style="color:#ae81ff">113</span> <span style="color:#75715e">-- 同样一张表,有时候自己指定id, 有时候需要数据库自动生成id
-</span><span style="color:#75715e"></span><span style="color:#ae81ff">114</span> <span style="color:#66d9ef">insert</span> <span style="color:#66d9ef">into</span> stu <span style="color:#66d9ef">values</span>(<span style="color:#66d9ef">null</span>,<span style="color:#e6db74">&#39;zs&#39;</span>);
-<span style="color:#ae81ff">115</span> <span style="color:#66d9ef">insert</span> <span style="color:#66d9ef">into</span> stu <span style="color:#66d9ef">values</span>(<span style="color:#ae81ff">4</span>,<span style="color:#e6db74">&#39;zs&#39;</span>);
-<span style="color:#ae81ff">116</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> stu; 
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span>  <span style="color:#ae81ff">1</span> <span style="color:#75715e">-- 若用户向表中插入数据之后, 打印一句话
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">trigger</span> tri_test1
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">3</span> after
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">4</span> <span style="color:#66d9ef">insert</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">5</span> <span style="color:#66d9ef">on</span> emp
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">6</span> <span style="color:#66d9ef">declare</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">7</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">8</span> begin
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">9</span>    dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;有人插入了....&#39;</span>);
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">10</span> end;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">11</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">12</span> <span style="color:#66d9ef">insert</span> <span style="color:#66d9ef">into</span> <span style="color:#a6e22e">emp</span>(empno,ename) <span style="color:#66d9ef">values</span>(<span style="color:#ae81ff">9527</span>,<span style="color:#e6db74">&#39;华安&#39;</span>);
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">13</span> <span style="color:#75715e">-- 执行一条更新工资的语句
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">14</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">15</span> <span style="color:#75715e">-- 周二老板不在,不能办理员工入职(不能向员工表中插入数据)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">16</span> <span style="color:#75715e">-- 触发器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">17</span> <span style="color:#75715e">-- before insert
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">18</span> <span style="color:#75715e">-- 判断今天是否是周二
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">19</span> <span style="color:#66d9ef">select</span> <span style="color:#a6e22e">trim</span>(<span style="color:#a6e22e">to_char</span>(sysdate,<span style="color:#e6db74">&#39;day&#39;</span>)) <span style="color:#66d9ef">from</span> <span style="color:#66d9ef">dual</span>;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">20</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">21</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">trigger</span> tri_checkday
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">22</span> <span style="color:#66d9ef">before</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">23</span> <span style="color:#66d9ef">insert</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">24</span> <span style="color:#66d9ef">on</span> emp
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">25</span> <span style="color:#66d9ef">declare</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">26</span>    vday <span style="color:#a6e22e">varchar2</span>(<span style="color:#ae81ff">20</span>);
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">27</span> begin
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">28</span>    <span style="color:#75715e">-- 查询当前周几
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">29</span>    <span style="color:#66d9ef">select</span> <span style="color:#a6e22e">trim</span>(<span style="color:#a6e22e">to_char</span>(sysdate,<span style="color:#e6db74">&#39;day&#39;</span>)) <span style="color:#66d9ef">into</span> vday <span style="color:#66d9ef">from</span> <span style="color:#66d9ef">dual</span>;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">30</span>    <span style="color:#75715e">-- 判断是否为周二,若为周二,则需要中断插入操作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">31</span>    <span style="color:#66d9ef">if</span> vday <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;tuesday&#39;</span> <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">32</span>      <span style="color:#75715e">--                   -20000 - -20999
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">33</span>      <span style="color:#a6e22e">raise_application_error</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">20001</span>,<span style="color:#e6db74">&#39;周二老板不在,不能插入&#39;</span>);
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">34</span>    end <span style="color:#66d9ef">if</span>;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">35</span> end;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">36</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">37</span> <span style="color:#66d9ef">insert</span> <span style="color:#66d9ef">into</span> <span style="color:#a6e22e">emp</span>(empno,ename) <span style="color:#66d9ef">values</span>(<span style="color:#ae81ff">9527</span>,<span style="color:#e6db74">&#39;华安&#39;</span>);
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">38</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">39</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> emp;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">40</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">41</span> <span style="color:#75715e">-- 语句级触发器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">42</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">trigger</span> tri_test3
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">43</span> <span style="color:#66d9ef">before</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">44</span> <span style="color:#66d9ef">update</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">45</span> <span style="color:#66d9ef">on</span> emp
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">46</span> <span style="color:#66d9ef">declare</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">47</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">48</span> begin
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">49</span>   dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;语句级触发器&#39;</span>); 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">50</span> end;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">51</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">52</span> <span style="color:#75715e">-- 行级触发器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">53</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">trigger</span> tri_test4
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">54</span> <span style="color:#66d9ef">before</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">55</span> <span style="color:#66d9ef">update</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">56</span> <span style="color:#66d9ef">on</span> emp
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">57</span> <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">each</span> row
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">58</span> <span style="color:#66d9ef">declare</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">59</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">60</span> begin
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">61</span>   dbms_output.<span style="color:#a6e22e">put_line</span>(<span style="color:#e6db74">&#39;行级触发器,旧的工资:&#39;</span><span style="color:#f92672">||</span>:old.sal<span style="color:#f92672">||</span><span style="color:#e6db74">&#39;  新的工资:&#39;</span><span style="color:#f92672">||</span>:new.sal); 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">62</span> end;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">63</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">64</span> <span style="color:#66d9ef">update</span> emp <span style="color:#66d9ef">set</span> sal<span style="color:#f92672">=</span>sal<span style="color:#f92672">+</span><span style="color:#ae81ff">100</span>;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">65</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">66</span> <span style="color:#75715e">-- 6个月 ---&gt; 人事 加薪 ---&gt; 加10块钱 ---&gt; 老板签字
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">67</span> <span style="color:#75715e">-- 校验员工薪资 调整后的工资一定要 大于 薪资调整前的工资
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">68</span> <span style="color:#75715e">-- 触发器:  before update on emp
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">69</span> <span style="color:#75715e">-- 行级触发器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">70</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">trigger</span> tri_checksal
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">71</span> <span style="color:#66d9ef">before</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">72</span> <span style="color:#66d9ef">update</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">73</span> <span style="color:#66d9ef">on</span> emp
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">74</span> <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">each</span> row
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">75</span> <span style="color:#66d9ef">declare</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">76</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">77</span> begin
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">78</span>   <span style="color:#75715e">-- 调整后的工资 &lt;= 薪资调整前的工资 ,则中断更新操作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">79</span>   <span style="color:#75715e">-- :new.sal    &lt;= :old.sal
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">80</span>   <span style="color:#66d9ef">if</span> :new.sal <span style="color:#f92672">&lt;=</span> :old.sal <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">81</span>      <span style="color:#a6e22e">raise_application_error</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">20002</span>,<span style="color:#e6db74">&#39;坑爹的,降薪啦!&#39;</span>);
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">82</span>   end <span style="color:#66d9ef">if</span>;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">83</span> end;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">84</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">85</span> <span style="color:#66d9ef">update</span> emp <span style="color:#66d9ef">set</span> sal<span style="color:#f92672">=</span>sal<span style="color:#f92672">-</span><span style="color:#ae81ff">100</span>;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">86</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">87</span> <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 88      使用触发器模拟类似auto_increment功能
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 89      当用户插入的时候,若为sid为null,则给sid赋值一个编号
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> 90 */</span>
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">91</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">table</span> <span style="color:#a6e22e">stu</span>(
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">92</span>      sid number <span style="color:#66d9ef">primary</span> <span style="color:#66d9ef">key</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">93</span>      name <span style="color:#a6e22e">varchar2</span>(<span style="color:#ae81ff">20</span>)
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">94</span> );
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">95</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">96</span> <span style="color:#75715e">-- 创建一个序列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">97</span> <span style="color:#66d9ef">create</span> sequence seq_stu;
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">98</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">99</span> <span style="color:#75715e">-- 触发器: before insert on stu
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">100</span> <span style="color:#75715e">-- 行级触发器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">101</span> <span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">trigger</span> tri_auto
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">102</span> <span style="color:#66d9ef">before</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">103</span> <span style="color:#66d9ef">insert</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">104</span> <span style="color:#66d9ef">on</span> stu
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">105</span> <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">each</span> row
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">106</span> <span style="color:#66d9ef">declare</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">107</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">108</span> begin
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">109</span>    <span style="color:#75715e">-- 从序列中查询一个数字出来,赋值给sid
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">110</span>    <span style="color:#66d9ef">select</span> seq_stu.nextval <span style="color:#66d9ef">into</span> :new.sid <span style="color:#66d9ef">from</span> <span style="color:#66d9ef">dual</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">111</span> end;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">112</span> 
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">113</span> <span style="color:#75715e">-- 同样一张表,有时候自己指定id, 有时候需要数据库自动生成id
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">114</span> <span style="color:#66d9ef">insert</span> <span style="color:#66d9ef">into</span> stu <span style="color:#66d9ef">values</span>(<span style="color:#66d9ef">null</span>,<span style="color:#e6db74">&#39;zs&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">115</span> <span style="color:#66d9ef">insert</span> <span style="color:#66d9ef">into</span> stu <span style="color:#66d9ef">values</span>(<span style="color:#ae81ff">4</span>,<span style="color:#e6db74">&#39;zs&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">116</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> stu; 
+</span></span></code></pre></div>
       </article>
     </section>
 
@@ -811,7 +810,7 @@
 
             <footer class="ui basic center aligned segment" style="background-color: transparent;">
               
-              <p>© 2019 - 2022 Aaron 的博客</p>
+              <p>© 2019 - 2023 Aaron 的博客</p>
               
 
               <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
@@ -974,7 +973,7 @@
       <div class="ui medium header">关于我</div>
       <p>Aaron 的 ❤️ 博客</p>
 <p>记录一些 🌈 生活上，技术上的事</p>
-<p>职业是后端工程师</p>
+<p>职业是JAVA全栈工程师</p>
 
     </article>
   </div>
