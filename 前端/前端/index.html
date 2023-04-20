@@ -23,7 +23,7 @@
 
 
 <meta property="og:title" content="Vue基础" />
-<meta property="og:description" content="1 、WebStorm创建Vue项目目录结构 dist:用于存放我们 使用 npm run build 命令打包的项目文件 node_modules:用于存放我们项目的各种" />
+<meta property="og:description" content="1 、WebStorm创建Vue项目目录结构 dist ：用于存放我们 使用 npm run build 命令 打包的项目文件 node_modules ：用于存放我们项目的 各种依赖，比如axios等等，没" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF/" /><meta property="og:image" content="https://recordnote.github.io/img/fe.png" /><meta property="article:section" content="前端" />
 <meta property="article:published_time" content="2022-12-15T14:21:26+08:00" />
@@ -35,7 +35,7 @@
 <meta name="twitter:image" content="https://recordnote.github.io/img/fe.png"/>
 
 <meta name="twitter:title" content="Vue基础"/>
-<meta name="twitter:description" content="1 、WebStorm创建Vue项目目录结构 dist:用于存放我们 使用 npm run build 命令打包的项目文件 node_modules:用于存放我们项目的各种"/>
+<meta name="twitter:description" content="1 、WebStorm创建Vue项目目录结构 dist ：用于存放我们 使用 npm run build 命令 打包的项目文件 node_modules ：用于存放我们项目的 各种依赖，比如axios等等，没"/>
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
@@ -145,7 +145,7 @@
   <ul>
     <li>
       <ul>
-        <li></li>
+        <li><a href="#1-webstorm创建vue项目目录结构">1 、WebStorm创建Vue项目目录结构</a></li>
       </ul>
     </li>
   </ul>
@@ -205,26 +205,26 @@
         <img class="cover" src="/img/fe.png" />
         
 
-        <h5 id="1-webstorm创建vue项目目录结构">1 、WebStorm创建Vue项目目录结构</h5>
+        <h3 id="1-webstorm创建vue项目目录结构">1 、WebStorm创建Vue项目目录结构</h3>
 <img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/vue.png" alt="在这里插入图片描述" style="zoom:67%;" /> 
-<p><strong>dist:<strong>用于存放我们 使用 npm run build 命令</strong>打包的项目文件</strong></p>
-<p><strong>node_modules:<strong>用于存放我们项目的</strong>各种依赖</strong>，比如axios等等，没有moudles文件，项目就没法运行，可以使用 npm install进行项目依赖的安装</p>
-<p><strong>public: <strong>用于</strong>存放静态文件</strong></p>
-<p><strong>public/index.html:<strong>是一个</strong>模板文件</strong>，作用是生成项目的入口文件，webpack打包的js,css也会自动注入到该页面中。我们浏览器访问项目的时候就会默认打开生成好的index.html</p>
-<p>**src:**我们存放各种vue文件的地方</p>
-<p><strong>src/assets:</strong> 用于存放各种<strong>静态文件</strong>，如图片</p>
-<p><strong>src/compnents：<strong>用于存放我们的</strong>公共组件</strong>，如 header、footer等</p>
-<p><strong>src/views：<strong>用于</strong>存放</strong>我们写好的<strong>各种页面</strong>，如login、main等</p>
-<p><strong>src/App.vue:</strong> 主vue模块 引入其他模块，<strong>app.vue是项目的主组件</strong>，所有页面都是在app.vue下切换的</p>
-<p><strong>src/main.js:  入口文件</strong> ，主要作用是<strong>初始化vue实例</strong>，同时可以在此文件中引用某些组件库或者全局挂在一些变量</p>
-<p><strong>src/router.js: 路由文件</strong> ，可以理解为各个页面的地址路径，用于我们访问，同时可以直接在里边编写路由守卫</p>
-<p><strong>src/store.js：<strong>主要用于项目里边的</strong>一些状态的保存</strong>，state中保存状态，mutations中写用于修改state中的状态，actions暂时没实践，不知道具体怎么使用</p>
-<p><strong>package.json:    模块基本信息</strong>项目开发所需要模块，版本，项目名称</p>
-<p><strong>package-lock.json:</strong>  是在 npm install时候生成一份文件，用以<strong>记录当前状态下实际安装的各个npm package的具体来源和版本号</strong></p>
-<p><strong>babel.config.js:</strong>  是一个工具链，主要用于在当前和较旧的浏览器或环境中将ECMAScript 2015+代码转换为JavaScript的向后兼容版本</p>
-<p><strong>gitignore:</strong> git上传需要忽略的文件格式</p>
-<p><strong>vue.config.js: <strong>保存</strong>vue配置的文件</strong>，可以用于设置代理,打包配置等</p>
-
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span> dist <span style="color:#960050;background-color:#1e0010">：用于存放我们</span> <span style="color:#960050;background-color:#1e0010">使用</span> npm run build <span style="color:#960050;background-color:#1e0010">命令</span> <span style="color:#960050;background-color:#1e0010">打包的项目文件</span> 
+</span></span><span style="display:flex;"><span> node_modules <span style="color:#960050;background-color:#1e0010">：用于存放我们项目的</span> <span style="color:#960050;background-color:#1e0010">各种依赖，比如</span>axios<span style="color:#960050;background-color:#1e0010">等等，没有</span>moudles<span style="color:#960050;background-color:#1e0010">文件，项目就没法运行，可以使用</span> npm install<span style="color:#960050;background-color:#1e0010">进行项目依赖的安装</span>
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>  <span style="color:#960050;background-color:#1e0010">用于</span> <span style="color:#960050;background-color:#1e0010">存放静态文件</span> 
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">public</span><span style="color:#f92672">/</span>index<span style="color:#f92672">.</span><span style="color:#a6e22e">html</span> <span style="color:#960050;background-color:#1e0010">：是一个</span> <span style="color:#960050;background-color:#1e0010">模板文件，作用是生成项目的入口文件，</span>webpack<span style="color:#960050;background-color:#1e0010">打包的</span>js<span style="color:#f92672">,</span>css<span style="color:#960050;background-color:#1e0010">也会自动注入到该页面中。我们浏览器访问项目的时候就会默认打开生成好的</span>index<span style="color:#f92672">.</span><span style="color:#a6e22e">html</span>
+</span></span><span style="display:flex;"><span> src <span style="color:#960050;background-color:#1e0010">：我们存放各种</span>vue<span style="color:#960050;background-color:#1e0010">文件的地方</span>
+</span></span><span style="display:flex;"><span> src<span style="color:#f92672">/</span>assets <span style="color:#960050;background-color:#1e0010">：</span> <span style="color:#960050;background-color:#1e0010">用于存放各种</span> <span style="color:#960050;background-color:#1e0010">静态文件，如图片</span>
+</span></span><span style="display:flex;"><span> src<span style="color:#f92672">/</span>compnents<span style="color:#960050;background-color:#1e0010">：用于存放我们的</span> <span style="color:#960050;background-color:#1e0010">公共组件，如</span> header<span style="color:#960050;background-color:#1e0010">、</span>footer<span style="color:#960050;background-color:#1e0010">等</span>
+</span></span><span style="display:flex;"><span> src<span style="color:#f92672">/</span>views<span style="color:#960050;background-color:#1e0010">：用于</span> <span style="color:#960050;background-color:#1e0010">存放</span> <span style="color:#960050;background-color:#1e0010">我们写好的</span> <span style="color:#960050;background-color:#1e0010">各种页面，如</span>login<span style="color:#960050;background-color:#1e0010">、</span>main<span style="color:#960050;background-color:#1e0010">等</span>
+</span></span><span style="display:flex;"><span> src<span style="color:#f92672">/</span>App<span style="color:#f92672">.</span><span style="color:#a6e22e">vue</span> <span style="color:#960050;background-color:#1e0010">：</span> <span style="color:#960050;background-color:#1e0010">主</span>vue<span style="color:#960050;background-color:#1e0010">模块</span> <span style="color:#960050;background-color:#1e0010">引入其他模块，</span>app<span style="color:#f92672">.</span><span style="color:#a6e22e">vue</span><span style="color:#960050;background-color:#1e0010">是项目的主组件，所有页面都是在</span>app<span style="color:#f92672">.</span><span style="color:#a6e22e">vue</span><span style="color:#960050;background-color:#1e0010">下切换的</span>
+</span></span><span style="display:flex;"><span> src<span style="color:#f92672">/</span>main<span style="color:#f92672">.</span><span style="color:#a6e22e">js</span><span style="color:#f92672">:</span>  <span style="color:#960050;background-color:#1e0010">入口文件</span>  <span style="color:#960050;background-color:#1e0010">，主要作用是</span> <span style="color:#960050;background-color:#1e0010">初始化</span>vue<span style="color:#960050;background-color:#1e0010">实例，同时可以在此文件中引用某些组件库或者全局挂在一些变量</span>
+</span></span><span style="display:flex;"><span> src<span style="color:#f92672">/</span>router<span style="color:#f92672">.</span><span style="color:#a6e22e">js</span><span style="color:#f92672">:</span> <span style="color:#960050;background-color:#1e0010">路由文件</span>  <span style="color:#960050;background-color:#1e0010">，可以理解为各个页面的地址路径，用于我们访问，同时可以直接在里边编写路由守卫</span>
+</span></span><span style="display:flex;"><span> src<span style="color:#f92672">/</span>store<span style="color:#f92672">.</span><span style="color:#a6e22e">js</span><span style="color:#960050;background-color:#1e0010">：主要用于项目里边的</span> <span style="color:#960050;background-color:#1e0010">一些状态的保存，</span>state<span style="color:#960050;background-color:#1e0010">中保存状态，</span>mutations<span style="color:#960050;background-color:#1e0010">中写用于修改</span>state<span style="color:#960050;background-color:#1e0010">中的状态，</span>actions<span style="color:#960050;background-color:#1e0010">暂时没实践，不知道具体怎么使用</span>
+</span></span><span style="display:flex;"><span> package<span style="color:#f92672">.</span><span style="color:#a6e22e">json</span><span style="color:#f92672">:</span>    <span style="color:#960050;background-color:#1e0010">模块基本信息</span> <span style="color:#960050;background-color:#1e0010">项目开发所需要模块，版本，项目名称</span>
+</span></span><span style="display:flex;"><span> package<span style="color:#f92672">-</span>lock<span style="color:#f92672">.</span><span style="color:#a6e22e">json</span> <span style="color:#960050;background-color:#1e0010">：</span>  <span style="color:#960050;background-color:#1e0010">是在</span> npm install<span style="color:#960050;background-color:#1e0010">时候生成一份文件，用以</span> <span style="color:#960050;background-color:#1e0010">记录当前状态下实际安装的各个</span>npm package<span style="color:#960050;background-color:#1e0010">的具体来源和版本号</span> 
+</span></span><span style="display:flex;"><span> babel<span style="color:#f92672">.</span><span style="color:#a6e22e">config</span><span style="color:#f92672">.</span><span style="color:#a6e22e">js</span> <span style="color:#960050;background-color:#1e0010">：</span>  <span style="color:#960050;background-color:#1e0010">是一个工具链，主要用于在当前和较旧的浏览器或环境中将</span>ECMAScript <span style="color:#ae81ff">2015</span><span style="color:#f92672">+</span><span style="color:#960050;background-color:#1e0010">代码转换为</span>JavaScript<span style="color:#960050;background-color:#1e0010">的向后兼容版本</span>
+</span></span><span style="display:flex;"><span> gitignore <span style="color:#960050;background-color:#1e0010">：</span> git<span style="color:#960050;background-color:#1e0010">上传需要忽略的文件格式</span>
+</span></span><span style="display:flex;"><span> vue<span style="color:#f92672">.</span><span style="color:#a6e22e">config</span><span style="color:#f92672">.</span><span style="color:#a6e22e">js</span><span style="color:#f92672">:</span>  <span style="color:#960050;background-color:#1e0010">保存</span> vue<span style="color:#960050;background-color:#1e0010">配置的文件，可以用于设置代理</span><span style="color:#f92672">,</span><span style="color:#960050;background-color:#1e0010">打包配置等</span>
+</span></span></code></pre></div>
       </article>
     </section>
 
