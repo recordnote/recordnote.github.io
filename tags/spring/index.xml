@@ -20,7 +20,7 @@
     <item>
       <title>spring常用注解</title>
       <link>https://recordnote.github.io/spring-cloud-alibaba/spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/</link>
-      <pubDate>Wed, 23 Nov 2022 14:21:26 +0800</pubDate>
+      <pubDate>Sun, 19 Feb 2023 14:21:26 +0800</pubDate>
       
       <guid>https://recordnote.github.io/spring-cloud-alibaba/spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/</guid>
       <description>一、@Resource和@Autowired的区别 1、@Autowired与@Resource都可以用来装配bean. 都可以写在字段上,或写</description>
