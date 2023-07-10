@@ -7,11 +7,11 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;&lt;img alt=&#34;知识共享许可协议&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png&#34; /&gt;&lt;/a&gt;&lt;br /&gt;本作品采用&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议&lt;/a&gt;进行许可。&lt;br /&gt;&lt;br /&gt;背景使用了 &lt;a href=&#34;https://www.pexels.com/zh-cn/&#34; target=&#34;_blank&#34;&gt;Pexels&lt;/a&gt; 上 &lt;a href=&#34;https://www.pexels.com/zh-cn/Ungaro&#34; target=&#34;_blank&#34;&gt;Francesco Ungaro&lt;/a&gt; 拍摄的&lt;a href=&#34;https://www.pexels.com/zh-cn/photo/1454794/&#34; target=&#34;_blank&#34;&gt;图片&lt;/a&gt;。</copyright>
-    <lastBuildDate>Mon, 10 Apr 2023 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/spring-cloud-alibaba/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 01 Jul 2023 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/spring-cloud-alibaba/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Spring Boot Actuator:健康检查、审计、统计和监控</title>
       <link>https://recordnote.github.io/spring-cloud-alibaba/spring-actuator/</link>
-      <pubDate>Mon, 10 Apr 2023 14:21:26 +0800</pubDate>
+      <pubDate>Sat, 01 Jul 2023 14:21:26 +0800</pubDate>
       
       <guid>https://recordnote.github.io/spring-cloud-alibaba/spring-actuator/</guid>
       <description>Spring Boot Actuator可以帮助你监控和管理Spring Boot应用，比如健康检查、审计、统计和HTTP追踪等。所有的这些特性可以通过JMX或者</description>
@@ -20,10 +20,19 @@
     <item>
       <title>Spring Cloud 总结</title>
       <link>https://recordnote.github.io/spring-cloud-alibaba/springcloud%E7%BB%84%E4%BB%B6/</link>
-      <pubDate>Wed, 22 Mar 2023 14:21:26 +0800</pubDate>
+      <pubDate>Sun, 25 Jun 2023 14:21:26 +0800</pubDate>
       
       <guid>https://recordnote.github.io/spring-cloud-alibaba/springcloud%E7%BB%84%E4%BB%B6/</guid>
       <description>首先我给大家看一张图，如果大家对这张图有些地方不太理解的话，我希望你们看完我这篇文章会恍然大悟。 什么是Spring cloud 构建分布式系统不需要复杂</description>
+    </item>
+    
+    <item>
+      <title>spring常用注解</title>
+      <link>https://recordnote.github.io/spring-cloud-alibaba/spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/</link>
+      <pubDate>Sun, 28 May 2023 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/spring-cloud-alibaba/spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/</guid>
+      <description>一、@Resource和@Autowired的区别 1、@Autowired与@Resource都可以用来装配bean. 都可以写在字段上,或写</description>
     </item>
     
     <item>
@@ -33,15 +42,6 @@
       
       <guid>https://recordnote.github.io/spring-cloud-alibaba/sentinel%E8%BD%BB%E9%87%8F%E7%BA%A7%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E7%86%94%E6%96%AD%E9%99%8D%E7%BA%A7java%E5%BA%93/</guid>
       <description>​ 1、雪崩效应（级联失效、级联故障） 2、服务容错的思想 超时 限流 仓壁模式（类似于为每个被调用的服务端api接口设置相应数量的线程池，当某个接口</description>
-    </item>
-    
-    <item>
-      <title>spring常用注解</title>
-      <link>https://recordnote.github.io/spring-cloud-alibaba/spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/</link>
-      <pubDate>Sun, 19 Feb 2023 14:21:26 +0800</pubDate>
-      
-      <guid>https://recordnote.github.io/spring-cloud-alibaba/spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/</guid>
-      <description>一、@Resource和@Autowired的区别 1、@Autowired与@Resource都可以用来装配bean. 都可以写在字段上,或写</description>
     </item>
     
     <item>
