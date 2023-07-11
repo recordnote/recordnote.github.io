@@ -296,7 +296,7 @@
 <p><strong>轻量级锁：<strong>对象头中中包含有一些锁的标志位，代码进入同步块的时候，<strong>会使用CAS方式来尝试获取锁</strong>，如果</strong>更新成功</strong>则会把对象头中的状态位标记<strong>为轻量级锁</strong>，如果<strong>更新失败</strong>，当前线程就尝试<strong>自旋来获得锁</strong>。</p>
 <p><strong>简要过程：</strong> <strong>线程1</strong>访问代码块并获取锁对象，<strong>会在 Java 对象头和栈帧中记录偏向的锁的 线程ID</strong>，而且偏向锁不会主动释放锁，当<strong>线程2</strong>来获得锁对象，会<strong>查找对象头中记录的偏向锁偏向的线程ID</strong>（线程1），如果说还是要继续持有这个锁对象，暂停线程1，撤销偏向锁，升级为轻量级锁（如果线程1不再使用该锁对象，那么将锁对象状态设为无锁状态，重新偏向新的线程）。如果<strong>线程2</strong>获取轻量级锁时使用CAS获取失败，那么线程2会<strong>通过自旋来获得锁</strong>。如果这个时候<strong>线程3</strong>也来获取锁对象，线程2还在<strong>自选等待</strong>，没获得到锁，那么<strong>这个时候轻量级锁就会膨胀为重量级锁。重量级锁把除了拥有锁的线程都阻塞，防止CPU空转。</strong></p>
 <h3 id="73reentrantlock优缺点">7.3、ReentrantLock优缺点？</h3>
-<img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20211013092741273.png" alt="image-20211013092741273" style="zoom: 80%;" /> 
+<p><img src="https://cdn.jsdelivr.net/gh/recordnote/cdn/img/image-20230710172118891.png" alt="image-20230710172118891"></p>
 <h3 id="74底层实现aqscas">7.4、底层实现？（AQS、CAS） </h3>
 <p>**CAS：**CAS叫做CompareAndSwap，比较并交换，如果主内存的值和期望值一样，那就会进行修改，否则会一直重试。它功能是判断内存某个位置的值是否是预期值，如果是则更改为新值，这个过程是原子的。（<strong>CAS是一条CPU的原子指令</strong>，不会造成数据不一致问题。）</p>
 <p><strong>AQS：<strong>AQS全称为AbstractQueuedSychronizer，翻译过来应该是</strong>抽象队列同步器</strong>。AQS是整个Java并发包的核心，AQS是一个用来<strong>构建锁和同步器的框架</strong>，比如ReentrantLock，Semaphore，ReentrantReadWriteLock，SynchronousQueue，FutureTask等等皆是基于AQS的。<strong>AQS核心思想是，如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制，这个机制AQS是用CLH（虚拟的双向队列）队列锁实现的，即将暂时获取不到锁的线程加入到队列中。</strong></p>
