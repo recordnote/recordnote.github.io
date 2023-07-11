@@ -54,15 +54,6 @@
     </item>
     
     <item>
-      <title>JVM 虚拟机</title>
-      <link>https://recordnote.github.io/jvm/jvm/</link>
-      <pubDate>Fri, 01 Jul 2022 14:21:26 +0800</pubDate>
-      
-      <guid>https://recordnote.github.io/jvm/jvm/</guid>
-      <description>1、JDK、JRE、JVM之间的区别？ 2、JVM类加载过程 3、 JDK1.6、JDK1.7、JDK1.8 内存模型演变 这些版本的 JVM 内存模型主要有</description>
-    </item>
-    
-    <item>
       <title>java基础知识</title>
       <link>https://recordnote.github.io/java/java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</link>
       <pubDate>Mon, 23 May 2022 14:21:26 +0800</pubDate>

@@ -144,30 +144,12 @@
     </item>
     
     <item>
-      <title>分布式ID</title>
-      <link>https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8Fid/</link>
-      <pubDate>Sun, 31 Jul 2022 14:21:26 +0800</pubDate>
-      
-      <guid>https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8Fid/</guid>
-      <description>1.业务背景： 传统方案在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。如在美团点评的金融、支付、餐饮、酒店、猫眼电影等产品。对数</description>
-    </item>
-    
-    <item>
       <title>常用的数据结构</title>
       <link>https://recordnote.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%B8%B8%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
       <pubDate>Fri, 15 Jul 2022 14:21:26 +0800</pubDate>
       
       <guid>https://recordnote.github.io/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E5%B8%B8%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
       <description>1、Java双端队列Deque</description>
-    </item>
-    
-    <item>
-      <title>JVM 虚拟机</title>
-      <link>https://recordnote.github.io/jvm/jvm/</link>
-      <pubDate>Fri, 01 Jul 2022 14:21:26 +0800</pubDate>
-      
-      <guid>https://recordnote.github.io/jvm/jvm/</guid>
-      <description>1、JDK、JRE、JVM之间的区别？ 2、JVM类加载过程 3、 JDK1.6、JDK1.7、JDK1.8 内存模型演变 这些版本的 JVM 内存模型主要有</description>
     </item>
     
     <item>
