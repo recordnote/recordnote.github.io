@@ -17,7 +17,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.116.0">
+<meta name="generator" content="Hugo 0.116.1">
 
 <link rel="canonical" href="https://recordnote.github.io/java/threadjuc/thread/" />
 
@@ -254,15 +254,15 @@
 <p>3）volatile<strong>不保证原子性</strong>。</p>
 <p><strong>保证部分有序性</strong>：当程序执行到volatile变量的读操作或者写操作时，在其前面的操作的更改肯定全部已经进行，且结</p>
 <p>果已经对后面的操作可见；在其后面的操作肯定还没有进行；</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>x <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">;</span> <span style="color:#75715e">//语句1
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>x <span style="color:#f92672">=</span> 2<span style="color:#f92672">;</span> <span style="color:#75715e">//语句1
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>y <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span> <span style="color:#75715e">//语句2
+</span></span><span style="display:flex;"><span>y <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> <span style="color:#75715e">//语句2
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span>flag <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span> <span style="color:#75715e">//语句3
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>x <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span><span style="color:#f92672">;</span> <span style="color:#75715e">//语句4
+</span></span><span style="display:flex;"><span>x <span style="color:#f92672">=</span> 4<span style="color:#f92672">;</span> <span style="color:#75715e">//语句4
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>y <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">;</span> <span style="color:#75715e">//语句5
+</span></span><span style="display:flex;"><span>y <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span> <span style="color:#75715e">//语句5
 </span></span></span></code></pre></div><p>由于flag变量为volatile变量，那么在进行指令重排序的过程的时候，不会将语句3放到语句1、语句2前面，也不会讲语句3放到语句4、语句5后面。但是要注意语句1和语句2的顺序、语句4和语句5的顺序是不作任何保证的。</p>
 <p>使用volatile 一般用于 状态标记量 和 单例模式的双检锁。</p>
 <p>**补充：JMM（java内存）模型：**主内存+本地内存（线程），本地内存会复制主内存的共享变量副本。</p>
