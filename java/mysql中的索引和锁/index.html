@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>MySQL中的索引和锁 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.120.4">
+
+<link rel="canonical" href="https://recordnote.github.io/java/mysql%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95%E5%92%8C%E9%94%81/" />
+
+
+<meta property="og:title" content="MySQL中的索引和锁" />
+<meta property="og:description" content="索引 索引常见的几种类型 索引常见的类型有哈希索引，有序数组索引，二叉树索引，跳表等等。本文主要探讨 MySQL 的默认存储引擎 InnoDB 的索引结构。 InnoDB的" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/java/mysql%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95%E5%92%8C%E9%94%81/" /><meta property="og:image" content="https://recordnote.github.io" /><meta property="article:section" content="java" />
+<meta property="article:published_time" content="2023-08-30T14:21:26+08:00" />
+<meta property="article:modified_time" content="2022-08-30T14:21:26+08:00" />
+
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io"/>
+
+<meta name="twitter:title" content="MySQL中的索引和锁"/>
+<meta name="twitter:description" content="索引 索引常见的几种类型 索引常见的类型有哈希索引，有序数组索引，二叉树索引，跳表等等。本文主要探讨 MySQL 的默认存储引擎 InnoDB 的索引结构。 InnoDB的"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#索引常见的几种类型">索引常见的几种类型</a></li>
+    <li><a href="#innodb的索引结构">InnoDB的索引结构</a></li>
+    <li><a href="#回表">回表</a></li>
+    <li><a href="#索引维护">索引维护</a></li>
+    <li><a href="#覆盖索引">覆盖索引</a></li>
+    <li><a href="#联合索引">联合索引</a></li>
+    <li><a href="#最左前缀原则">最左前缀原则</a></li>
+    <li><a href="#索引下推">索引下推</a></li>
+    <li><a href="#一些最佳实践">一些最佳实践</a>
+      <ul>
+        <li><a href="#哪些情况需要创建索引">哪些情况需要创建索引？</a></li>
+        <li><a href="#哪些情况不需要创建索引">哪些情况不需要创建索引</a></li>
+        <li><a href="#其他">其他</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#全局锁">全局锁</a></li>
+    <li><a href="#表锁">表锁</a>
+      <ul>
+        <li><a href="#mdlmeta-data-lock元数据锁">MDL(Meta Data Lock)元数据锁</a></li>
+        <li><a href="#lock-tables-xxx-readwrite">lock tables xxx read/write;</a></li>
+      </ul>
+    </li>
+    <li><a href="#行锁">行锁</a>
+      <ul>
+        <li><a href="#next-key锁">next-key锁</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">MySQL中的索引和锁<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2023-08-30T14:21:26&#43;08:00</span>
+                
+
+              | 8 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2022-08-30T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=MySQL%e4%b8%ad%e7%9a%84%e7%b4%a2%e5%bc%95%e5%92%8c%e9%94%81&url=https%3a%2f%2frecordnote.github.io%2fjava%2fmysql%25E4%25B8%25AD%25E7%259A%2584%25E7%25B4%25A2%25E5%25BC%2595%25E5%2592%258C%25E9%2594%2581%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fjava%2fmysql%25E4%25B8%25AD%25E7%259A%2584%25E7%25B4%25A2%25E5%25BC%2595%25E5%2592%258C%25E9%2594%2581%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/MySql.png" />
+        
+
+        <h1 id="索引">索引</h1>
+<h2 id="索引常见的几种类型">索引常见的几种类型</h2>
+<p>索引常见的类型有<strong>哈希索引，有序数组索引，二叉树索引，跳表</strong>等等。本文主要探讨 MySQL 的默认存储引擎 <strong>InnoDB</strong> 的索引结构。</p>
+<h2 id="innodb的索引结构">InnoDB的索引结构</h2>
+<p>在InnoDB中是通过一种多路搜索树——<strong>B+树</strong>实现索引结构的。在B+树中是<strong>只有叶子结点会存储数据</strong>，而且<strong>所有叶子结点会形成一个链表</strong>。而在InnoDB中维护的是一个双向链表。</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/10/24/16dfdc15a1159699~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.png" alt="img"></p>
+<p>你可能会有一个疑问，为什么使用 B+树 而不使用二叉树或者B树？</p>
+<p>首先，我们知道访问磁盘需要访问到指定块中，而访问指定块是需要 <em>盘片旋转</em> 和 <em>磁臂移动</em> 的，这是一个比较耗时的过程，如果<strong>增加树高那么就意味着你需要进行更多次的磁盘访问</strong>，所以会采用n叉树。而使用B+树是因为如果使用<em>B树在进行一个范围查找的时候每次都会进行重新检索，而在B+树中可以充分利用叶子结点的链表</em>。</p>
+<p>在建表的时候你可能会添加多个索引，而 InnDB 会<strong>为每个索引建立一个 B+树 进行存储索引</strong>。</p>
+<p>比如这个时候我们建立了一个简单的测试表</p>
+<pre tabindex="0"><code>复制代码create table test(
+  id int primary key,
+  a int not null,
+  name varchar,
+  index(a)
+)engine = InnoDB;
+</code></pre><p>这个时候 InnDB 就会为我们建立两个 B+索引树</p>
+<p>一个是 <strong>主键</strong> 的 <strong>聚簇索引</strong>，另一个是 <strong>普通索引</strong> 的 <strong>辅助索引</strong>，这里我直接贴上 <a href="https://juejin.cn/post/6844903744417562638#heading-6"><em>MySQL浅谈（索引、锁）</em></a> 这篇文章上面的贴图(因为我懒不想画图了。。。)</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/10/24/16dfe05f65c45c2f~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.png" alt="img"></p>
+<p>可以看到在辅助索引上面的叶子节点的值<strong>只是存了主键的值</strong>，而在<strong>主键的聚簇索引上的叶子节点才是存上了整条记录的值</strong>。</p>
+<h2 id="回表">回表</h2>
+<p>所以这里就会引申出一个概念叫<strong>回表</strong>，比如这个时候我们进行一个查询操作</p>
+<pre tabindex="0"><code>复制代码select name from test where a = 30;
+</code></pre><p>我们知道因为条件 MySQL 是会走 <strong>a</strong> 的索引的，但是 a 索引上并没有存储 name 的值，此时我们就需要拿到相应 a 上的主键值，然后通过这个主键值去走 <strong>聚簇索引</strong> 最终拿到其中的name值，这个过程就叫回表。</p>
+<p>我们来总结一下回表是什么？<strong>MySQL在辅助索引上找到对应的主键值并通过主键值在聚簇索引上查找所要的数据就叫回表</strong>。</p>
+<h2 id="索引维护">索引维护</h2>
+<p>我们知道索引是需要占用空间的，索引虽能提升我们的查询速度但是也是不能滥用。</p>
+<p>比如我们在用户表里用身份证号做主键，那么每个二级索引的叶子节点占用约20个字节，而如果用整型做主键，则只要4个字节，如果是长整型（bigint）则是8个字节。也就是说如果我用整型后面维护了4个g的索引列表，那么用身份证将会是20个g。</p>
+<p>所以我们可以<strong>通过缩减索引的大小来减少索引所占空间</strong>。</p>
+<p>当然B+树为了维护索引的有序性会在删除，插入的时候进行一些必要的维护(在InnoDB中删除会将节点标记为“可复用”以减少对结构的变动)。</p>
+<p>比如在增加一个节点的时候可能会遇到<strong>数据页满了</strong>的情况，这个时候就需要做<strong>页的分裂</strong>，这是一个比较耗时的工作，而且页的分裂还会导致数据页的利用率变低，比如原来存放三个数据的数据页再次添加一个数据的时候需要做页分裂，这个时候就会将现有的四个数据分配到两个数据页中，这样就减少了数据页利用率。</p>
+<h2 id="覆盖索引">覆盖索引</h2>
+<p>上面提到了 <strong>回表</strong>，而有时候我们查辅助索引的时候就已经满足了我们需要查的数据，这个时候 InnoDB 就会进行一个叫 <strong>覆盖索引</strong> 的操作来提升效率，减少回表。</p>
+<p>比如这个时候我们进行一个 select 操作</p>
+<pre tabindex="0"><code>复制代码select id from test where a = 1;
+</code></pre><p>这个时候很明显我们走了 a 的索引直接能获取到 id 的值，这个时候就不需要进行回表，我们这个时候就使用了 <strong>覆盖索引</strong>。</p>
+<p>简单来说 <strong>覆盖索引</strong> 就是<strong>当我们走辅助索引的时候能获取到我们所需要的数据的时候不需要再次进行回表操作的操作</strong>。</p>
+<h2 id="联合索引">联合索引</h2>
+<p>这个时候我们新建一个学生表</p>
+<pre tabindex="0"><code>复制代码CREATE TABLE `stu` (
+  `id` int(11) NOT NULL,
+  `class` int(11) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `class_name` (`class`,`name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 
+</code></pre><p>我们使用 class(班级号) 和 name 做一个 <strong>联合索引</strong>，你可能会问这个联合索引有什么用呢？我们可以结合着上面的 <strong>覆盖索引</strong> 去理解，比如这个时候我们有一个需求，<em>我们需要通过班级号去找对应的学生姓名</em> 。</p>
+<pre tabindex="0"><code>复制代码select name from stu where class = 102;
+</code></pre><p>这个时候我们就可以直接在 <strong>辅助索引</strong> 上查找到学生姓名而不需要再次回表。</p>
+<p>总的来说，<strong>设计好索引，充分利用覆盖索引能很大提升检索速度</strong>。</p>
+<h2 id="最左前缀原则">最左前缀原则</h2>
+<p>这个是以 <strong>联合索引</strong> 作为基础的，是一种联合索引的匹配规则。</p>
+<p>这个时候，我们将上面的需求稍微变动一下，这时我们有个学生迟到，但是他在门卫记录信息的时候只写了自己的名字张三而没有写班级，所以我们需要通过学生姓名去查找相应的班级号。</p>
+<pre tabindex="0"><code>复制代码select class from stu where name = &#39;张三&#39;;
+</code></pre><p>这个时候<strong>我们就不会走我们的联合索引了，而是进行了全表扫描</strong>。</p>
+<p>为什么？因为 <strong>最左匹配原则</strong>。我们可以画一张简单的图来理解一下。</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/10/24/16dfe3bb35864870~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.png" alt="img"></p>
+<p>我们可以看到整个索引设计就是这么设计的，所以我们需要查找的时候也需要遵循着这个规则，如果我们直接使用name，那么InnoDB是不知道我们需要干什么的。</p>
+<p>当然最左匹配原则还有这些规则</p>
+<ul>
+<li>全值匹配的时候优化器会改变顺序，也就是说你全值匹配时的顺序和原先的联合索引顺序不一致没有关系，优化器会帮你调好。</li>
+<li>索引匹配从<strong>最左边的地方开始</strong>，如果没有则会进行全表扫描，比如你设计了一个(a,b,c)的联合索引，然后你可以使用(a),(a,b),(a,b,c) 而你使用 (b),(b,c),(c)就用不到索引了。</li>
+<li>遇到范围匹配会取消索引。比如这个时候你进行一个这样的 select 操作</li>
+</ul>
+<pre tabindex="0"><code>复制代码select * from stu where class &gt; 100 and name = &#39;张三&#39;;
+</code></pre><p>这个时候 InnoDB 就会放弃索引而进行全表扫描，因为这个时候 InnoDB 会<strong>不知道怎么进行遍历索引</strong>，所以进行全表扫描。</p>
+<h2 id="索引下推">索引下推</h2>
+<p>我给你挖了个坑。刚刚的操作在 MySQL5.6 版本以前是需要进行回表的，但是5.6之后的版本做了一个叫 <strong>索引下推</strong> 的优化。</p>
+<pre tabindex="0"><code>复制代码select * from stu where class &gt; 100 and name = &#39;张三&#39;;
+</code></pre><p>如何优化的呢？因为刚刚的<strong>最左匹配原则</strong>我们放弃了索引，后面我们紧接着会通过回表进行判断 name，这个时候我们所要做的操作应该是这样的</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/10/24/16dfe5842402d422~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.png" alt="img"></p>
+<p>但是有了<strong>索引下推</strong>之后就变成这样了，此时 &ldquo;李四&rdquo; 和 &ldquo;小明&rdquo; 这两个不会再进行回表。</p>
+<p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/10/24/16dfe5a73739a0bc~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.png" alt="img"></p>
+<p>因为这里匹配了后面的name = 张三，也就是说，如果最左匹配原则因为范围查询终止了，InnoDB还是会<strong>索引下推</strong>来优化性能。</p>
+<h2 id="一些最佳实践">一些最佳实践</h2>
+<h3 id="哪些情况需要创建索引">哪些情况需要创建索引？</h3>
+<ul>
+<li>频繁作为查询条件的字段应创建索引。</li>
+<li>多表关联查询的时候，关联字段应该创建索引。</li>
+<li>查询中的排序字段，应该创建索引。</li>
+<li>统计或者分组字段需要创建索引。</li>
+</ul>
+<h3 id="哪些情况不需要创建索引">哪些情况不需要创建索引</h3>
+<ul>
+<li>表记录少。</li>
+<li>经常增删改查的表。</li>
+<li>频繁更新的字段。</li>
+<li>where 条件使用不高的字段。</li>
+<li>字段很大的时候。</li>
+</ul>
+<h3 id="其他">其他</h3>
+<ul>
+<li>尽量选择区分度高的列作为索引。</li>
+<li>不要对索引进行一些函数操作，还应注意隐式的类型转换和字符编码转换。</li>
+<li>尽可能的扩展索引，不要新建立索引。比如表中已经有了a的索引，现在要加（a,b）的索引，那么只需要修改原来的索引即可。</li>
+<li>多考虑覆盖索引，索引下推，最左匹配。</li>
+</ul>
+<h1 id="锁">锁</h1>
+<h2 id="全局锁">全局锁</h2>
+<p>MySQL提供了一个加全局读锁的方法，命令是 Flush tables with read lock (FTWRL)。当你需要让整个库处于只读状态的时候，可以使用这个命令，之后其他线程的以下语句会被阻塞：数据更新语句（数据的增删改）、数据定义语句（包括建表、修改表结构等）和更新类事务的提交语句。</p>
+<p>一般会在进行 <strong>全库逻辑备份</strong> 的时候使用，这样就能确保 <em>其他线程不能对该数据库做更新操作</em>。</p>
+<p>在 MVCC 中提供了获取 <strong>一致性视图</strong> 的操作使得备份变得非常简单</p>
+<h2 id="表锁">表锁</h2>
+<h3 id="mdlmeta-data-lock元数据锁">MDL(Meta Data Lock)元数据锁</h3>
+<p>MDL锁用来保证<strong>只有一个线程能对该表进行表结构更改</strong>。</p>
+<p>怎么说呢？MDL分为 <em>MDL写锁</em> 和 <em>MDL读锁</em>，加锁规则是这样的</p>
+<ul>
+<li>当线程对一个表进行 CRUD 操作的时候会加 <em>MDL读锁</em></li>
+<li>当线程对一个表进行 表结构更改 操作的时候会加 <em>MDL写锁</em></li>
+<li>写锁和读锁，写锁和写锁互斥，读锁之间不互斥</li>
+</ul>
+<h3 id="lock-tables-xxx-readwrite">lock tables xxx read/write;</h3>
+<p>这是给一个表设置读锁和写锁的命令，如果在某个线程A中执行lock tables t1 read, t2 write; 这个语句，则其他线程写t1、读写t2的语句都会被阻塞。同时，线程A在执行unlock tables之前，也只能执行读t1、读写t2的操作。连写t1都不允许，自然也不能访问其他表。</p>
+<p>这种表锁是一种处理并发的方式，但是在InnoDB中常用的是<strong>行锁</strong>。</p>
+<h2 id="行锁">行锁</h2>
+<p>我们知道在5.5版本以前 MySQL 的默认存储引擎是 MyISAM，而 MyISAM 和 InnoDB 最大的区别就是两个</p>
+<ul>
+<li>事务</li>
+<li>行锁</li>
+</ul>
+<p>其中行锁是我们今天的主题，如果不了解事务可以去补习一下。</p>
+<p>其实行锁就是两个锁，你可以理解为 写锁(排他锁 X锁)和读锁(共享锁 S锁)</p>
+<ul>
+<li>共享锁（S锁）：<strong>允许一个事务去读一行，阻止其他事务获得相同数据集的排他锁</strong>。 也叫做读锁：读锁是共享的，多个客户可以同时读取同一个资源，但不允许其他客户修改。</li>
+<li>排他锁（X锁)：<strong>允许获得排他锁的事务更新数据，阻止其他事务取得相同数据集的共享读锁和排他写锁</strong>。也叫做写锁：写锁是排他的，写锁会阻塞其他的写锁和读锁。</li>
+</ul>
+<p>而行锁还会引起一个一个很头疼的问题，那就是<strong>死锁</strong>。</p>
+<p>如果事务A对行100加了写锁，事务B对行101加了写锁，此时事务A想要修改行101而事务B又想修改行100，这样占有且等待就导致了死锁问题，而面对死锁问题就只有检测和预防了。</p>
+<h3 id="next-key锁">next-key锁</h3>
+<p>MVCC 和行锁是无法解决 <strong>幻读</strong> 问题的，这个时候 InnoDB 使用了 一个叫 <strong>GAP锁(间隙锁)</strong> 的东西，它配合 <strong>行锁</strong> 形成了 <strong>next-key锁</strong>，解决了幻读的问题。</p>
+<p>但是因为它的加锁规则，又导致了扩大了一些加锁范围从而减少数据库并发能力。具体的<strong>加锁规则</strong>如下：</p>
+<ul>
+<li>加锁的基本单位是next-key lock 就是行锁和GAP锁结合。</li>
+<li>查找过程中访问到的对象就会加锁。</li>
+<li>索引上的等值查询，给唯一索引加锁的时候，next-key lock退化为行锁。</li>
+<li>索引上的等值查询，向右遍历时且最后一个值不满足等值条件的时候，next-key lock退化为间隙锁。</li>
+<li>唯一索引上的范围查询会访问到不满足条件的第一个值为止。</li>
+</ul>
+<p>MVCC 解决幻读的思路比较复杂，这里就不做过多的验证。</p>
+<h1 id="总结">总结</h1>
+<p>对于 MySQL 的索引来说，我给了很多最佳实践，其实这些最佳实践都是从原理来的，而 InnoDB 其实就是一个改进版的 B+树，还有存储索引的结构。弄懂了这些你就会得心应手起来。</p>
+<p>而对于 MySQL 的锁，主要就是在行锁方面，InnoDB 其实就是<strong>使用了 行锁，MVCC还有next-key锁来实现事务并发控制的</strong>。</p>
+<p>而对于MySQL中最重要的其实就是 锁和索引 。</p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2023 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是JAVA全栈工程师</p>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>
