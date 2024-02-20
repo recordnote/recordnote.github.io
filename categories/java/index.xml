@@ -25,9 +25,9 @@
     </item>
     <item>
       <title>jdk8新特性-Optional类</title>
-      <link>https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7-optional%E7%B1%BB/</link>
+      <link>https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7---optional%E7%B1%BB/</link>
       <pubDate>Mon, 14 Aug 2023 14:21:26 +0800</pubDate>
-      <guid>https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7-optional%E7%B1%BB/</guid>
+      <guid>https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7---optional%E7%B1%BB/</guid>
       <description>1、定义 ​ Optional 类 (java.util.Optional) 是一个容器类，代表一个值存在或不存在，原来用 null 表示一个值不存在，现在用 Optional 可以更好的表达这个概念；并且可以避免空指针异常 2、常</description>
     </item>
     <item>
@@ -50,6 +50,13 @@
       <pubDate>Sat, 18 Feb 2023 14:21:26 +0800</pubDate>
       <guid>https://recordnote.github.io/jvm/jvm/</guid>
       <description>1、JDK、JRE、JVM之间的区别？ 2、JVM类加载过程 3、 JDK1.6、JDK1.7、JDK1.8 内存模型演变 这些版本的 JVM 内存模型主要有</description>
+    </item>
+    <item>
+      <title>常见的英文缩写及技术名词</title>
+      <link>https://recordnote.github.io/java/%E5%B8%B8%E8%A7%81%E7%9A%84%E8%8B%B1%E6%96%87%E7%BC%A9%E5%86%99%E5%8F%8A%E6%8A%80%E6%9C%AF%E5%90%8D%E8%AF%8D/</link>
+      <pubDate>Wed, 31 Aug 2022 14:21:26 +0800</pubDate>
+      <guid>https://recordnote.github.io/java/%E5%B8%B8%E8%A7%81%E7%9A%84%E8%8B%B1%E6%96%87%E7%BC%A9%E5%86%99%E5%8F%8A%E6%8A%80%E6%9C%AF%E5%90%8D%E8%AF%8D/</guid>
+      <description>QPS、TPS、PV、UV、GMV、IP、RPS等各种名词，外行看起来很牛X，实际上对程序员来说都是必懂知识点。 1、QPS Queries Per Second，</description>
     </item>
     <item>
       <title>java基础知识</title>

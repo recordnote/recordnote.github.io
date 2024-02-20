@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>常见的英文缩写及技术名词 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.123.0">
+
+<link rel="canonical" href="https://recordnote.github.io/java/%E5%B8%B8%E8%A7%81%E7%9A%84%E8%8B%B1%E6%96%87%E7%BC%A9%E5%86%99%E5%8F%8A%E6%8A%80%E6%9C%AF%E5%90%8D%E8%AF%8D/" />
+
+
+<meta property="og:title" content="常见的英文缩写及技术名词" />
+<meta property="og:description" content="QPS、TPS、PV、UV、GMV、IP、RPS等各种名词，外行看起来很牛X，实际上对程序员来说都是必懂知识点。 1、QPS Queries Per Second，" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/java/%E5%B8%B8%E8%A7%81%E7%9A%84%E8%8B%B1%E6%96%87%E7%BC%A9%E5%86%99%E5%8F%8A%E6%8A%80%E6%9C%AF%E5%90%8D%E8%AF%8D/" /><meta property="og:image" content="https://recordnote.github.io/img/java.png" /><meta property="article:section" content="java" />
+<meta property="article:published_time" content="2022-08-31T14:21:26+08:00" />
+<meta property="article:modified_time" content="2022-08-31T14:21:26+08:00" />
+
+
+
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://recordnote.github.io/img/java.png" /><meta name="twitter:title" content="常见的英文缩写及技术名词"/>
+<meta name="twitter:description" content="QPS、TPS、PV、UV、GMV、IP、RPS等各种名词，外行看起来很牛X，实际上对程序员来说都是必懂知识点。 1、QPS Queries Per Second，"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io\/'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1qps">1、<strong>QPS</strong></a></li>
+    <li><a href="#2tps">2、<strong>TPS</strong></a></li>
+    <li><a href="#3pvpage-view">3、<strong>PV</strong>（page view）</a></li>
+    <li><a href="#4uv">4、<strong>UV</strong></a></li>
+    <li><a href="#5ipinternet-protocol">5、<strong>IP</strong>（Internet Protocol）</a></li>
+    <li><a href="#6gmv">6、<strong>GMV</strong></a></li>
+    <li><a href="#7rps">7、<strong>RPS</strong></a></li>
+    <li><a href="#8ci">8、CI</a></li>
+    <li><a href="#技术名词">技术名词</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">常见的英文缩写及技术名词<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Aaron
+                
+              
+
+              | 
+                  <span data-format="luxon">2022-08-31T14:21:26&#43;08:00</span>
+                
+
+              | 6 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2022-08-31T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=%e5%b8%b8%e8%a7%81%e7%9a%84%e8%8b%b1%e6%96%87%e7%bc%a9%e5%86%99%e5%8f%8a%e6%8a%80%e6%9c%af%e5%90%8d%e8%af%8d&url=https%3a%2f%2frecordnote.github.io%2fjava%2f%25E5%25B8%25B8%25E8%25A7%2581%25E7%259A%2584%25E8%258B%25B1%25E6%2596%2587%25E7%25BC%25A9%25E5%2586%2599%25E5%258F%258A%25E6%258A%2580%25E6%259C%25AF%25E5%2590%258D%25E8%25AF%258D%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fjava%2f%25E5%25B8%25B8%25E8%25A7%2581%25E7%259A%2584%25E8%258B%25B1%25E6%2596%2587%25E7%25BC%25A9%25E5%2586%2599%25E5%258F%258A%25E6%258A%2580%25E6%259C%25AF%25E5%2590%258D%25E8%25AF%258D%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/java.png" />
+        
+
+        <p>QPS、TPS、PV、UV、GMV、IP、RPS等各种名词，外行看起来很牛X，实际上对程序员来说都是必懂知识点。</p>
+<h2 id="1qps">1、<strong>QPS</strong></h2>
+<p>Queries Per Second，每秒查询数。每秒能够响应的查询次数。</p>
+<p>QPS是对一个特定的查询服务器在规定时间内所处理流量多少的衡量标准，在因特网上，作为域名系统服务器的机器的性能经常用每秒查询率来衡量。每秒的响应请求数，也即是最大吞吐能力。</p>
+<h2 id="2tps">2、<strong>TPS</strong></h2>
+<p>Transactions Per Second 的缩写，每秒处理的事务数目。一个事务是指一个客户机向服务器发送请求然后服务器做出反应的过程。客户机在发送请求时开始计时，收到服务器响应后结束计时，以此来计算使用的时间和完成的事务个数，最终利用这些信息作出的评估分。</p>
+<p>TPS 的过程包括：客户端请求服务端、服务端内部处理、服务端返回客户端。</p>
+<p>例如，访问一个 Index 页面会请求服务器 3 次，包括一次 html，一次 css，一次 js，那么访问这一个页面就会产生一个“T”，产生三个“Q”。</p>
+<h2 id="3pvpage-view">3、<strong>PV</strong>（page view）</h2>
+<p>即页面浏览量，通常是衡量一个网络新闻频道或网站甚至一条网络新闻的主要指标。户每一次对网站中的每个页面访问均被记录 1 次。用户对同一页面的多次刷新，访问量累计。</p>
+<p>根据这个特性，刷网站的 PV 就很好刷了。</p>
+<p>与 PV 相关的还有 <strong>RV</strong>，即重复访问者数量（repeat visitors）。</p>
+<h2 id="4uv">4、<strong>UV</strong></h2>
+<p>访问数（Unique Visitor）指独立访客访问数，统计1天内访问某站点的用户数(以 cookie 为依据)，一台电脑终端为一个访客。</p>
+<h2 id="5ipinternet-protocol">5、<strong>IP</strong>（Internet Protocol）</h2>
+<p>独立 IP 数，是指 1 天内多少个独立的 IP 浏览了页面，即统计不同的 IP 浏览用户数量。同一 IP 不管访问了几个页面，独立 IP 数均为 1；不同的 IP 浏览页面，计数会加 1。IP 是基于用户广域网 IP 地址来区分不同的访问者的，所以，多个用户（多个局域网 IP）在同一个路由器（同一个广域网 IP）内上网，可能被记录为一个独立 IP 访问者。如果用户不断更换 IP，则有可能被多次统计。</p>
+<h2 id="6gmv">6、<strong>GMV</strong></h2>
+<p>是 Gross Merchandise Volume 的简称。只要是订单，不管消费者是否付款、卖家是否发货、是否退货，都可放进 GMV 。</p>
+<h2 id="7rps">7、<strong>RPS</strong></h2>
+<p>代表吞吐率，即 Requests Per Second 的缩写。吞吐率是服务器并发处理能力的量化描述，单位是 reqs/s，指的是某个并发用户数下单位时间内处理的请求数。
+某个并发用户数下单位时间内能处理的最大的请求数，称之为最大吞吐率。</p>
+<p>有人把 RPS 说等效于 QPS。其实可以看作同一个统计方式，只是叫法不同而已。RPS/QPS，可以使用 apche ab 工具进行测量。</p>
+<h2 id="8ci">8、CI</h2>
+<p>持续集成Continuous Integration（CI）和持续交付Continuous Delivery（CD）</p>
+<p>持续测试Continuous Testing和持续部署Continuous Deployment</p>
+<h2 id="技术名词">技术名词</h2>
+<table><thead><tr><th>不严谨写法</th><th>正确写法</th><th>备注</th></tr></thead><tbody><tr><td>JAVA , java</td><td><a href="https://www.oracle.com/cn/java/">Java</a></td><td></td></tr><tr><td>Github , github</td><td><a href="https://github.com/">GitHub</a></td><td>号称世界最大的开源站点</td></tr><tr><td>Gitlab</td><td><a href="https://gitlab.com/">GitLab</a></td><td></td></tr><tr><td>springboot</td><td><a href="https://spring.io/projects/spring-boot">Spring Boot</a></td><td></td></tr><tr><td>Springmvc</td><td><a href="https://spring.io/projects/spring-framework">Spring MVC</a></td><td>Spring Model View Controller</td></tr><tr><td>Springcloud</td><td><a href="https://spring.io/projects/spring-cloud">Spring Cloud</a></td><td></td></tr><tr><td>spring data jpa</td><td><a href="https://spring.io/projects/spring-data-jpa">Spring Data JPA</a></td><td>Spring Data JavaPersistenceAPI</td></tr><tr><td>Mybatis</td><td><a href="https://blog.mybatis.org/">MyBatis</a></td><td></td></tr><tr><td>hibernate</td><td><a href="http://hibernate.org/">Hibernate</a></td><td></td></tr><tr><td>Mysql , mysql</td><td><a href="https://www.mysql.com/">MySQL</a></td><td></td></tr><tr><td>oracle</td><td><a href="https://www.oracle.com/cn/database/">Oracle</a></td><td>一家公司名字，如果和相关数据库名字放在一起，通常指他们公司的数据库</td></tr><tr><td>sqlserver</td><td><a href="https://www.microsoft.com/en-us/sql-server/sql-server-2019">SQL Server</a></td><td>微软公司的数据库产品</td></tr><tr><td>maven</td><td><a href="http://maven.apache.org/index.html">Maven</a></td><td></td></tr><tr><td>ioc</td><td>IoC</td><td>Inversion of Control ：控制反转,spring框架的一种设计理念</td></tr><tr><td>di</td><td>DI</td><td>Dependency Injection : 依赖注入,spring框架的一种设计理念</td></tr><tr><td>aop</td><td>AOP</td><td>Aspect Oriented Programming : OOP 编程理念的 ‘补充’</td></tr><tr><td>uml</td><td>UML</td><td>Unified Modeling Language</td></tr><tr><td>jvm , Jvm</td><td>JVM</td><td>Java Virtual Machine</td></tr><tr><td>nosql ,Nosql</td><td>NoSQL</td><td>非关系型数据库的统称</td></tr><tr><td>sso</td><td>SSO</td><td>SingleSignOn</td></tr><tr><td>cas</td><td><a href="https://github.com/apereo/cas">CAS </a></td><td>Central Authentication Service 单点登录的一种开源解决方案</td></tr><tr><td>Http , Http</td><td>HTTP</td><td>HyperText Transfer Protocol</td></tr><tr><td>https , Https</td><td>HTTPS</td><td>Hyper Text Transfer Protocol over SecureSocket</td></tr><tr><td>VsCode , vscode</td><td><a href="https://code.visualstudio.com/">VS Code</a></td><td>微软的一款 IDE</td></tr><tr><td>java script</td><td><a href="https://www.javascript.com/">JavaScript</a></td><td></td></tr><tr><td>css</td><td>CSS</td><td>Cascading Style Sheets</td></tr><tr><td>Json</td><td>JSON</td><td>JavaScript Object Notation</td></tr><tr><td>Jquery</td><td><a href="https://jquery.com/">jQuery</a></td><td></td></tr><tr><td>Api</td><td>API</td><td>Application Programming Interface</td></tr><tr><td>ajax</td><td>AJAX</td><td>Asynchronous Javascript And XML</td></tr><tr><td>Html</td><td>HTML</td><td>Hyper Text Markup Language</td></tr><tr><td>Jsp</td><td>JSP</td><td>JavaServer Pages</td></tr><tr><td>Freemarker</td><td>FreeMarker</td><td></td></tr><tr><td>ThymeLeaf</td><td>Thymeleaf</td><td></td></tr><tr><td>ios</td><td>iOS</td><td>iPhone Operation System</td></tr><tr><td>rocketmq</td><td>RocketMQ</td><td></td></tr></tbody></table>
+<div id="article_content" class="article_content clearfix">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-1a85854398.css">
+                <div id="content_views" class="markdown_views prism-atom-one-light">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                        <path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path>
+                    </svg>
+<h3><a name="t1"></a><a id="_6"></a>后端</h3> 
+<div class="table-box"><table><thead><tr><th>正确拼写</th><th>错误拼写范例</th></tr></thead><tbody><tr><td>Java</td><td>java、JAVA</td></tr><tr><td>Golang</td><td>golang</td></tr><tr><td>Python</td><td>python</td></tr><tr><td>Web</td><td>web</td></tr><tr><td>RESTful</td><td>restful、Restful、RestFul</td></tr><tr><td>MySQL</td><td>mysql</td></tr><tr><td>SQLServer</td><td>sqlserver、SQLserver</td></tr><tr><td>Oracle</td><td>oracle</td></tr><tr><td>NoSQL</td><td>nosql、NOSQL</td></tr><tr><td>MongoDB</td><td>mongoDb</td></tr><tr><td>SQLite</td><td>sqlite</td></tr><tr><td>Redis</td><td>redis</td></tr><tr><td>Hadoop</td><td>hadoop</td></tr><tr><td>HBase</td><td>hbase、Hbase、HBASE</td></tr><tr><td>HDFS</td><td>hdfs Hdfs</td></tr><tr><td>Yarn</td><td>yarn</td></tr><tr><td>Hive</td><td>hive</td></tr><tr><td>Zookeeper</td><td>zookeeper</td></tr><tr><td>Kafka</td><td>kafka</td></tr><tr><td>RabbitMQ</td><td>rabbitMQ</td></tr><tr><td>ActiveMQ</td><td>activeMQ</td></tr><tr><td>Elasticsearch</td><td>elasticsearch、ElasticSearch</td></tr><tr><td>Kibana</td><td>kibana</td></tr><tr><td>Logstash</td><td>logstash</td></tr><tr><td>Flink</td><td>flink</td></tr><tr><td>Storm</td><td>storm</td></tr><tr><td>ETCD</td><td>etcd、Etcd</td></tr><tr><td>Spring</td><td>spring</td></tr><tr><td>Spring Boot</td><td>springboot、Springboot、SpringBoot</td></tr><tr><td>Spring Cloud</td><td>springcloud、SpringCloud、Springcloud</td></tr><tr><td>Spring MVC</td><td>springMVC、SpringMVC</td></tr><tr><td>Linux</td><td>linux、LINUX</td></tr><tr><td>Netty</td><td>netty</td></tr><tr><td>Ngnix</td><td>ngnix、NGINX</td></tr><tr><td>HTTP</td><td>http、Http</td></tr><tr><td>HTTPS</td><td>https、Https</td></tr><tr><td>App</td><td>app、APP</td></tr></tbody></table></div>
+<h3><a name="t2"></a><a id="_50"></a>前端</h3> 
+<div class="table-box"><table><thead><tr><th>正确拼写</th><th>错误拼写范例</th></tr></thead><tbody><tr><td>HTML</td><td>html、Html</td></tr><tr><td>JavaScript</td><td>javascript、js、JS</td></tr><tr><td>jQuery</td><td>jquery、JQuery</td></tr><tr><td>CSS</td><td>css</td></tr><tr><td>Bootstrap</td><td>bootstrap</td></tr><tr><td>Angular</td><td>angular</td></tr><tr><td>Vue.js</td><td>Vue、vue、vue.js</td></tr><tr><td>React</td><td>react</td></tr><tr><td>RxJava</td><td>rxjava</td></tr><tr><td>Node.js</td><td>node.js、nodejs、NodeJS、node、Node</td></tr></tbody></table></div>
+<h3><a name="t3"></a><a id="_65"></a>工具类</h3> 
+<div class="table-box"><table><thead><tr><th>正确拼写</th><th>错误拼写范例</th></tr></thead><tbody><tr><td>Git</td><td>git</td></tr><tr><td>Maven</td><td>maven</td></tr><tr><td>Webpack</td><td>webpack</td></tr><tr><td>Intellij IDEA</td><td>intellij idea、idea</td></tr><tr><td>Eclipse</td><td>eclipse</td></tr></tbody></table></div>
+<h3><a name="t4"></a><a id="_75"></a>其他</h3> 
+<div class="table-box"><table><thead><tr><th>正确拼写</th><th>错误拼写范例</th></tr></thead><tbody><tr><td>GitHub</td><td>github、Github</td></tr></tbody></table></div>
+<h3><a name="t5"></a><a id="_82"></a>中英文混排（附加）</h3> 
+<ul><li>英文和数字使用半角字符。</li><li>中文文字之间不加空格。</li><li>中文字与英文、阿拉伯数字及@#$ %^&amp;*.()等符号之间加空格。</li><li>中文标点之间不加空格。</li><li>中文标点与前后字符(无论全角或半角)之间不加空格。</li><li>如果括号内有中文，则使用中文括号,如果括号中的内容全部都是英。文，则使用半角英文括号。</li><li>当半角符号/表示"或者"之意时，与前后的字符之间均不加空格。</li></ul> 
+<h3><a name="t6"></a><a id="_92"></a>持续更新…</h3>
+                </div><div><div></div></div>
+                <link href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/markdown_views-d7a94ec6ab.css" rel="stylesheet">
+                <link href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/style-49037e4d27.css" rel="stylesheet">
+        </div>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2024 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="Spring">
+              Spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是JAVA全栈工程师</p>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io\//index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>
