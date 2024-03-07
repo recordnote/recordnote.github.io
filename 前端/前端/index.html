@@ -148,6 +148,7 @@
         <li><a href="#2组件生命周期钩子函数">2、组件生命周期钩子函数</a></li>
         <li><a href="#3常用的钩子函数">3、常用的钩子函数</a></li>
         <li><a href="#4vue父子组件生命周期执行顺序">4、vue父子组件生命周期执行顺序</a></li>
+        <li><a href="#5vue组件间传值">5、Vue组件间传值</a></li>
       </ul>
     </li>
   </ul>
@@ -174,7 +175,7 @@
                   <span data-format="luxon">2023-04-22T14:21:26&#43;08:00</span>
                 
 
-              | 3 分钟阅读
+              | 4 分钟阅读
 
               
               | 更新于
@@ -267,6 +268,42 @@
 <li>子组件更新过程：父beforeUpdate —&gt; 子beforeUpdate —&gt; 子updated —&gt; 父updated</li>
 <li>父组件更新过程：父beforeUpdate —&gt; 父updated</li>
 <li>销毁过程：父beforeDestroy —&gt; 子beforeDestroy —&gt; 子destroyed —&gt; 父destroyed</li>
+</ul>
+<h3 id="5vue组件间传值">5、Vue组件间传值</h3>
+<ul>
+<li>
+<p>$emit，<a href="https://so.csdn.net/so/search?q=%E7%88%B6%E7%BB%84%E4%BB%B6&amp;spm=1001.2101.3001.7020">父组件</a>传data给子组件，子组件通过$emit来触发父组件中绑定在子组件身上的事件，达到改变父组件中的data的方法</p>
+</li>
+<li>
+<p>provide/inject 允许一个祖先组件向其所有子孙后代注入一个依赖，不论组件层次有多深，并在其上下游关系成立的时间里始终生效</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span><span style="color:#75715e">// 父组件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">data</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">obj</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;卷儿&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">provide</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">function</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 传递一个对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">obj</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">obj</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 子组件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">inject</span><span style="color:#f92672">:</span> [<span style="color:#e6db74">&#39;obj&#39;</span>],
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">computed</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 也可以不用计算属性重新定义
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>   <span style="color:#a6e22e">objName</span>() {
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">obj</span>.<span style="color:#a6e22e">name</span>
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span> }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--</span> <span style="color:#a6e22e">子组件中的使用方法</span> <span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">h2</span>&gt;<span style="color:#a6e22e">obj的name</span><span style="color:#960050;background-color:#1e0010">：</span> {{<span style="color:#a6e22e">objName</span>}}&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">h2</span>&gt;<span style="color:#a6e22e">obj的name</span><span style="color:#960050;background-color:#1e0010">：</span> {{<span style="color:#a6e22e">obj</span>.<span style="color:#a6e22e">name</span>}}&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span></code></pre></div></li>
 </ul>
 
       </article>
