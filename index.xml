@@ -7,7 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;&lt;img alt=&#34;知识共享许可协议&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png&#34; /&gt;&lt;/a&gt;&lt;br /&gt;本作品采用&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议&lt;/a&gt;进行许可。&lt;br /&gt;&lt;br /&gt;背景使用了 &lt;a href=&#34;https://www.pexels.com/zh-cn/&#34; target=&#34;_blank&#34;&gt;Pexels&lt;/a&gt; 上 &lt;a href=&#34;https://www.pexels.com/zh-cn/Ungaro&#34; target=&#34;_blank&#34;&gt;Francesco Ungaro&lt;/a&gt; 拍摄的&lt;a href=&#34;https://www.pexels.com/zh-cn/photo/1454794/&#34; target=&#34;_blank&#34;&gt;图片&lt;/a&gt;。</copyright>
-    <lastBuildDate>Wed, 15 Nov 2023 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 01 Mar 2024 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>sql如何拼接数据</title>
+      <link>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/sql%E5%A6%82%E4%BD%95%E6%8B%BC%E6%8E%A5%E6%95%B0%E6%8D%AE/</link>
+      <pubDate>Fri, 01 Mar 2024 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/sql%E5%A6%82%E4%BD%95%E6%8B%BC%E6%8E%A5%E6%95%B0%E6%8D%AE/</guid>
+      <description>数据库中的例子表格： 1.符号 + 在MySQL中支持使用加号拼接结果。在两个字段都是整型时，都会返回两个整型值得和，但是在两个字段中有一个为字符</description>
+    </item>
+    
+    <item>
+      <title>分布式ID</title>
+      <link>https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8Fid/</link>
+      <pubDate>Sun, 04 Feb 2024 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8Fid/</guid>
+      <description>1.业务背景： 传统方案在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。如在美团点评的金融、支付、餐饮、酒店、猫眼电影等产品。对数</description>
+    </item>
+    
     <item>
       <title>RockerMQ总结</title>
       <link>https://recordnote.github.io/java/mq/</link>
@@ -153,30 +171,12 @@
     </item>
     
     <item>
-      <title>sql如何拼接数据</title>
-      <link>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/sql%E5%A6%82%E4%BD%95%E6%8B%BC%E6%8E%A5%E6%95%B0%E6%8D%AE/</link>
-      <pubDate>Wed, 01 Mar 2023 14:21:26 +0800</pubDate>
-      
-      <guid>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/sql%E5%A6%82%E4%BD%95%E6%8B%BC%E6%8E%A5%E6%95%B0%E6%8D%AE/</guid>
-      <description>数据库中的例子表格： 1.符号 + 在MySQL中支持使用加号拼接结果。在两个字段都是整型时，都会返回两个整型值得和，但是在两个字段中有一个为字符</description>
-    </item>
-    
-    <item>
       <title>JVM 虚拟机</title>
       <link>https://recordnote.github.io/jvm/jvm/</link>
       <pubDate>Sat, 18 Feb 2023 14:21:26 +0800</pubDate>
       
       <guid>https://recordnote.github.io/jvm/jvm/</guid>
       <description>1、JDK、JRE、JVM之间的区别？ 2、JVM类加载过程 3、 JDK1.6、JDK1.7、JDK1.8 内存模型演变 这些版本的 JVM 内存模型主要有</description>
-    </item>
-    
-    <item>
-      <title>分布式ID</title>
-      <link>https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8Fid/</link>
-      <pubDate>Sat, 04 Feb 2023 14:21:26 +0800</pubDate>
-      
-      <guid>https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8Fid/</guid>
-      <description>1.业务背景： 传统方案在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。如在美团点评的金融、支付、餐饮、酒店、猫眼电影等产品。对数</description>
     </item>
     
     <item>
