@@ -17,7 +17,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.124.1">
+<meta name="generator" content="Hugo 0.119.0">
 
 <link rel="canonical" href="https://recordnote.github.io/java/springboot%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81%E6%8E%A7%E5%88%B6%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1-%E6%94%AF%E6%8C%81%E5%A4%9A%E5%8F%82%E6%95%B0/" />
 
@@ -25,14 +25,16 @@
 <meta property="og:title" content="SpringBoot实现动态控制定时任务--支持多参数" />
 <meta property="og:description" content="由于工作上的原因，需要进行定时任务的动态增删改查，网上大部分资料都是整合quertz框架实现的。查阅了一些资料，发现springBoot本身" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://recordnote.github.io/java/springboot%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81%E6%8E%A7%E5%88%B6%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1-%E6%94%AF%E6%8C%81%E5%A4%9A%E5%8F%82%E6%95%B0/" /><meta property="og:image" content="https://recordnote.github.io/me/background.jpg" /><meta property="article:section" content="java" />
+<meta property="og:url" content="https://recordnote.github.io/java/springboot%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81%E6%8E%A7%E5%88%B6%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1-%E6%94%AF%E6%8C%81%E5%A4%9A%E5%8F%82%E6%95%B0/" /><meta property="og:image" content="https://recordnote.github.io/me/background.jpg"/><meta property="article:section" content="java" />
 <meta property="article:published_time" content="2023-10-28T14:21:26+08:00" />
 <meta property="article:modified_time" content="2023-10-31T14:21:26+08:00" />
 
 
 
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://recordnote.github.io/me/background.jpg" /><meta name="twitter:title" content="SpringBoot实现动态控制定时任务--支持多参数"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/me/background.jpg"/>
+
+<meta name="twitter:title" content="SpringBoot实现动态控制定时任务--支持多参数"/>
 <meta name="twitter:description" content="由于工作上的原因，需要进行定时任务的动态增删改查，网上大部分资料都是整合quertz框架实现的。查阅了一些资料，发现springBoot本身"/>
 
 
@@ -110,7 +112,7 @@
     <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
   </div>
   <div class="item">
-    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io\/'"></i>
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
   </div>
   
   <div class="item">
@@ -219,10 +221,10 @@
 <p><img src="https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2019/5/31/16b0bf1a0e118b4b~tplv-t2oaga2asx-jj-mark:3024:0:0:0:q75.awebp" alt="img"></p>
 <p>github 简单demo地址如下： <a href="https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fcaotinging%2Fsimple-demo%2Ftree%2Fmaster%2Fspringboot-dynamic-task">springboot-dynamic-task</a></p>
 <h3 id="1定时任务的配置类schedulingconfig">1.定时任务的配置类：SchedulingConfig</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.context.annotation.Bean;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.context.annotation.Configuration;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.scheduling.TaskScheduler;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.context.annotation.Bean<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.context.annotation.Configuration<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.scheduling.TaskScheduler<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @program: simple-demo
@@ -231,30 +233,30 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @date: 2019/5/23
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> **/</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SchedulingConfig</span> {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SchedulingConfig</span> <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> TaskScheduler <span style="color:#a6e22e">taskScheduler</span>() {
-</span></span><span style="display:flex;"><span>        ThreadPoolTaskScheduler taskScheduler <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ThreadPoolTaskScheduler();
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 定时任务执行线程池核心线程数</span>
-</span></span><span style="display:flex;"><span>        taskScheduler.<span style="color:#a6e22e">setPoolSize</span>(4);
-</span></span><span style="display:flex;"><span>        taskScheduler.<span style="color:#a6e22e">setRemoveOnCancelPolicy</span>(<span style="color:#66d9ef">true</span>);
-</span></span><span style="display:flex;"><span>        taskScheduler.<span style="color:#a6e22e">setThreadNamePrefix</span>(<span style="color:#e6db74">&#34;TaskSchedulerThreadPool-&#34;</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> taskScheduler;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> TaskScheduler <span style="color:#a6e22e">taskScheduler</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        ThreadPoolTaskScheduler taskScheduler <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ThreadPoolTaskScheduler<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 定时任务执行线程池核心线程数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        taskScheduler<span style="color:#f92672">.</span><span style="color:#a6e22e">setPoolSize</span><span style="color:#f92672">(</span><span style="color:#ae81ff">4</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        taskScheduler<span style="color:#f92672">.</span><span style="color:#a6e22e">setRemoveOnCancelPolicy</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        taskScheduler<span style="color:#f92672">.</span><span style="color:#a6e22e">setThreadNamePrefix</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;TaskSchedulerThreadPool-&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> taskScheduler<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><h3 id="2定时任务注册类crontaskregistrar">2.定时任务注册类：CronTaskRegistrar</h3>
 <blockquote>
 <p>这个类包含了新增定时任务，移除定时任务等等核心功能方法</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> com.caotinging.demo.task.ScheduledTask;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.beans.factory.DisposableBean;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.beans.factory.annotation.Autowired;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.scheduling.TaskScheduler;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.scheduling.config.CronTask;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.stereotype.Component;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> com.caotinging.demo.task.ScheduledTask<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.beans.factory.DisposableBean<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.beans.factory.annotation.Autowired<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.scheduling.TaskScheduler<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.scheduling.config.CronTask<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.stereotype.Component<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Map;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.concurrent.ConcurrentHashMap;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Map<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.concurrent.ConcurrentHashMap<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @program: simple-demo
@@ -263,71 +265,71 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @date: 2019/5/23
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> **/</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Component</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CronTaskRegistrar</span> <span style="color:#66d9ef">implements</span> DisposableBean {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CronTaskRegistrar</span> <span style="color:#66d9ef">implements</span> DisposableBean <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Map<span style="color:#f92672">&lt;</span>Runnable, ScheduledTask<span style="color:#f92672">&gt;</span> scheduledTasks <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ConcurrentHashMap<span style="color:#f92672">&lt;&gt;</span>(16);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Map<span style="color:#f92672">&lt;</span>Runnable<span style="color:#f92672">,</span> ScheduledTask<span style="color:#f92672">&gt;</span> scheduledTasks <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ConcurrentHashMap<span style="color:#f92672">&lt;&gt;(</span><span style="color:#ae81ff">16</span><span style="color:#f92672">);</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> TaskScheduler taskScheduler;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> TaskScheduler taskScheduler<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> TaskScheduler <span style="color:#a6e22e">getScheduler</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">taskScheduler</span>;
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> TaskScheduler <span style="color:#a6e22e">getScheduler</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">taskScheduler</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 新增定时任务
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param task
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param cronExpression
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addCronTask</span>(Runnable task, String cronExpression) {
-</span></span><span style="display:flex;"><span>        addCronTask(<span style="color:#66d9ef">new</span> CronTask(task, cronExpression));
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addCronTask</span><span style="color:#f92672">(</span>Runnable task<span style="color:#f92672">,</span> String cronExpression<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        addCronTask<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> CronTask<span style="color:#f92672">(</span>task<span style="color:#f92672">,</span> cronExpression<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addCronTask</span>(CronTask cronTask) {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (cronTask <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
-</span></span><span style="display:flex;"><span>            Runnable task <span style="color:#f92672">=</span> cronTask.<span style="color:#a6e22e">getRunnable</span>();
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">scheduledTasks</span>.<span style="color:#a6e22e">containsKey</span>(task)) {
-</span></span><span style="display:flex;"><span>                removeCronTask(task);
-</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addCronTask</span><span style="color:#f92672">(</span>CronTask cronTask<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>cronTask <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            Runnable task <span style="color:#f92672">=</span> cronTask<span style="color:#f92672">.</span><span style="color:#a6e22e">getRunnable</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">scheduledTasks</span><span style="color:#f92672">.</span><span style="color:#a6e22e">containsKey</span><span style="color:#f92672">(</span>task<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                removeCronTask<span style="color:#f92672">(</span>task<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">scheduledTasks</span>.<span style="color:#a6e22e">put</span>(task, scheduleCronTask(cronTask));
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">scheduledTasks</span><span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>task<span style="color:#f92672">,</span> scheduleCronTask<span style="color:#f92672">(</span>cronTask<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 移除定时任务
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param task
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">removeCronTask</span>(Runnable task) {
-</span></span><span style="display:flex;"><span>        ScheduledTask scheduledTask <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">scheduledTasks</span>.<span style="color:#a6e22e">remove</span>(task);
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (scheduledTask <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>)
-</span></span><span style="display:flex;"><span>            scheduledTask.<span style="color:#a6e22e">cancel</span>();
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">removeCronTask</span><span style="color:#f92672">(</span>Runnable task<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        ScheduledTask scheduledTask <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">scheduledTasks</span><span style="color:#f92672">.</span><span style="color:#a6e22e">remove</span><span style="color:#f92672">(</span>task<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>scheduledTask <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            scheduledTask<span style="color:#f92672">.</span><span style="color:#a6e22e">cancel</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ScheduledTask <span style="color:#a6e22e">scheduleCronTask</span>(CronTask cronTask) {
-</span></span><span style="display:flex;"><span>        ScheduledTask scheduledTask <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ScheduledTask();
-</span></span><span style="display:flex;"><span>        scheduledTask.<span style="color:#a6e22e">future</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">taskScheduler</span>.<span style="color:#a6e22e">schedule</span>(cronTask.<span style="color:#a6e22e">getRunnable</span>(), cronTask.<span style="color:#a6e22e">getTrigger</span>());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ScheduledTask <span style="color:#a6e22e">scheduleCronTask</span><span style="color:#f92672">(</span>CronTask cronTask<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        ScheduledTask scheduledTask <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ScheduledTask<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        scheduledTask<span style="color:#f92672">.</span><span style="color:#a6e22e">future</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">taskScheduler</span><span style="color:#f92672">.</span><span style="color:#a6e22e">schedule</span><span style="color:#f92672">(</span>cronTask<span style="color:#f92672">.</span><span style="color:#a6e22e">getRunnable</span><span style="color:#f92672">(),</span> cronTask<span style="color:#f92672">.</span><span style="color:#a6e22e">getTrigger</span><span style="color:#f92672">());</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> scheduledTask;
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> scheduledTask<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">destroy</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (ScheduledTask task : <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">scheduledTasks</span>.<span style="color:#a6e22e">values</span>()) {
-</span></span><span style="display:flex;"><span>            task.<span style="color:#a6e22e">cancel</span>();
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">scheduledTasks</span>.<span style="color:#a6e22e">clear</span>();
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">destroy</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>ScheduledTask task <span style="color:#f92672">:</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">scheduledTasks</span><span style="color:#f92672">.</span><span style="color:#a6e22e">values</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            task<span style="color:#f92672">.</span><span style="color:#a6e22e">cancel</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">scheduledTasks</span><span style="color:#f92672">.</span><span style="color:#a6e22e">clear</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><h3 id="3定时任务执行类schedulingrunnable">3.定时任务执行类：SchedulingRunnable</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> com.caotinging.demo.utils.SpringContextUtils;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.slf4j.Logger;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.slf4j.LoggerFactory;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.util.ReflectionUtils;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> com.caotinging.demo.utils.SpringContextUtils<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.slf4j.Logger<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.slf4j.LoggerFactory<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.util.ReflectionUtils<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.lang.reflect.Method;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Objects;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.lang.reflect.Method<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.Objects<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @program: simple-demo
@@ -335,86 +337,86 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @author: CaoTing
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @date: 2019/5/23
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> **/</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SchedulingRunnable</span> <span style="color:#66d9ef">implements</span> Runnable {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SchedulingRunnable</span> <span style="color:#66d9ef">implements</span> Runnable <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> Logger logger <span style="color:#f92672">=</span> LoggerFactory.<span style="color:#a6e22e">getLogger</span>(SchedulingRunnable.<span style="color:#a6e22e">class</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> Logger logger <span style="color:#f92672">=</span> LoggerFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getLogger</span><span style="color:#f92672">(</span>SchedulingRunnable<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String beanName;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String beanName<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String methodName;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String methodName<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Object<span style="color:#f92672">[]</span> params;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Object<span style="color:#f92672">[]</span> params<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">SchedulingRunnable</span>(String beanName, String methodName) {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>(beanName, methodName, <span style="color:#66d9ef">null</span>);
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">SchedulingRunnable</span><span style="color:#f92672">(</span>String beanName<span style="color:#f92672">,</span> String methodName<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">(</span>beanName<span style="color:#f92672">,</span> methodName<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">SchedulingRunnable</span>(String beanName, String methodName, Object...<span style="color:#a6e22e">params</span> ) {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">beanName</span> <span style="color:#f92672">=</span> beanName;
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">methodName</span> <span style="color:#f92672">=</span> methodName;
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">params</span> <span style="color:#f92672">=</span> params;
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span>() {
-</span></span><span style="display:flex;"><span>        logger.<span style="color:#a6e22e">info</span>(<span style="color:#e6db74">&#34;定时任务开始执行 - bean：{}，方法：{}，参数：{}&#34;</span>, beanName, methodName, params);
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> startTime <span style="color:#f92672">=</span> System.<span style="color:#a6e22e">currentTimeMillis</span>();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
-</span></span><span style="display:flex;"><span>            Object target <span style="color:#f92672">=</span> SpringContextUtils.<span style="color:#a6e22e">getBean</span>(beanName);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            Method method <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> params <span style="color:#f92672">&amp;&amp;</span> params.<span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;</span> 0) {
-</span></span><span style="display:flex;"><span>                Class<span style="color:#f92672">&lt;?&gt;[]</span> paramCls <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Class<span style="color:#f92672">[</span>params.<span style="color:#a6e22e">length</span><span style="color:#f92672">]</span>;
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0; i <span style="color:#f92672">&lt;</span> params.<span style="color:#a6e22e">length</span>; i<span style="color:#f92672">++</span>) {
-</span></span><span style="display:flex;"><span>                    paramCls<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> params<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span>.<span style="color:#a6e22e">getClass</span>();
-</span></span><span style="display:flex;"><span>                }
-</span></span><span style="display:flex;"><span>                method <span style="color:#f92672">=</span> target.<span style="color:#a6e22e">getClass</span>().<span style="color:#a6e22e">getDeclaredMethod</span>(methodName, paramCls);
-</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">else</span> {
-</span></span><span style="display:flex;"><span>                method <span style="color:#f92672">=</span> target.<span style="color:#a6e22e">getClass</span>().<span style="color:#a6e22e">getDeclaredMethod</span>(methodName);
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            ReflectionUtils.<span style="color:#a6e22e">makeAccessible</span>(method);
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> params <span style="color:#f92672">&amp;&amp;</span> params.<span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;</span> 0) {
-</span></span><span style="display:flex;"><span>                method.<span style="color:#a6e22e">invoke</span>(target, params);
-</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">else</span> {
-</span></span><span style="display:flex;"><span>                method.<span style="color:#a6e22e">invoke</span>(target);
-</span></span><span style="display:flex;"><span>            }
-</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (Exception ex) {
-</span></span><span style="display:flex;"><span>            logger.<span style="color:#a6e22e">error</span>(String.<span style="color:#a6e22e">format</span>(<span style="color:#e6db74">&#34;定时任务执行异常 - bean：%s，方法：%s，参数：%s &#34;</span>, beanName, methodName, params), ex);
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> times <span style="color:#f92672">=</span> System.<span style="color:#a6e22e">currentTimeMillis</span>() <span style="color:#f92672">-</span> startTime;
-</span></span><span style="display:flex;"><span>        logger.<span style="color:#a6e22e">info</span>(<span style="color:#e6db74">&#34;定时任务执行结束 - bean：{}，方法：{}，参数：{}，耗时：{} 毫秒&#34;</span>, beanName, methodName, params, times);
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">SchedulingRunnable</span><span style="color:#f92672">(</span>String beanName<span style="color:#f92672">,</span> String methodName<span style="color:#f92672">,</span> Object<span style="color:#f92672">...</span><span style="color:#a6e22e">params</span> <span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">beanName</span> <span style="color:#f92672">=</span> beanName<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">methodName</span> <span style="color:#f92672">=</span> methodName<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">params</span> <span style="color:#f92672">=</span> params<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">equals</span>(Object o) {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">this</span> <span style="color:#f92672">==</span> o) <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (o <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> getClass() <span style="color:#f92672">!=</span> o.<span style="color:#a6e22e">getClass</span>()) <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
-</span></span><span style="display:flex;"><span>        SchedulingRunnable that <span style="color:#f92672">=</span> (SchedulingRunnable) o;
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (params <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>) {
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> beanName.<span style="color:#a6e22e">equals</span>(that.<span style="color:#a6e22e">beanName</span>) <span style="color:#f92672">&amp;&amp;</span>
-</span></span><span style="display:flex;"><span>                    methodName.<span style="color:#a6e22e">equals</span>(that.<span style="color:#a6e22e">methodName</span>) <span style="color:#f92672">&amp;&amp;</span>
-</span></span><span style="display:flex;"><span>                    that.<span style="color:#a6e22e">params</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>;
-</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;定时任务开始执行 - bean：{}，方法：{}，参数：{}&#34;</span><span style="color:#f92672">,</span> beanName<span style="color:#f92672">,</span> methodName<span style="color:#f92672">,</span> params<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> startTime <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">();</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> beanName.<span style="color:#a6e22e">equals</span>(that.<span style="color:#a6e22e">beanName</span>) <span style="color:#f92672">&amp;&amp;</span>
-</span></span><span style="display:flex;"><span>                methodName.<span style="color:#a6e22e">equals</span>(that.<span style="color:#a6e22e">methodName</span>) <span style="color:#f92672">&amp;&amp;</span>
-</span></span><span style="display:flex;"><span>                params.<span style="color:#a6e22e">equals</span>(that.<span style="color:#a6e22e">params</span>);
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            Object target <span style="color:#f92672">=</span> SpringContextUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span>beanName<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            Method method <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> params <span style="color:#f92672">&amp;&amp;</span> params<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                Class<span style="color:#f92672">&lt;?&gt;[]</span> paramCls <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Class<span style="color:#f92672">[</span>params<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> params<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    paramCls<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> params<span style="color:#f92672">[</span>i<span style="color:#f92672">].</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                method <span style="color:#f92672">=</span> target<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getDeclaredMethod</span><span style="color:#f92672">(</span>methodName<span style="color:#f92672">,</span> paramCls<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                method <span style="color:#f92672">=</span> target<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getDeclaredMethod</span><span style="color:#f92672">(</span>methodName<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            ReflectionUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">makeAccessible</span><span style="color:#f92672">(</span>method<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> params <span style="color:#f92672">&amp;&amp;</span> params<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                method<span style="color:#f92672">.</span><span style="color:#a6e22e">invoke</span><span style="color:#f92672">(</span>target<span style="color:#f92672">,</span> params<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                method<span style="color:#f92672">.</span><span style="color:#a6e22e">invoke</span><span style="color:#f92672">(</span>target<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception ex<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            logger<span style="color:#f92672">.</span><span style="color:#a6e22e">error</span><span style="color:#f92672">(</span>String<span style="color:#f92672">.</span><span style="color:#a6e22e">format</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;定时任务执行异常 - bean：%s，方法：%s，参数：%s &#34;</span><span style="color:#f92672">,</span> beanName<span style="color:#f92672">,</span> methodName<span style="color:#f92672">,</span> params<span style="color:#f92672">),</span> ex<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> times <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">()</span> <span style="color:#f92672">-</span> startTime<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;定时任务执行结束 - bean：{}，方法：{}，参数：{}，耗时：{} 毫秒&#34;</span><span style="color:#f92672">,</span> beanName<span style="color:#f92672">,</span> methodName<span style="color:#f92672">,</span> params<span style="color:#f92672">,</span> times<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">hashCode</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (params <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>) {
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Objects.<span style="color:#a6e22e">hash</span>(beanName, methodName);
-</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>Object o<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span> <span style="color:#f92672">==</span> o<span style="color:#f92672">)</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>o <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> getClass<span style="color:#f92672">()</span> <span style="color:#f92672">!=</span> o<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">())</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        SchedulingRunnable that <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>SchedulingRunnable<span style="color:#f92672">)</span> o<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>params <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> beanName<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>that<span style="color:#f92672">.</span><span style="color:#a6e22e">beanName</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>                    methodName<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>that<span style="color:#f92672">.</span><span style="color:#a6e22e">methodName</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>                    that<span style="color:#f92672">.</span><span style="color:#a6e22e">params</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Objects.<span style="color:#a6e22e">hash</span>(beanName, methodName, params);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> beanName<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>that<span style="color:#f92672">.</span><span style="color:#a6e22e">beanName</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>                methodName<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>that<span style="color:#f92672">.</span><span style="color:#a6e22e">methodName</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>                params<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>that<span style="color:#f92672">.</span><span style="color:#a6e22e">params</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">hashCode</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>params <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Objects<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span><span style="color:#f92672">(</span>beanName<span style="color:#f92672">,</span> methodName<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Objects<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span><span style="color:#f92672">(</span>beanName<span style="color:#f92672">,</span> methodName<span style="color:#f92672">,</span> params<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><h3 id="4定时任务控制类scheduledtask">4.定时任务控制类：ScheduledTask</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.concurrent.ScheduledFuture;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> java.util.concurrent.ScheduledFuture<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @program: simple-demo
@@ -422,24 +424,24 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @author: CaoTing
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @date: 2019/5/23
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> **/</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScheduledTask</span> {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ScheduledTask</span> <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">volatile</span> ScheduledFuture<span style="color:#f92672">&lt;?&gt;</span> future;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">volatile</span> ScheduledFuture<span style="color:#f92672">&lt;?&gt;</span> future<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 取消定时任务
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">cancel</span>() {
-</span></span><span style="display:flex;"><span>        ScheduledFuture<span style="color:#f92672">&lt;?&gt;</span> future <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">future</span>;
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (future <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
-</span></span><span style="display:flex;"><span>            future.<span style="color:#a6e22e">cancel</span>(<span style="color:#66d9ef">true</span>);
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">cancel</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        ScheduledFuture<span style="color:#f92672">&lt;?&gt;</span> future <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">future</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>future <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            future<span style="color:#f92672">.</span><span style="color:#a6e22e">cancel</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><h3 id="5定时任务的测试">5.定时任务的测试</h3>
 <blockquote>
 <p>编写一个需要用于测试的任务类</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.stereotype.Component;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.stereotype.Component<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @program: simple-demo
@@ -447,28 +449,28 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @author: CaoTing
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @date: 2019/5/23
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> **/</span>
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Component</span>(<span style="color:#e6db74">&#34;demoTask&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DemoTask</span> {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Component</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;demoTask&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DemoTask</span> <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">taskWithParams</span>(String param1, Integer param2) {
-</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;这是有参示例任务：&#34;</span> <span style="color:#f92672">+</span> param1 <span style="color:#f92672">+</span> param2);
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">taskWithParams</span><span style="color:#f92672">(</span>String param1<span style="color:#f92672">,</span> Integer param2<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;这是有参示例任务：&#34;</span> <span style="color:#f92672">+</span> param1 <span style="color:#f92672">+</span> param2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">taskNoParams</span>() {
-</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;这是无参示例任务&#34;</span>);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">taskNoParams</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;这是无参示例任务&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><blockquote>
 <p>进行单元测试</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> com.caotinging.demo.application.DynamicTaskApplication;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.caotinging.demo.application.SchedulingRunnable;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.caotinging.demo.config.CronTaskRegistrar;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.junit.Test;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.junit.runner.RunWith;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.beans.factory.annotation.Autowired;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.boot.test.context.SpringBootTest;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> com.caotinging.demo.application.DynamicTaskApplication<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.caotinging.demo.application.SchedulingRunnable<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> com.caotinging.demo.config.CronTaskRegistrar<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.junit.Test<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.junit.runner.RunWith<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.beans.factory.annotation.Autowired<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.boot.test.context.SpringBootTest<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.test.context.junit4.SpringJUnit4ClassRunner<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @program: simple-demo
@@ -476,36 +478,36 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @author: CaoTing
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @date: 2019/5/23
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> **/</span>
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@RunWith</span>(SpringJUnit4ClassRunner.<span style="color:#a6e22e">class</span>)
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@SpringBootTest</span>(classes <span style="color:#f92672">=</span> DynamicTaskApplication.<span style="color:#a6e22e">class</span>)
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TaskTest</span> {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@RunWith</span><span style="color:#f92672">(</span>SpringJUnit4ClassRunner<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@SpringBootTest</span><span style="color:#f92672">(</span>classes <span style="color:#f92672">=</span> DynamicTaskApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TaskTest</span> <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
-</span></span><span style="display:flex;"><span>    CronTaskRegistrar cronTaskRegistrar;
+</span></span><span style="display:flex;"><span>    CronTaskRegistrar cronTaskRegistrar<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Test</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testTask</span>() <span style="color:#66d9ef">throws</span> InterruptedException {
-</span></span><span style="display:flex;"><span>        SchedulingRunnable task <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SchedulingRunnable(<span style="color:#e6db74">&#34;demoTask&#34;</span>, <span style="color:#e6db74">&#34;taskNoParams&#34;</span>, <span style="color:#66d9ef">null</span>);
-</span></span><span style="display:flex;"><span>        cronTaskRegistrar.<span style="color:#a6e22e">addCronTask</span>(task, <span style="color:#e6db74">&#34;0/10 * * * * ?&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testTask</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        SchedulingRunnable task <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SchedulingRunnable<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;demoTask&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;taskNoParams&#34;</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        cronTaskRegistrar<span style="color:#f92672">.</span><span style="color:#a6e22e">addCronTask</span><span style="color:#f92672">(</span>task<span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;0/10 * * * * ?&#34;</span><span style="color:#f92672">);</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 便于观察</span>
-</span></span><span style="display:flex;"><span>        Thread.<span style="color:#a6e22e">sleep</span>(3000000);
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 便于观察
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span><span style="color:#ae81ff">3000000</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Test</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testHaveParamsTask</span>() <span style="color:#66d9ef">throws</span> InterruptedException {
-</span></span><span style="display:flex;"><span>        SchedulingRunnable task <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SchedulingRunnable(<span style="color:#e6db74">&#34;demoTask&#34;</span>, <span style="color:#e6db74">&#34;taskWithParams&#34;</span>, <span style="color:#e6db74">&#34;haha&#34;</span>, 23);
-</span></span><span style="display:flex;"><span>        cronTaskRegistrar.<span style="color:#a6e22e">addCronTask</span>(task, <span style="color:#e6db74">&#34;0/10 * * * * ?&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testHaveParamsTask</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        SchedulingRunnable task <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SchedulingRunnable<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;demoTask&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;taskWithParams&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;haha&#34;</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">23</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        cronTaskRegistrar<span style="color:#f92672">.</span><span style="color:#a6e22e">addCronTask</span><span style="color:#f92672">(</span>task<span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;0/10 * * * * ?&#34;</span><span style="color:#f92672">);</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 便于观察</span>
-</span></span><span style="display:flex;"><span>        Thread.<span style="color:#a6e22e">sleep</span>(3000000);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 便于观察
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span><span style="color:#ae81ff">3000000</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><h3 id="6工具类springcontextutils">6.工具类：SpringContextUtils</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.beans.BeansException;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.context.ApplicationContext;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.context.ApplicationContextAware;
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.stereotype.Component;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.beans.BeansException<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.context.ApplicationContext<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.context.ApplicationContextAware<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.stereotype.Component<span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @program: simple-demo
@@ -514,52 +516,52 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @date: 2019/5/23
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"> **/</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Component</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SpringContextUtils</span> <span style="color:#66d9ef">implements</span> ApplicationContextAware {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SpringContextUtils</span> <span style="color:#66d9ef">implements</span> ApplicationContextAware <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> ApplicationContext applicationContext <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> ApplicationContext applicationContext <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setApplicationContext</span>(ApplicationContext applicationContext) <span style="color:#66d9ef">throws</span> BeansException {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (SpringContextUtils.<span style="color:#a6e22e">applicationContext</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>) {
-</span></span><span style="display:flex;"><span>            SpringContextUtils.<span style="color:#a6e22e">applicationContext</span> <span style="color:#f92672">=</span> applicationContext;
-</span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setApplicationContext</span><span style="color:#f92672">(</span>ApplicationContext applicationContext<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> BeansException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>SpringContextUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">applicationContext</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            SpringContextUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">applicationContext</span> <span style="color:#f92672">=</span> applicationContext<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//获取applicationContext</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> ApplicationContext <span style="color:#a6e22e">getApplicationContext</span>() {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> applicationContext;
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//获取applicationContext
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> ApplicationContext <span style="color:#a6e22e">getApplicationContext</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> applicationContext<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//通过name获取 Bean.</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> Object <span style="color:#a6e22e">getBean</span>(String name) {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> getApplicationContext().<span style="color:#a6e22e">getBean</span>(name);
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//通过name获取 Bean.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> Object <span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> getApplicationContext<span style="color:#f92672">().</span><span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//通过class获取Bean.</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> T <span style="color:#a6e22e">getBean</span>(Class<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> clazz) {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> getApplicationContext().<span style="color:#a6e22e">getBean</span>(clazz);
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//通过class获取Bean.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> T <span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> clazz<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> getApplicationContext<span style="color:#f92672">().</span><span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span>clazz<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//通过name,以及Clazz返回指定的Bean</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> T <span style="color:#a6e22e">getBean</span>(String name, Class<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> clazz) {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> getApplicationContext().<span style="color:#a6e22e">getBean</span>(name, clazz);
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//通过name,以及Clazz返回指定的Bean
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> T <span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> Class<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> clazz<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> getApplicationContext<span style="color:#f92672">().</span><span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span>name<span style="color:#f92672">,</span> clazz<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><h3 id="7我的pom依赖">7.我的pom依赖</h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span> <span style="color:#f92672">&lt;</span>dependencies<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org.<span style="color:#a6e22e">springframework</span>.<span style="color:#a6e22e">boot</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">springframework</span><span style="color:#f92672">.</span><span style="color:#a6e22e">boot</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>spring<span style="color:#f92672">-</span>boot<span style="color:#f92672">-</span>starter<span style="color:#f92672">-</span>jdbc<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com.<span style="color:#a6e22e">baomidou</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com<span style="color:#f92672">.</span><span style="color:#a6e22e">baomidou</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>mybatisplus<span style="color:#f92672">-</span>spring<span style="color:#f92672">-</span>boot<span style="color:#f92672">-</span>starter<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span>1.<span style="color:#a6e22e">0</span>.<span style="color:#a6e22e">5</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">1</span><span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">.</span><span style="color:#a6e22e">5</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com.<span style="color:#a6e22e">baomidou</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com<span style="color:#f92672">.</span><span style="color:#a6e22e">baomidou</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>mybatis<span style="color:#f92672">-</span>plus<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span>2.<span style="color:#a6e22e">1</span>.<span style="color:#a6e22e">9</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">2</span><span style="color:#f92672">.</span><span style="color:#a6e22e">1</span><span style="color:#f92672">.</span><span style="color:#a6e22e">9</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>mysql<span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
@@ -567,16 +569,16 @@
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>scope<span style="color:#f92672">&gt;</span>runtime<span style="color:#f92672">&lt;/</span>scope<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com.<span style="color:#a6e22e">alibaba</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com<span style="color:#f92672">.</span><span style="color:#a6e22e">alibaba</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>druid<span style="color:#f92672">-</span>spring<span style="color:#f92672">-</span>boot<span style="color:#f92672">-</span>starter<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span>1.<span style="color:#a6e22e">1</span>.<span style="color:#a6e22e">9</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">1</span><span style="color:#f92672">.</span><span style="color:#a6e22e">1</span><span style="color:#f92672">.</span><span style="color:#a6e22e">9</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org.<span style="color:#a6e22e">springframework</span>.<span style="color:#a6e22e">boot</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">springframework</span><span style="color:#f92672">.</span><span style="color:#a6e22e">boot</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>spring<span style="color:#f92672">-</span>boot<span style="color:#f92672">-</span>starter<span style="color:#f92672">-</span>aop<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org.<span style="color:#a6e22e">springframework</span>.<span style="color:#a6e22e">boot</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">springframework</span><span style="color:#f92672">.</span><span style="color:#a6e22e">boot</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>spring<span style="color:#f92672">-</span>boot<span style="color:#f92672">-</span>starter<span style="color:#f92672">-</span>web<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>
@@ -586,73 +588,73 @@
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>mysql<span style="color:#f92672">-</span>connector<span style="color:#f92672">-</span>java<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>scope<span style="color:#f92672">&gt;</span>runtime<span style="color:#f92672">&lt;/</span>scope<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;--&gt;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;!--</span> https:<span style="color:#75715e">//mvnrepository.com/artifact/com.hynnet/oracle-driver-ojdbc --&gt;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;!--&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com.<span style="color:#a6e22e">oracle</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;!--</span> https<span style="color:#f92672">:</span><span style="color:#75715e">//mvnrepository.com/artifact/com.hynnet/oracle-driver-ojdbc --&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">&lt;!--&lt;</span>dependency<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com<span style="color:#f92672">.</span><span style="color:#a6e22e">oracle</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>ojdbc6<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span>11.<span style="color:#a6e22e">2</span>.<span style="color:#a6e22e">0</span>.<span style="color:#a6e22e">1</span>.<span style="color:#a6e22e">0</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">11</span><span style="color:#f92672">.</span><span style="color:#a6e22e">2</span><span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">.</span><span style="color:#a6e22e">1</span><span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;--&gt;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;!--</span> 单元测试 <span style="color:#f92672">--&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org.<span style="color:#a6e22e">springframework</span>.<span style="color:#a6e22e">boot</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">springframework</span><span style="color:#f92672">.</span><span style="color:#a6e22e">boot</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>spring<span style="color:#f92672">-</span>boot<span style="color:#f92672">-</span>starter<span style="color:#f92672">-</span>test<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>scope<span style="color:#f92672">&gt;</span>provided<span style="color:#f92672">&lt;/</span>scope<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;!--</span>redisTemplate <span style="color:#f92672">--&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org.<span style="color:#a6e22e">springframework</span>.<span style="color:#a6e22e">boot</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">springframework</span><span style="color:#f92672">.</span><span style="color:#a6e22e">boot</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>spring<span style="color:#f92672">-</span>boot<span style="color:#f92672">-</span>starter<span style="color:#f92672">-</span>data<span style="color:#f92672">-</span>redis<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>redis.<span style="color:#a6e22e">clients</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>redis<span style="color:#f92672">.</span><span style="color:#a6e22e">clients</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>jedis<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span>2.<span style="color:#a6e22e">7</span>.<span style="color:#a6e22e">3</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">2</span><span style="color:#f92672">.</span><span style="color:#a6e22e">7</span><span style="color:#f92672">.</span><span style="color:#a6e22e">3</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;!--</span> http连接 restTemplate <span style="color:#f92672">--&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org.<span style="color:#a6e22e">apache</span>.<span style="color:#a6e22e">httpcomponents</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">apache</span><span style="color:#f92672">.</span><span style="color:#a6e22e">httpcomponents</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>httpclient<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org.<span style="color:#a6e22e">apache</span>.<span style="color:#a6e22e">httpcomponents</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">apache</span><span style="color:#f92672">.</span><span style="color:#a6e22e">httpcomponents</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>httpclient<span style="color:#f92672">-</span>cache<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;!--</span> 工具<span style="color:#f92672">--&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org.<span style="color:#a6e22e">projectlombok</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">projectlombok</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>lombok<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>optional<span style="color:#f92672">&gt;</span><span style="color:#66d9ef">true</span><span style="color:#f92672">&lt;/</span>optional<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com.<span style="color:#a6e22e">alibaba</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com<span style="color:#f92672">.</span><span style="color:#a6e22e">alibaba</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>fastjson<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span>1.<span style="color:#a6e22e">2</span>.<span style="color:#a6e22e">31</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">1</span><span style="color:#f92672">.</span><span style="color:#a6e22e">2</span><span style="color:#f92672">.</span><span style="color:#a6e22e">31</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org.<span style="color:#a6e22e">apache</span>.<span style="color:#a6e22e">commons</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>org<span style="color:#f92672">.</span><span style="color:#a6e22e">apache</span><span style="color:#f92672">.</span><span style="color:#a6e22e">commons</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>commons<span style="color:#f92672">-</span>lang3<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>commons<span style="color:#f92672">-</span>lang<span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>commons<span style="color:#f92672">-</span>lang<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span>2.<span style="color:#a6e22e">6</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">2</span><span style="color:#f92672">.</span><span style="color:#a6e22e">6</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;!--</span> https:<span style="color:#75715e">//mvnrepository.com/artifact/com.google/guava --&gt;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com.<span style="color:#a6e22e">google</span>.<span style="color:#a6e22e">guava</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;!--</span> https<span style="color:#f92672">:</span><span style="color:#75715e">//mvnrepository.com/artifact/com.google/guava --&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com<span style="color:#f92672">.</span><span style="color:#a6e22e">google</span><span style="color:#f92672">.</span><span style="color:#a6e22e">guava</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>guava<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span>10.<span style="color:#a6e22e">0</span>.<span style="color:#a6e22e">1</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">10</span><span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">.</span><span style="color:#a6e22e">1</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;!--</span> pinyin4j <span style="color:#f92672">--&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com.<span style="color:#a6e22e">belerweb</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>com<span style="color:#f92672">.</span><span style="color:#a6e22e">belerweb</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>pinyin4j<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span>2.<span style="color:#a6e22e">5</span>.<span style="color:#a6e22e">0</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">2</span><span style="color:#f92672">.</span><span style="color:#a6e22e">5</span><span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/</span>dependencies<span style="color:#f92672">&gt;</span>
 </span></span></code></pre></div><h3 id="8总结">8.总结</h3>
@@ -765,8 +767,8 @@
           
           
           
-            <a class="ui label" href="/tags/spring/" title="Spring">
-              Spring
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
             </a>
           
           
@@ -958,7 +960,7 @@
 </div>
 <script>
   $(document).ready(function () {
-    $.getJSON('https:\/\/recordnote.github.io\//index.json', function (data) {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
       $('.ui.search').search({
         source: data,
         searchFields: ['title'],
@@ -1068,7 +1070,7 @@
 
     
     
-<script>
+<script type="application/javascript">
 var doNotTrack = false;
 if (!doNotTrack) {
 	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;

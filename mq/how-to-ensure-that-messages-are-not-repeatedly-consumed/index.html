@@ -17,7 +17,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.124.1">
+<meta name="generator" content="Hugo 0.119.0">
 
 <link rel="canonical" href="https://recordnote.github.io/mq/how-to-ensure-that-messages-are-not-repeatedly-consumed/" />
 
@@ -31,8 +31,10 @@
 
 
 
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://recordnote.github.io/img/mq-topic.jpg" /><meta name="twitter:title" content="如何保证消息不被重复消费？（如何保证消息消费的幂等性）"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/mq-topic.jpg"/>
+
+<meta name="twitter:title" content="如何保证消息不被重复消费？（如何保证消息消费的幂等性）"/>
 <meta name="twitter:description" content="首先，比如 RabbitMQ、RocketMQ、Kafka，都有可能会出现消息重复消费的问题，正常。因为这问题通常不是 MQ 自己保证的，是由我们开"/>
 
 
@@ -110,7 +112,7 @@
     <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
   </div>
   <div class="item">
-    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io\/'"></i>
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
   </div>
   
   <div class="item">
@@ -314,8 +316,8 @@
           
           
           
-            <a class="ui label" href="/tags/spring/" title="Spring">
-              Spring
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
             </a>
           
           
@@ -507,7 +509,7 @@
 </div>
 <script>
   $(document).ready(function () {
-    $.getJSON('https:\/\/recordnote.github.io\//index.json', function (data) {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
       $('.ui.search').search({
         source: data,
         searchFields: ['title'],
@@ -617,7 +619,7 @@
 
     
     
-<script>
+<script type="application/javascript">
 var doNotTrack = false;
 if (!doNotTrack) {
 	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;

@@ -17,7 +17,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.124.1">
+<meta name="generator" content="Hugo 0.119.0">
 
 <link rel="canonical" href="https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7-stream%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%92%8C%E7%89%B9%E6%80%A7/" />
 
@@ -31,8 +31,10 @@
 
 
 
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://recordnote.github.io/img/java.png" /><meta name="twitter:title" content="jdk8特性-Stream常用方法和特性"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/java.png"/>
+
+<meta name="twitter:title" content="jdk8特性-Stream常用方法和特性"/>
 <meta name="twitter:description" content="Stream介绍 先说下Stream的优势：它是java对集合操作的优化，相较于迭代器，使用Stream的速度非常快，并且它支持并行方式处理集"/>
 
 
@@ -110,7 +112,7 @@
     <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
   </div>
   <div class="item">
-    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io\/'"></i>
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
   </div>
   
   <div class="item">
@@ -232,44 +234,44 @@
 2、<code>sorted(Comparator&lt;? super T&gt; comparator)</code> ：我们可以使用lambada 来创建一个<code>Comparator</code> 实例。可以按照升序或着降序来排序元素。</p>
 <p>注意sorted是一个有状态的中间操作，即，只有全部执行完所有的数据才能知道结果。</p>
 <p>比如：将一些字符串在地址中按出现的顺序排列：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>　  String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span>;
-</span></span><span style="display:flex;"><span>	List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
-</span></span><span style="display:flex;"><span>	aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;南京&#34;</span>);
-</span></span><span style="display:flex;"><span>	aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;大学&#34;</span>);
-</span></span><span style="display:flex;"><span>	aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林校区&#34;</span>);
-</span></span><span style="display:flex;"><span>		aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林大学城&#34;</span>);
-</span></span><span style="display:flex;"><span>	aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;中山北路&#34;</span>);
-</span></span><span style="display:flex;"><span>	aList.<span style="color:#a6e22e">stream</span>().<span style="color:#a6e22e">sorted</span>(
-</span></span><span style="display:flex;"><span>    Comparator.<span style="color:#a6e22e">comparing</span>(a<span style="color:#f92672">-&gt;</span>address.<span style="color:#a6e22e">indexOf</span>(a))
-</span></span><span style="display:flex;"><span>　　).<span style="color:#a6e22e">forEach</span>(System.<span style="color:#a6e22e">out</span> :: println);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>　  String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>	aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>		aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">().</span><span style="color:#a6e22e">sorted</span><span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>    Comparator<span style="color:#f92672">.</span><span style="color:#a6e22e">comparing</span><span style="color:#f92672">(</span>a<span style="color:#f92672">-&gt;</span>address<span style="color:#f92672">.</span><span style="color:#a6e22e">indexOf</span><span style="color:#f92672">(</span>a<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>　　<span style="color:#f92672">).</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span> <span style="color:#f92672">::</span> println<span style="color:#f92672">);</span>
 </span></span></code></pre></div><p>也可以像下面这样不使用比较器：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>aList.<span style="color:#a6e22e">stream</span>().<span style="color:#a6e22e">sorted</span>((a,b)<span style="color:#f92672">-&gt;</span>address.<span style="color:#a6e22e">IndexOf</span>(a)<span style="color:#f92672">-</span>address.<span style="color:#a6e22e">IndexOf</span>(b)).<span style="color:#a6e22e">forEach</span>(System.<span style="color:#a6e22e">out</span> :: println);
-</span></span><span style="display:flex;"><span><span style="color:#75715e">//由大到小排序</span>
-</span></span></code></pre></div><p>输出结果：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">().</span><span style="color:#a6e22e">sorted</span><span style="color:#f92672">((</span>a<span style="color:#f92672">,</span>b<span style="color:#f92672">)-&gt;</span>address<span style="color:#f92672">.</span><span style="color:#a6e22e">IndexOf</span><span style="color:#f92672">(</span>a<span style="color:#f92672">)-</span>address<span style="color:#f92672">.</span><span style="color:#a6e22e">IndexOf</span><span style="color:#f92672">(</span>b<span style="color:#f92672">)).</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span> <span style="color:#f92672">::</span> println<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//由大到小排序
+</span></span></span></code></pre></div><p>输出结果：</p>
  <img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210715100716700.png" alt="image-20210715100716700" style="zoom:67%;" /> 
 <p>注：1.这里仙林大学城这个字段没有出现，所以序号是-1，被排在最前面。</p>
 <p>　　2.Comparator.comparing();这个是比较器提供的一个方法，它返回的也是一个比较器，源码如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#f92672">&lt;</span>T, U <span style="color:#66d9ef">extends</span> Comparable<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> U<span style="color:#f92672">&gt;&gt;</span> Comparator<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">comparing</span>(
-</span></span><span style="display:flex;"><span>            Function<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> T, <span style="color:#f92672">?</span> <span style="color:#66d9ef">extends</span> U<span style="color:#f92672">&gt;</span> keyExtractor)
-</span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        Objects.<span style="color:#a6e22e">requireNonNull</span>(keyExtractor);
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> (Comparator<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span> Serializable)
-</span></span><span style="display:flex;"><span>            (c1, c2) <span style="color:#f92672">-&gt;</span> keyExtractor.<span style="color:#a6e22e">apply</span>(c1).<span style="color:#a6e22e">compareTo</span>(keyExtractor.<span style="color:#a6e22e">apply</span>(c2));
-</span></span><span style="display:flex;"><span>    }
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">,</span> U <span style="color:#66d9ef">extends</span> Comparable<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> U<span style="color:#f92672">&gt;&gt;</span> Comparator<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">comparing</span><span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>            Function<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> T<span style="color:#f92672">,</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">extends</span> U<span style="color:#f92672">&gt;</span> keyExtractor<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Objects<span style="color:#f92672">.</span><span style="color:#a6e22e">requireNonNull</span><span style="color:#f92672">(</span>keyExtractor<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>Comparator<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span> Serializable<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">(</span>c1<span style="color:#f92672">,</span> c2<span style="color:#f92672">)</span> <span style="color:#f92672">-&gt;</span> keyExtractor<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>c1<span style="color:#f92672">).</span><span style="color:#a6e22e">compareTo</span><span style="color:#f92672">(</span>keyExtractor<span style="color:#f92672">.</span><span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>c2<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span></code></pre></div><p><strong>2.1.2 筛选操作(filter)</strong>：</p>
 <p><strong>上一步中，我们把一些字符串，按照在地址中出现的顺序排序。</strong></p>
 <p><strong>接下来我们可能想要进行筛选，把不在地址中，但是indexof为“-1”，排在最前面的数据筛选掉：</strong></p>
 <p>filter可以对集合进行筛选，它的参数可以是一个lambda表达式，流中的数据将会通过该lambda表达式返回新的流。</p>
 <p><strong>这里Stream有一个特性很重要，它像一个管道，可以将多个操作连接起来，并只执行一次for循环，这样大大提高了效率，即使第二次的流操作需要第一次流操作的结果，时间复杂度也只有一个for循环：</strong></p>
 <p>于是我可以在前面加个filter(),这样把“-1”过滤掉：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span>;
-</span></span><span style="display:flex;"><span>List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
-</span></span><span style="display:flex;"><span>aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;南京&#34;</span>);
-</span></span><span style="display:flex;"><span>aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;大学&#34;</span>);
-</span></span><span style="display:flex;"><span>aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林校区&#34;</span>);
-</span></span><span style="display:flex;"><span>aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林大学城&#34;</span>);
-</span></span><span style="display:flex;"><span>aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;中山北路&#34;</span>);
-</span></span><span style="display:flex;"><span>aList.<span style="color:#a6e22e">stream</span>().<span style="color:#a6e22e">filter</span>(a<span style="color:#f92672">-&gt;</span>address.<span style="color:#a6e22e">indexOf</span>(a)<span style="color:#f92672">!=-</span>1).<span style="color:#a6e22e">sorted</span>( 　　Comparator.<span style="color:#a6e22e">comparing</span>(a<span style="color:#f92672">-&gt;</span>address.<span style="color:#a6e22e">indexOf</span>(a)) ).<span style="color:#a6e22e">forEach</span>(System.<span style="color:#a6e22e">out</span> :: println);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">().</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>a<span style="color:#f92672">-&gt;</span>address<span style="color:#f92672">.</span><span style="color:#a6e22e">indexOf</span><span style="color:#f92672">(</span>a<span style="color:#f92672">)!=-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">).</span><span style="color:#a6e22e">sorted</span><span style="color:#f92672">(</span> 　　Comparator<span style="color:#f92672">.</span><span style="color:#a6e22e">comparing</span><span style="color:#f92672">(</span>a<span style="color:#f92672">-&gt;</span>address<span style="color:#f92672">.</span><span style="color:#a6e22e">indexOf</span><span style="color:#f92672">(</span>a<span style="color:#f92672">))</span> <span style="color:#f92672">).</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span> <span style="color:#f92672">::</span> println<span style="color:#f92672">);</span>
 </span></span></code></pre></div><p>输出结果：</p>
 <img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210715100741474.png" alt="image-20210715100741474" style="zoom: 67%;" /> 
 <p>注：<strong>foreach</strong>是一个终端操作，参数也是一个函数，它会迭代中间操作完成后的每一个数据，这里它将每个不为空的元素打印出来。</p>
@@ -281,22 +283,22 @@
 <p>这样遍历映射，最终返回一个新的容器，<strong>注意：这里返回的新容器数据类型可以不与原容器类型相同：</strong></p>
 <p>举个例子：我们将address中每个元素的<strong>位置</strong>找出，并返回一个int类型的<strong>存储位置信息</strong>的数组：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#a6e22e">@Test</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span>() {
-</span></span><span style="display:flex;"><span>        String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span>;
-</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;南京&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;大学&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林校区&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林大学城&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;中山北路&#34;</span>);
-</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> aIntegers <span style="color:#f92672">=</span>aList.<span style="color:#a6e22e">stream</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">map</span>(str<span style="color:#f92672">-&gt;</span>mapFunc(address, str)).<span style="color:#a6e22e">collect</span>(Collectors.<span style="color:#a6e22e">toList</span>());
-</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(aIntegers);<span style="color:#75715e">//.forEach(System.out :: println);    </span>
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> aIntegers <span style="color:#f92672">=</span>aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>str<span style="color:#f92672">-&gt;</span>mapFunc<span style="color:#f92672">(</span>address<span style="color:#f92672">,</span> str<span style="color:#f92672">)).</span><span style="color:#a6e22e">collect</span><span style="color:#f92672">(</span>Collectors<span style="color:#f92672">.</span><span style="color:#a6e22e">toList</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>aIntegers<span style="color:#f92672">);</span><span style="color:#75715e">//.forEach(System.out :: println);    
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">mapFunc</span>(String address,String str) {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> address.<span style="color:#a6e22e">indexOf</span>(str);
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">mapFunc</span><span style="color:#f92672">(</span>String address<span style="color:#f92672">,</span>String str<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> address<span style="color:#f92672">.</span><span style="color:#a6e22e">indexOf</span><span style="color:#f92672">(</span>str<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>结果如下：</p>
 <img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210715100805791.png" alt="image-20210715100805791" style="zoom:67%;" /> 
 <h3 id="22规约操作reduction-"><strong>2.2规约操作(*reduction* )：</strong></h3>
@@ -308,41 +310,41 @@
 <p><strong>1.一个参数的Reduce</strong></p>
 <p>它的参数就是一个函数接口：Optional<T> reduce(BinaryOperator<T> accumulator)</p>
 <p>比如，我们找出数组中长度最大的一个数：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span>() {
-</span></span><span style="display:flex;"><span>        String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span>;
-</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;南京&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;大学&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林校区&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林大学城&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;中山北路&#34;</span>);
-</span></span><span style="display:flex;"><span>        Optional<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> a <span style="color:#f92672">=</span>aList.<span style="color:#a6e22e">stream</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">reduce</span>((s1, s2) <span style="color:#f92672">-&gt;</span> s1.<span style="color:#a6e22e">length</span>()<span style="color:#f92672">&gt;=</span>s2.<span style="color:#a6e22e">length</span>() <span style="color:#f92672">?</span> s1 : s2);
-</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(a.<span style="color:#a6e22e">get</span>());<span style="color:#75715e">//仙林大学城</span>
-</span></span><span style="display:flex;"><span>    }
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Optional<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> a <span style="color:#f92672">=</span>aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">.</span><span style="color:#a6e22e">reduce</span><span style="color:#f92672">((</span>s1<span style="color:#f92672">,</span> s2<span style="color:#f92672">)</span> <span style="color:#f92672">-&gt;</span> s1<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">()&gt;=</span>s2<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">()</span> <span style="color:#f92672">?</span> s1 <span style="color:#f92672">:</span> s2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>a<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span><span style="color:#75715e">//仙林大学城
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>这里的Optional<T>就是一个容器，它可以避免空指针，具体可以百度，这里也可以返回一个String的。</p>
 <p><strong>2.两个参数的Reduce</strong></p>
 <p><strong>T reduce(T identity, BinaryOperator<T> accumulator)</strong></p>
 <p>2个参数其实除了一个函数接口以外，还包括一个固定的初始化的值，它会作为容器的第一个元素进入计算过程：</p>
 <p>例：将每个字符串拼接，并在之前加上“value:”：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span>() {
-</span></span><span style="display:flex;"><span>        String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span>;
-</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;南京&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;大学&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林校区&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林大学城&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;中山北路&#34;</span>);
-</span></span><span style="display:flex;"><span>        String t<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;value：&#34;</span>;
-</span></span><span style="display:flex;"><span>        String a <span style="color:#f92672">=</span>aList.<span style="color:#a6e22e">stream</span>()
-</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">reduce</span>(t, <span style="color:#66d9ef">new</span> BinaryOperator<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span>() {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        String t<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;value：&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        String a <span style="color:#f92672">=</span>aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">.</span><span style="color:#a6e22e">reduce</span><span style="color:#f92672">(</span>t<span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> BinaryOperator<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">@Override</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">apply</span>(String s, String s2) {
-</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">return</span> s.<span style="color:#a6e22e">concat</span>(s2);
-</span></span><span style="display:flex;"><span>                    }
-</span></span><span style="display:flex;"><span>                });    
-</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(a);
-</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>String s<span style="color:#f92672">,</span> String s2<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">return</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">concat</span><span style="color:#f92672">(</span>s2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">});</span>    
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>a<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span></code></pre></div><p>结果如下：</p>
 <img src="https://gitee.com/aaronlynn/picture/raw/master/img/image-20210715100922016.png" alt="image-20210715100922016" style="zoom: 80%;" /> 
 <p><strong>3.三个参数的情况主要是在并行（parallelStream）情况下使用：可以参考（https://blog.csdn.net/icarusliu/article/details/79504602），有需要可以了解下。</strong></p>
@@ -352,40 +354,40 @@
 <p>还好，考虑到我们日常使用，java8提供了一个收集器（Collectors），它是专门为collect方法量身打造的接口：</p>
 <p>我们常常使用collect将流转换成List,Map或Set:</p>
 <p><strong>1.转换成list:</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Stream<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> stream <span style="color:#f92672">=</span> Stream.<span style="color:#a6e22e">of</span>(<span style="color:#e6db74">&#34;I&#34;</span>, <span style="color:#e6db74">&#34;love&#34;</span>, <span style="color:#e6db74">&#34;you&#34;</span>, <span style="color:#e6db74">&#34;too&#34;</span>); 
-</span></span><span style="display:flex;"><span>List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> stream.<span style="color:#a6e22e">collect</span>(Collectors.<span style="color:#a6e22e">toList</span>());
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Stream<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> stream <span style="color:#f92672">=</span> Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;I&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;love&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;you&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;too&#34;</span><span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> stream<span style="color:#f92672">.</span><span style="color:#a6e22e">collect</span><span style="color:#f92672">(</span>Collectors<span style="color:#f92672">.</span><span style="color:#a6e22e">toList</span><span style="color:#f92672">());</span>
 </span></span></code></pre></div><p><strong>2.转换成Map:</strong></p>
 <p>我们可以使用Collector.toMap()接口:Collectors.toMap(keyMapper, valueMapper),这里就需要我们指定key和value分别是什么。</p>
 <p>例：我们将数组中的字符串作为key，字符串长度作为value，生成一个map：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span>;
-</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;南京&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;大学&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林校区&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林大学城&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;中山北路&#34;</span>);
-</span></span><span style="display:flex;"><span>        String t<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;value:&#34;</span>;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        String t<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;value:&#34;</span><span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        Map<span style="color:#f92672">&lt;</span>String, Integer<span style="color:#f92672">&gt;</span> maps <span style="color:#f92672">=</span> 
-</span></span><span style="display:flex;"><span>                aList.<span style="color:#a6e22e">stream</span>().<span style="color:#a6e22e">collect</span>(Collectors.<span style="color:#a6e22e">toMap</span>(Function.<span style="color:#a6e22e">identity</span>(), String::length));
-</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(maps);
+</span></span><span style="display:flex;"><span>        Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Integer<span style="color:#f92672">&gt;</span> maps <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>                aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">().</span><span style="color:#a6e22e">collect</span><span style="color:#f92672">(</span>Collectors<span style="color:#f92672">.</span><span style="color:#a6e22e">toMap</span><span style="color:#f92672">(</span>Function<span style="color:#f92672">.</span><span style="color:#a6e22e">identity</span><span style="color:#f92672">(),</span> String<span style="color:#f92672">::</span>length<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>maps<span style="color:#f92672">);</span>
 </span></span></code></pre></div><p>打印结果：</p>
 <p>{中山北路=4, 大学=2, 仙林大学城=5, 仙林校区=4, 南京=2}</p>
 <p>通常，我们在进行<strong>分组操作</strong>的时候也会将容器转换为Map,这里也说明一下：<strong>Collectors.groupingBy(classifier)</strong></p>
 <p><strong>groupingBy与sql的group by类似，就是一个分组函数，</strong></p>
 <p><strong>例：我们将数组中的字符串按长度分组：</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span>;
-</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;南京&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;大学&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林校区&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;仙林大学城&#34;</span>);
-</span></span><span style="display:flex;"><span>        aList.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#34;中山北路&#34;</span>);
-</span></span><span style="display:flex;"><span>        String t<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;value:&#34;</span>;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>        String address <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;中山北路南京大学仙林校区&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> aList <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;南京&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;大学&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林校区&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;仙林大学城&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        aList<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;中山北路&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        String t<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;value:&#34;</span><span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        Map<span style="color:#f92672">&lt;</span>Integer, List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;&gt;</span> maps <span style="color:#f92672">=</span> 
-</span></span><span style="display:flex;"><span>                aList.<span style="color:#a6e22e">stream</span>().<span style="color:#a6e22e">collect</span>(Collectors.<span style="color:#a6e22e">groupingBy</span>(String::length));
-</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(maps);
+</span></span><span style="display:flex;"><span>        Map<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;&gt;</span> maps <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>                aList<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">().</span><span style="color:#a6e22e">collect</span><span style="color:#f92672">(</span>Collectors<span style="color:#f92672">.</span><span style="color:#a6e22e">groupingBy</span><span style="color:#f92672">(</span>String<span style="color:#f92672">::</span>length<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>maps<span style="color:#f92672">);</span>
 </span></span></code></pre></div><p>打印结果：</p>
 <p>{2=[南京, 大学], 4=[仙林校区, 中山北路], 5=[仙林大学城]}</p>
 <h3 id="其他的末端操作api">其他的末端操作api：</h3>
@@ -514,8 +516,8 @@
           
           
           
-            <a class="ui label" href="/tags/spring/" title="Spring">
-              Spring
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
             </a>
           
           
@@ -707,7 +709,7 @@
 </div>
 <script>
   $(document).ready(function () {
-    $.getJSON('https:\/\/recordnote.github.io\//index.json', function (data) {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
       $('.ui.search').search({
         source: data,
         searchFields: ['title'],
@@ -817,7 +819,7 @@
 
     
     
-<script>
+<script type="application/javascript">
 var doNotTrack = false;
 if (!doNotTrack) {
 	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
