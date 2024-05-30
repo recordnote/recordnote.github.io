@@ -239,8 +239,7 @@
 </span></span><span style="display:flex;"><span>		
 </span></span><span style="display:flex;"><span>	&lt;/<span style="color:#f92672">body</span>&gt;
 </span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">html</span>&gt;
-</span></span></code></pre></div><p>复制代码</p>
-<p>现在。这个叫<a href="https://cn.vuejs.org/v2/guide/single-file-components.html">vue单文件组件规范sfc</a></p>
+</span></span></code></pre></div><p>现在。这个叫<a href="https://cn.vuejs.org/v2/guide/single-file-components.html">vue单文件组件规范sfc</a></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
 </span></span><span style="display:flex;"><span>	&lt;<span style="color:#f92672">view</span>&gt;
 </span></span><span style="display:flex;"><span>	注意必须有一个view，且只能有一个根view。所有内容写在这个view下面。
@@ -256,23 +255,20 @@
 </span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">style</span>&gt;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">style</span>&gt;
-</span></span></code></pre></div><p>复制代码</p>
-<h3 id="外部文件引用方式变化">外部文件引用方式变化</h3>
+</span></span></code></pre></div><h3 id="外部文件引用方式变化">外部文件引用方式变化</h3>
 <p>以前通过script src、link href引入外部的js和css；</p>
 <p>现在是es6的写法，import引入外部的js模块(注意不是文件)或css</p>
 <p>以前</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;js/jquery-1.10.2.js&#34;</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/javascript&#34;</span>&gt;&lt;/<span style="color:#f92672">script</span>&gt;
 </span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">link</span> <span style="color:#a6e22e">href</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;css/bootstrap.css&#34;</span> <span style="color:#a6e22e">rel</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stylesheet&#34;</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/css&#34;</span>/&gt;
-</span></span></code></pre></div><p>复制代码</p>
-<p>现在</p>
+</span></span></code></pre></div><p>现在</p>
 <h4 id="js要require进来变成了对象">js要require进来，变成了对象。</h4>
 <p>在hello uni-app的common目录有一个工具类<code>util.js</code>，可以在hello uni-app中搜索这个例子查看。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">util</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;../../../common/util.js&#39;</span>);  <span style="color:#75715e">//require这个js模块
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">formatedPlayTime</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">util</span>.<span style="color:#a6e22e">formatTime</span>(<span style="color:#a6e22e">playTime</span>); <span style="color:#75715e">//调用js模块的方法
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>&lt;/<span style="color:#f92672">script</span>&gt;
-</span></span></code></pre></div><p>复制代码</p>
-<p>而在这个<code>util.js</code>里，要把之前的function封装为对象的方法</p>
+</span></span></code></pre></div><p>而在这个<code>util.js</code>里，要把之前的function封装为对象的方法</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">formatTime</span>(<span style="color:#a6e22e">time</span>) {
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">time</span>;<span style="color:#75715e">//这里没写逻辑
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
@@ -280,12 +276,10 @@
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">module</span>.<span style="color:#a6e22e">exports</span> <span style="color:#f92672">=</span> {
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">formatTime</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">formatTime</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>复制代码</p>
-<p>当然还有一些高级的用法</p>
+</span></span></code></pre></div><p>当然还有一些高级的用法</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>var dateUtils = require(&#39;../../../common/util.js&#39;).dateUtils; //直接使用js模块的属性。在hello uni-app有示例
 </span></span><span style="display:flex;"><span>import * as echarts from &#39;/components/echarts/echarts.simple.min.js&#39;; //将js导入并重命名为echarts，然后使用echarts.来继续执行方法。在hello uni-app有示例
-</span></span></code></pre></div><p>复制代码</p>
-<h4 id="css外部文件导入">css外部文件导入</h4>
+</span></span></code></pre></div><h4 id="css外部文件导入">css外部文件导入</h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">style</span>&gt;
 </span></span><span style="display:flex;"><span>	@<span style="color:#66d9ef">import</span> <span style="color:#e6db74">&#34;./common/uni.css&#34;</span>;
 </span></span><span style="display:flex;"><span>	
@@ -293,8 +287,7 @@
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">color</span>:<span style="color:#ae81ff">#7A7E83</span>;
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">style</span>&gt;
-</span></span></code></pre></div><p>复制代码</p>
-<p>全局样式，在根目录下的app.vue里写入，每个页面都会加载app.vue里的样式。</p>
+</span></span></code></pre></div><p>全局样式，在根目录下的app.vue里写入，每个页面都会加载app.vue里的样式。</p>
 <h4 id="另外vue支持组件导入可以更方便的封装一个包括界面js样式的库">另外，vue支持组件导入，可以更方便的封装一个包括界面、js、样式的库。</h4>
 <p>如下是导入一个角标的组件库，在页面上显示一个abc并且右上角有个数字角标1，<a href="http://ext.dcloud.net.cn/plugin?id=21">详见</a></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
@@ -315,13 +308,11 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		}
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
-</span></span></code></pre></div><p>复制代码</p>
-<p>如需要全局导入vue组件，即每个页面都可以直接使用而不用引用和注册的话，在项目根目录下的main.js里处理。如下是hello uni-app里的例子。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>//main.js
-</span></span><span style="display:flex;"><span>import pageHead from &#39;./components/page-head.vue&#39; //导入
-</span></span><span style="display:flex;"><span>Vue.component(&#39;page-head&#39;, pageHead) //注册。注册后在每个vue的page页面里可以直接使用&lt;page-head&gt;&lt;/page-head&gt;组件。
-</span></span></code></pre></div><p>复制代码</p>
-<p>上述的组件使用方式属于传统vue的概念。uni-app 2.7以后推出了更简单的组件使用技术<a href="https://uniapp.dcloud.net.cn/collocation/pages?id=easycom">easycom</a>，无需引用和注册组件，直接在template区域使用组件即可。</p>
+</span></span></code></pre></div><p>如需要全局导入vue组件，即每个页面都可以直接使用而不用引用和注册的话，在项目根目录下的main.js里处理。如下是hello uni-app里的例子。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#75715e">//main.js
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">pageHead</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;./components/page-head.vue&#39;</span> <span style="color:#75715e">//导入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">component</span>(<span style="color:#e6db74">&#39;page-head&#39;</span>, <span style="color:#a6e22e">pageHead</span>) <span style="color:#75715e">//注册。注册后在每个vue的page页面里可以直接使用&lt;page-head&gt;&lt;/page-head&gt;组件。
+</span></span></span></code></pre></div><p>上述的组件使用方式属于传统vue的概念。uni-app 2.7以后推出了更简单的组件使用技术<a href="https://uniapp.dcloud.net.cn/collocation/pages?id=easycom">easycom</a>，无需引用和注册组件，直接在template区域使用组件即可。</p>
 <h3 id="组件标签的变化">组件/标签的变化</h3>
 <p>以前是html标签，比如<code>&lt;div&gt;</code>，现在是小程序组件，比如<code>&lt;view&gt;</code>。 那么<code>标签</code>和<code>组件</code>有什么区别，不都是用尖括号包围起来一段英文吗？ 其实标签是老的概念，标签属于浏览器内置的东西。但组件，是可以自由扩展的。 类似你可以把一段js封装成函数或模块，你也可以把一个ui控件封装成一个组件。</p>
 <p><code>uni-app</code>参考小程序规范，提供了一批内置组件。</p>
@@ -411,8 +402,7 @@
 </span></span><span style="display:flex;"><span>		&lt;<span style="color:#f92672">button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;button&#34;</span> <span style="color:#a6e22e">onclick</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;changetextvalue()&#34;</span>&gt;修改为789&lt;/<span style="color:#f92672">button</span>&gt;
 </span></span><span style="display:flex;"><span>	&lt;/<span style="color:#f92672">body</span>&gt;
 </span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">html</span>&gt;
-</span></span></code></pre></div><p>复制代码</p>
-<p>现在的做法，是vue的绑定模式，给这个dom元素绑定一个js变量，在script中修改js变量的值，dom会自动变化，页面会自动更新渲染</p>
+</span></span></code></pre></div><p>现在的做法，是vue的绑定模式，给这个dom元素绑定一个js变量，在script中修改js变量的值，dom会自动变化，页面会自动更新渲染</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
 </span></span><span style="display:flex;"><span>	&lt;<span style="color:#f92672">view</span>&gt;
 </span></span><span style="display:flex;"><span>		&lt;<span style="color:#f92672">text</span>&gt;{{textvalue}}&lt;/<span style="color:#f92672">text</span>&gt;<span style="color:#75715e">&lt;!-- 这里演示了组件值的绑定 --&gt;</span>
@@ -438,8 +428,7 @@
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
-</span></span></code></pre></div><p>复制代码</p>
-<p>注意上述代码中的 <code>export default {}</code> 里的 <code>data(): {return { }}</code>。 在vue的设计中，这里存放着页面中需要绑定的数据，写在data里，才能被界面正确的绑定和渲染。 注意：uni-app的vue页面是vue的单文件组件规范，按照vue的定义只接受 function，必须用 return 包起来。</p>
+</span></span></code></pre></div><p>注意上述代码中的 <code>export default {}</code> 里的 <code>data(): {return { }}</code>。 在vue的设计中，这里存放着页面中需要绑定的数据，写在data里，才能被界面正确的绑定和渲染。 注意：uni-app的vue页面是vue的单文件组件规范，按照vue的定义只接受 function，必须用 return 包起来。</p>
 <p>如果你学过小程序的数据绑定，但不了解vue，要注意：</p>
 <ul>
 <li>小程序的数据绑定参考了vue，但自己修改了一些。在uni-app中只支持标准的vue，不支持小程序的数据绑定语法</li>
@@ -468,8 +457,7 @@
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>};
 </span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
-</span></span></code></pre></div><p>复制代码</p>
-<ul>
+</span></span></code></pre></div><ul>
 <li><strong>js api的变化</strong></li>
 </ul>
 <p>因为uni-app的api是参考小程序的，所以和浏览器的js api有很多不同，如</p>
@@ -486,8 +474,7 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-css" data-lang="css"><span style="display:flex;"><span><span style="color:#f92672">page</span>{
 </span></span><span style="display:flex;"><span>	
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>复制代码</p>
-<p>单位方面，px无法动态适应不同宽度的屏幕，rem无法用于nvue/weex。如果想使用根据屏幕宽度自适应的单位，推荐使用rpx，全端支持。 <a href="https://uniapp.dcloud.io/frame?id=%E5%B0%BA%E5%AF%B8%E5%8D%95%E4%BD%8D">尺寸单位文档</a></p>
+</span></span></code></pre></div><p>单位方面，px无法动态适应不同宽度的屏幕，rem无法用于nvue/weex。如果想使用根据屏幕宽度自适应的单位，推荐使用rpx，全端支持。 <a href="https://uniapp.dcloud.io/frame?id=%E5%B0%BA%E5%AF%B8%E5%8D%95%E4%BD%8D">尺寸单位文档</a></p>
 <p>uni-app推荐使用flex布局，这个布局思路和传统流式布局有点区别。但flex的特色在于，不管是什么技术都支持这种排版，web、小程序/快应用、weex/rn、原生的iOS、Android开发，全都支持flex。它是通吃所有端的新一代布局方案。相关教程请自行百度学习。</p>
 <p>uni-app的vue文件里支持所有web排版方式，不管是流式还是flex。但nvue里，只支持flex，因为它在app端是使用原生排版引擎渲染的。</p>
 <p>注意css里背景图和字体文件，尽量不要大于40k，因为会影响性能。在小程序端，如果要大于40k，需放到服务器侧远程引用或base64后引入，不能放到本地作为独立文件引用。</p>
