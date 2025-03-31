@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>JVM线上问题排查和性能调优案例 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.119.0">
+
+<link rel="canonical" href="https://recordnote.github.io/java/jvm%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%92%8C%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E6%A1%88%E4%BE%8B/" />
+
+
+<meta property="og:title" content="JVM线上问题排查和性能调优案例" />
+<meta property="og:description" content="JVM线上问题排查与性能调优实战案例解析 一、OOM问题排查系列案例 1.1 全表查询引发的雪崩式OOM（2023案例） 现象 线上服务接口响应时间异常飙" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/java/jvm%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%92%8C%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E6%A1%88%E4%BE%8B/" /><meta property="og:image" content="https://recordnote.github.io/img/java.png" /><meta property="article:section" content="java" />
+<meta property="article:published_time" content="2024-09-10T14:21:26+08:00" />
+<meta property="article:modified_time" content="2024-09-10T14:21:26+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/java.png"/>
+
+<meta name="twitter:title" content="JVM线上问题排查和性能调优案例"/>
+<meta name="twitter:description" content="JVM线上问题排查与性能调优实战案例解析 一、OOM问题排查系列案例 1.1 全表查询引发的雪崩式OOM（2023案例） 现象 线上服务接口响应时间异常飙"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一oom问题排查系列案例">一、OOM问题排查系列案例</a>
+      <ul>
+        <li><a href="#11-全表查询引发的雪崩式oom2023案例">1.1 全表查询引发的雪崩式OOM（2023案例）</a></li>
+        <li><a href="#12-版本升级导致接口级联故障2023案例">1.2 版本升级导致接口级联故障（2023案例）</a></li>
+      </ul>
+    </li>
+    <li><a href="#二gc性能调优深度实践">二、GC性能调优深度实践</a>
+      <ul>
+        <li><a href="#21-younggc异常飙升问题2023京东案例">2.1 YoungGC异常飙升问题（2023京东案例）</a></li>
+        <li><a href="#22-cms-gc实战调优2020美团案例">2.2 CMS GC实战调优（2020美团案例）</a></li>
+      </ul>
+    </li>
+    <li><a href="#三内存泄漏经典场景剖析">三、内存泄漏经典场景剖析</a>
+      <ul>
+        <li><a href="#31-hibernate级联加载陷阱2021案例">3.1 Hibernate级联加载陷阱（2021案例）</a></li>
+        <li><a href="#32-集合不当使用案例2021编了个编程案例">3.2 集合不当使用案例（2021编了个编程案例）</a></li>
+      </ul>
+    </li>
+    <li><a href="#四jvm调优知识体系构建">四、JVM调优知识体系构建</a>
+      <ul>
+        <li><a href="#41-监控工具箱推荐">4.1 监控工具箱推荐</a></li>
+        <li><a href="#42-参数调优黄金法则">4.2 参数调优黄金法则</a></li>
+      </ul>
+    </li>
+    <li><a href="#五总结与展望">五、总结与展望</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">JVM线上问题排查和性能调优案例<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2024-09-10T14:21:26&#43;08:00</span>
+                
+
+              | 5 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2024-09-10T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=JVM%e7%ba%bf%e4%b8%8a%e9%97%ae%e9%a2%98%e6%8e%92%e6%9f%a5%e5%92%8c%e6%80%a7%e8%83%bd%e8%b0%83%e4%bc%98%e6%a1%88%e4%be%8b&url=https%3a%2f%2frecordnote.github.io%2fjava%2fjvm%25E7%25BA%25BF%25E4%25B8%258A%25E9%2597%25AE%25E9%25A2%2598%25E6%258E%2592%25E6%259F%25A5%25E5%2592%258C%25E6%2580%25A7%25E8%2583%25BD%25E8%25B0%2583%25E4%25BC%2598%25E6%25A1%2588%25E4%25BE%258B%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fjava%2fjvm%25E7%25BA%25BF%25E4%25B8%258A%25E9%2597%25AE%25E9%25A2%2598%25E6%258E%2592%25E6%259F%25A5%25E5%2592%258C%25E6%2580%25A7%25E8%2583%25BD%25E8%25B0%2583%25E4%25BC%2598%25E6%25A1%2588%25E4%25BE%258B%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/java.png" />
+        
+
+        <ul>
+<li>
+<h1 id="jvm线上问题排查与性能调优实战案例解析">JVM线上问题排查与性能调优实战案例解析</h1>
+<hr>
+<h2 id="一oom问题排查系列案例">一、OOM问题排查系列案例</h2>
+<h3 id="11-全表查询引发的雪崩式oom2023案例">1.1 全表查询引发的雪崩式OOM（2023案例）</h3>
+<p><strong>现象</strong><br>
+线上服务接口响应时间异常飙升，监控显示请求在中间环节存在大量GAP时间（非业务代码耗时）。同一时段出现大量类似慢请求，最终触发OOM导致服务崩溃。</p>
+<p><strong>分析过程</strong></p>
+<ol>
+<li>使用<code>jvisualvm</code>分析heap dump文件，发现大量<code>ResultSet</code>对象堆积</li>
+<li>追踪引用链定位到未加limit的SQL查询语句</li>
+<li>全表扫描导致单次查询加载数十万条记录到内存</li>
+<li>高并发场景下内存呈指数级增长直至溢出</li>
+</ol>
+<p><strong>关键技术点</strong><br>
+• SQL执行监控策略（自动识别无where/limit语句）<br>
+• 数据库连接池配置验证（maxActive参数合理性）<br>
+• 堆内存分配比例验证（Old区容量是否充足）</p>
+<p><strong>解决方案</strong></p>
+<ol>
+<li>紧急方案：SQL拦截器强制追加LIMIT 1000</li>
+<li>长期方案：<br>
+• 增加SQL审计规则（禁止生产环境无limit全表查询）<br>
+• 调整连接池maxActive=50（原配置200）<br>
+• 增加二级缓存减少DB查询频次</li>
+</ol>
+<hr>
+<h3 id="12-版本升级导致接口级联故障2023案例">1.2 版本升级导致接口级联故障（2023案例）</h3>
+<p><strong>现象</strong><br>
+系统开放接口突发不可用，网络监控显示TCP连接数异常激增，紧急回滚后恢复正常。</p>
+<p><strong>根因分析</strong></p>
+<ol>
+<li>MAT分析显示<code>ConcurrentHashMap$Node</code>对象占70%内存</li>
+<li>追踪到新版本引入的本地缓存未设置TTL</li>
+<li>缓存雪崩导致每秒数千次穿透查询</li>
+<li>线程池满导致健康检查失败触发熔断</li>
+</ol>
+<p><strong>内存分析技巧</strong><br>
+• 使用OQL查询特定对象数量：<code>SELECT * FROM java.util.concurrent.ConcurrentHashMap$Node</code><br>
+• 对象支配树分析展示缓存数据结构<br>
+• 线程栈关联分析定位缓存加载线程</p>
+<p><strong>优化措施</strong></p>
+<ol>
+<li>采用Guava Cache替换原生Map实现</li>
+<li>配置分层过期策略（refreshAfterWrite+expireAfterAccess）</li>
+<li>增加熔断降级开关（基于QPS动态禁用缓存）</li>
+</ol>
+<hr>
+<h2 id="二gc性能调优深度实践">二、GC性能调优深度实践</h2>
+<h3 id="21-younggc异常飙升问题2023京东案例">2.1 YoungGC异常飙升问题（2023京东案例）</h3>
+<p><strong>问题特征</strong><br>
+系统启动后出现长达800ms的YoungGC停顿，GC频率从正常5分钟/次突增至10秒/次。</p>
+<p><strong>分析路径</strong></p>
+<ol>
+<li>GC日志显示晋升阈值异常：<code>Desired survivor size 871038976 bytes, new threshold 1 (max 15)</code></li>
+<li>JVM内存参数验证：-Xmn2g（Young区）/-Xmx4g（堆总大小）</li>
+<li>对象年龄追踪发现大量&quot;早熟对象&quot;（年龄&gt;3即晋升Old区）</li>
+</ol>
+<p><strong>调优策略</strong><br>
+• 关闭动态年龄计算：<code>-XX:-UseAdaptiveSizePolicy</code><br>
+• 固定晋升年龄阈值：<code>-XX:MaxTenuringThreshold=10</code><br>
+• 调整Survivor比例：<code>-XX:SurvivorRatio=6</code><br>
+• 最终YoungGC时间降至80ms，频率恢复5分钟/次</p>
+<hr>
+<h3 id="22-cms-gc实战调优2020美团案例">2.2 CMS GC实战调优（2020美团案例）</h3>
+<p><strong>典型问题集锦</strong></p>
+<ol>
+<li>
+<p><strong>Promotion Failed</strong><br>
+• 现象：Old区碎片导致大对象分配失败<br>
+• 方案：<code>-XX:+UseCMSCompactAtFullCollection</code></p>
+</li>
+<li>
+<p><strong>Concurrent Mode Failure</strong><br>
+• 现象：GC未完成时已无可用空间<br>
+• 方案：调整<code>-XX:CMSInitiatingOccupancyFraction=65</code></p>
+</li>
+<li>
+<p><strong>内存泄漏监控</strong><br>
+• 工具：JProfiler持续跟踪Old区对象增长<br>
+• 关键指标：Old区每日增长&gt;200M需立即排查</p>
+</li>
+</ol>
+<hr>
+<h2 id="三内存泄漏经典场景剖析">三、内存泄漏经典场景剖析</h2>
+<h3 id="31-hibernate级联加载陷阱2021案例">3.1 Hibernate级联加载陷阱（2021案例）</h3>
+<p><strong>故障表现</strong><br>
+服务RES内存占用达1.5G，远超Xmx=1g配置，频繁发生SWAP。</p>
+<p><strong>泄漏溯源</strong></p>
+<ol>
+<li><code>jmap -histo</code>显示大量EntityLoader对象</li>
+<li>Hibernate的FetchType.EAGER配置导致级联查询</li>
+<li>分页查询未先过滤直接加载关联实体</li>
+<li>结果集包含N+1查询产生的数万级对象</li>
+</ol>
+<p><strong>根治方案</strong></p>
+<ol>
+<li>全局替换FetchType.LAZY</li>
+<li>增加@BatchSize优化延迟加载</li>
+<li>采用DTO投影替代实体直接返回</li>
+<li>增加Hibernate Stat监控查询次数</li>
+</ol>
+<hr>
+<h3 id="32-集合不当使用案例2021编了个编程案例">3.2 集合不当使用案例（2021编了个编程案例）</h3>
+<p><strong>场景复现</strong><br>
+分库分表查询采用内存排序分页：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>List<span style="color:#f92672">&lt;</span>Order<span style="color:#f92672">&gt;</span> allData <span style="color:#f92672">=</span> queryAllShards<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> allData<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>             <span style="color:#f92672">.</span><span style="color:#a6e22e">sorted</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>             <span style="color:#f92672">.</span><span style="color:#a6e22e">skip</span><span style="color:#f92672">(</span>offset<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>             <span style="color:#f92672">.</span><span style="color:#a6e22e">limit</span><span style="color:#f92672">(</span>pageSize<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>             <span style="color:#f92672">.</span><span style="color:#a6e22e">collect</span><span style="color:#f92672">(</span>toList<span style="color:#f92672">());</span>
+</span></span></code></pre></div><p><strong>问题本质</strong></p>
+<ol>
+<li>百万级数据加载触发频繁Young GC</li>
+<li>Full GC时处理大对象引发&quot;Stop The World&quot;</li>
+<li>内存排序时间复杂度O(n log n)导致CPU飙升</li>
+</ol>
+<p><strong>优化方案对比</strong></p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>内存消耗</th>
+<th>响应时间</th>
+<th>实现复杂度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQL聚合查询</td>
+<td>低</td>
+<td>50ms</td>
+<td>高（需改造分库中间件）</td>
+</tr>
+<tr>
+<td>本地缓存+布隆过滤器</td>
+<td>中</td>
+<td>100ms</td>
+<td>中</td>
+</tr>
+<tr>
+<td>Elasticsearch二级索引</td>
+<td>低</td>
+<td>30ms</td>
+<td>高</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="四jvm调优知识体系构建">四、JVM调优知识体系构建</h2>
+<h3 id="41-监控工具箱推荐">4.1 监控工具箱推荐</h3>
+<ol>
+<li>
+<p><strong>实时监控</strong><br>
+• <code>jstat -gcutil [pid] 1000</code>（秒级GC监控）<br>
+• <code>jcmd [pid] VM.native_memory</code>（Native内存分析）</p>
+</li>
+<li>
+<p><strong>故障现场保留</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 快速dump生成</span>
+</span></span><span style="display:flex;"><span>jmap -dump:live,format<span style="color:#f92672">=</span>b,file<span style="color:#f92672">=</span>heap.bin <span style="color:#f92672">[</span>pid<span style="color:#f92672">]</span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 安全点检查</span>
+</span></span><span style="display:flex;"><span>jstack -l <span style="color:#f92672">[</span>pid<span style="color:#f92672">]</span> &gt; thread.txt
+</span></span></code></pre></div></li>
+<li>
+<p><strong>可视化分析</strong><br>
+• JMC飞行记录（低开销生产环境可用）<br>
+• HeapHero在线分析（快速定位大对象）</p>
+</li>
+</ol>
+<hr>
+<h3 id="42-参数调优黄金法则">4.2 参数调优黄金法则</h3>
+<ol>
+<li>
+<p><strong>内存分配原则</strong>  • Young区 &gt;= 1/3总堆（避免过早晋升）<br>
+• Survivor空间 &gt;= 10% Young区</p>
+</li>
+<li>
+<p><strong>GC算法选择矩阵</strong></p>
+<table>
+<thead>
+<tr>
+<th>堆大小</th>
+<th>延迟要求</th>
+<th>推荐算法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt;4G</td>
+<td>&lt;200ms</td>
+<td>Parallel GC</td>
+</tr>
+<tr>
+<td>4-16G</td>
+<td>&lt;100ms</td>
+<td>G1 GC</td>
+</tr>
+<tr>
+<td>&gt;16G</td>
+<td>&lt;50ms</td>
+<td>ZGC/Shenandoah</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>容器化部署要点</strong><br>
+• 必须设置<code>-XX:+UseContainerSupport</code><br>
+• 建议配置<code>-XX:MaxRAMPercentage=80</code><br>
+• 禁用交换分区：<code>-XX:+UnlockExperimentalVMOptions -XX:+UseZSwap</code></p>
+</li>
+</ol>
+<hr>
+<h2 id="五总结与展望">五、总结与展望</h2>
+<p>通过上述典型案例可见，JVM问题排查需要多维度的证据链构建能力。未来发展趋势呈现三大特征：</p>
+<ol>
+<li>
+<p><strong>观测能力升级</strong><br>
+• eBPF技术实现无侵入式 profiling<br>
+• OpenTelemetry建立全链路内存画像</p>
+</li>
+<li>
+<p><strong>智能调优兴起</strong><br>
+• JVM参数自动优化推荐系统<br>
+• 基于机器学习的GC预测模型</p>
+</li>
+<li>
+<p><strong>云原生深度整合</strong><br>
+• K8s HPA联动JVM指标<br>
+• Service Mesh集成内存熔断</p>
+</li>
+</ol>
+<p>建议开发者建立三层防御体系：<br>
+• 事前：混沌工程注入内存故障<br>
+• 事中：APM构建实时监控网络<br>
+• 事后：AIOps自动生成根因分析</p>
+</li>
+</ul>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2025 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是JAVA全栈工程师</p>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>

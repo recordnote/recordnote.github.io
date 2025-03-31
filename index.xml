@@ -27,6 +27,24 @@
     </item>
     
     <item>
+      <title>JVM线上问题排查和性能调优案例</title>
+      <link>https://recordnote.github.io/java/jvm%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%92%8C%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E6%A1%88%E4%BE%8B/</link>
+      <pubDate>Tue, 10 Sep 2024 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/jvm%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%92%8C%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E6%A1%88%E4%BE%8B/</guid>
+      <description>JVM线上问题排查与性能调优实战案例解析 一、OOM问题排查系列案例 1.1 全表查询引发的雪崩式OOM（2023案例） 现象 线上服务接口响应时间异常飙</description>
+    </item>
+    
+    <item>
+      <title>最重要的JVM参数总结</title>
+      <link>https://recordnote.github.io/java/%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84jvm%E5%8F%82%E6%95%B0%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Sun, 01 Sep 2024 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84jvm%E5%8F%82%E6%95%B0%E6%80%BB%E7%BB%93/</guid>
+      <description>最重要的JVM参数总结 堆内存配置 Java虚拟机所管理的内存中最大的一块，Java堆是所有线程共享的一块内存区域，在虚拟机启动时创建。此内存区</description>
+    </item>
+    
+    <item>
       <title>类加载器详解（重点）</title>
       <link>https://recordnote.github.io/java/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E8%AF%A6%E8%A7%A3%E9%87%8D%E7%82%B9/</link>
       <pubDate>Fri, 30 Aug 2024 14:21:26 +0800</pubDate>
