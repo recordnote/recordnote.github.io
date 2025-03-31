@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>类加载器详解（重点） | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.119.0">
+
+<link rel="canonical" href="https://recordnote.github.io/java/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E8%AF%A6%E8%A7%A3%E9%87%8D%E7%82%B9/" />
+
+
+<meta property="og:title" content="类加载器详解（重点）" />
+<meta property="og:description" content="类加载器详解 一、类加载过程回顾 1.1 核心三阶段 • 加载：获取类的二进制字节流 → 转换为方法区数据结构 → 生成Class对象 • 连接 • 验证：文件格式、元数" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/java/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E8%AF%A6%E8%A7%A3%E9%87%8D%E7%82%B9/" /><meta property="og:image" content="https://recordnote.github.io/img/java.png" /><meta property="article:section" content="java" />
+<meta property="article:published_time" content="2024-08-30T14:21:26+08:00" />
+<meta property="article:modified_time" content="2024-08-30T14:21:26+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/java.png"/>
+
+<meta name="twitter:title" content="类加载器详解（重点）"/>
+<meta name="twitter:description" content="类加载器详解 一、类加载过程回顾 1.1 核心三阶段 • 加载：获取类的二进制字节流 → 转换为方法区数据结构 → 生成Class对象 • 连接 • 验证：文件格式、元数"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一类加载过程回顾">一、类加载过程回顾</a>
+      <ul>
+        <li><a href="#11-核心三阶段">1.1 核心三阶段</a></li>
+      </ul>
+    </li>
+    <li><a href="#二类加载器核心概念">二、类加载器核心概念</a>
+      <ul>
+        <li><a href="#21-类加载器作用">2.1 类加载器作用</a></li>
+        <li><a href="#22-加载规则特性">2.2 加载规则特性</a></li>
+      </ul>
+    </li>
+    <li><a href="#三jvm内置类加载器">三、JVM内置类加载器</a>
+      <ul>
+        <li><a href="#31-三大类加载器">3.1 三大类加载器</a></li>
+        <li><a href="#32-层级关系验证">3.2 层级关系验证</a></li>
+      </ul>
+    </li>
+    <li><a href="#四双亲委派模型">四、双亲委派模型</a>
+      <ul>
+        <li><a href="#41-执行流程">4.1 执行流程</a></li>
+        <li><a href="#42-核心优势">4.2 核心优势</a></li>
+        <li><a href="#43-打破机制场景">4.3 打破机制场景</a></li>
+      </ul>
+    </li>
+    <li><a href="#五自定义类加载器">五、自定义类加载器</a>
+      <ul>
+        <li><a href="#51-实现规范">5.1 实现规范</a></li>
+        <li><a href="#52-应用场景">5.2 应用场景</a></li>
+      </ul>
+    </li>
+    <li><a href="#六类加载器进阶机制">六、类加载器进阶机制</a>
+      <ul>
+        <li><a href="#61-类唯一性判定">6.1 类唯一性判定</a></li>
+        <li><a href="#62-资源加载机制">6.2 资源加载机制</a></li>
+      </ul>
+    </li>
+    <li><a href="#七常见问题解析">七、常见问题解析</a>
+      <ul>
+        <li><a href="#71-典型异常场景">7.1 典型异常场景</a></li>
+        <li><a href="#72-性能调优建议">7.2 性能调优建议</a></li>
+      </ul>
+    </li>
+    <li><a href="#八参考资料">八、参考资料</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">类加载器详解（重点）<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2024-08-30T14:21:26&#43;08:00</span>
+                
+
+              | 3 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2024-08-30T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=%e7%b1%bb%e5%8a%a0%e8%bd%bd%e5%99%a8%e8%af%a6%e8%a7%a3%ef%bc%88%e9%87%8d%e7%82%b9%ef%bc%89&url=https%3a%2f%2frecordnote.github.io%2fjava%2f%25E7%25B1%25BB%25E5%258A%25A0%25E8%25BD%25BD%25E5%2599%25A8%25E8%25AF%25A6%25E8%25A7%25A3%25E9%2587%258D%25E7%2582%25B9%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fjava%2f%25E7%25B1%25BB%25E5%258A%25A0%25E8%25BD%25BD%25E5%2599%25A8%25E8%25AF%25A6%25E8%25A7%25A3%25E9%2587%258D%25E7%2582%25B9%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/java.png" />
+        
+
+        <h1 id="类加载器详解">类加载器详解</h1>
+<h2 id="一类加载过程回顾">一、类加载过程回顾</h2>
+<h3 id="11-核心三阶段">1.1 核心三阶段</h3>
+<p>• <strong>加载</strong>：获取类的二进制字节流 → 转换为方法区数据结构 → 生成Class对象
+• <strong>连接</strong>
+• 验证：文件格式、元数据、字节码验证
+• 准备：分配内存并初始化默认值
+• 解析：符号引用转直接引用
+• <strong>初始化</strong>：执行类构造器<code>&lt;clinit&gt;()</code>方法</p>
+<h2 id="二类加载器核心概念">二、类加载器核心概念</h2>
+<h3 id="21-类加载器作用">2.1 类加载器作用</h3>
+<p>• 将类字节码加载到JVM（生成Class对象）
+• 每个Java类都持有加载它的ClassLoader引用
+• 数组类由JVM直接创建，其ClassLoader与元素类型一致</p>
+<h3 id="22-加载规则特性">2.2 加载规则特性</h3>
+<p>• <strong>按需动态加载</strong>：类在首次使用时加载
+• <strong>唯一性规则</strong>：相同类名在同一个加载器中只会加载一次
+• <strong>缓存机制</strong>：已加载类存储在<code>ClassLoader</code>的<code>classes</code>向量中</p>
+<h2 id="三jvm内置类加载器">三、JVM内置类加载器</h2>
+<h3 id="31-三大类加载器">3.1 三大类加载器</h3>
+<h4 id="311-bootstrap-classloader启动类加载器">3.1.1 Bootstrap ClassLoader（启动类加载器）</h4>
+<p>• <strong>实现方式</strong>：C++实现（Java中显示为null）
+• <strong>加载路径</strong>：
+• <code>%JAVA_HOME%/lib</code>目录的核心库（rt.jar等）
+• <code>-Xbootclasspath</code>参数指定路径</p>
+<h4 id="312-extension-classloader扩展类加载器">3.1.2 Extension ClassLoader（扩展类加载器）</h4>
+<p>• <strong>Java 9+变更</strong>：更名为Platform ClassLoader
+• <strong>加载路径</strong>：
+• <code>%JRE_HOME%/lib/ext</code>目录
+• <code>java.ext.dirs</code>系统变量指定路径</p>
+<h4 id="313-application-classloader应用类加载器">3.1.3 Application ClassLoader（应用类加载器）</h4>
+<p>• <strong>职责范围</strong>：加载classpath下的所有类
+• <strong>线程上下文加载器</strong>：默认使用此加载器</p>
+<h3 id="32-层级关系验证">3.2 层级关系验证</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 示例代码输出结果（JDK8）：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|--</span>sun<span style="color:#f92672">.</span><span style="color:#a6e22e">misc</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Launcher$AppClassLoader</span><span style="color:#a6e22e">@18b4aac2</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|--</span>sun<span style="color:#f92672">.</span><span style="color:#a6e22e">misc</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Launcher$ExtClassLoader</span><span style="color:#a6e22e">@53bd815b</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|--</span><span style="color:#66d9ef">null</span>
+</span></span></code></pre></div><p>• 父子关系通过组合（非继承）实现
+• 父加载器查询终止条件：返回null表示Bootstrap加载器</p>
+<h2 id="四双亲委派模型">四、双亲委派模型</h2>
+<h3 id="41-执行流程">4.1 执行流程</h3>
+<ol>
+<li>收到加载请求时，先检查是否已加载</li>
+<li>委派父加载器递归处理</li>
+<li>父加载器无法完成时，自身尝试加载</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 关键源码逻辑（ClassLoader.loadClass()）：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>parent <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    c <span style="color:#f92672">=</span> parent<span style="color:#f92672">.</span><span style="color:#a6e22e">loadClass</span><span style="color:#f92672">(</span>name<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    c <span style="color:#f92672">=</span> findBootstrapClassOrNull<span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    c <span style="color:#f92672">=</span> findClass<span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="42-核心优势">4.2 核心优势</h3>
+<p>• <strong>稳定性保障</strong>：避免核心API被篡改（如java.lang.Object）
+• <strong>避免重复加载</strong>：通过层级委托机制保证类唯一性
+• <strong>安全隔离</strong>：不同层级加载器的沙箱保护</p>
+<h3 id="43-打破机制场景">4.3 打破机制场景</h3>
+<h4 id="431-实现方式">4.3.1 实现方式</h4>
+<p>• <strong>重写loadClass()</strong>：改变委派流程（需谨慎使用）
+• <strong>线程上下文加载器</strong>：SPI机制典型案例</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// JDBC驱动加载示例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>ServiceLoader<span style="color:#f92672">&lt;</span>Driver<span style="color:#f92672">&gt;</span> loadedDrivers <span style="color:#f92672">=</span> ServiceLoader<span style="color:#f92672">.</span><span style="color:#a6e22e">load</span><span style="color:#f92672">(</span>Driver<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+</span></span></code></pre></div><h4 id="432-典型应用案例">4.3.2 典型应用案例</h4>
+<p>• <strong>Tomcat类加载体系</strong>：
+• Common → Catalina/Shared → WebApp层级
+• WebAppClassLoader优先加载/webapps目录类
+• <strong>OSGi模块化</strong>：网状委派模型</p>
+<h2 id="五自定义类加载器">五、自定义类加载器</h2>
+<h3 id="51-实现规范">5.1 实现规范</h3>
+<p>• <strong>继承ClassLoader</strong>：建议重写findClass()而非loadClass()
+• <strong>推荐做法</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> Class<span style="color:#f92672">&lt;?&gt;</span> findClass<span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> classData <span style="color:#f92672">=</span> loadClassData<span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> defineClass<span style="color:#f92672">(</span>name<span style="color:#f92672">,</span> classData<span style="color:#f92672">,</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> classData<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="52-应用场景">5.2 应用场景</h3>
+<p>• 热部署实现（如IDE的即时编译）
+• 加密类文件解密加载
+• 网络动态加载（从远程服务器获取字节码）</p>
+<h2 id="六类加载器进阶机制">六、类加载器进阶机制</h2>
+<h3 id="61-类唯一性判定">6.1 类唯一性判定</h3>
+<p>• <strong>双要素验证</strong>：全类名 + 类加载器实例
+• 不同加载器加载的相同类文件视为不同类</p>
+<h3 id="62-资源加载机制">6.2 资源加载机制</h3>
+<p>• <code>getResource()</code>方法同样遵循双亲委派
+• 资源查找优先级：父加载器优先</p>
+<h2 id="七常见问题解析">七、常见问题解析</h2>
+<h3 id="71-典型异常场景">7.1 典型异常场景</h3>
+<p>• <strong>NoClassDefFoundError</strong>：类加载成功后又被卸载
+• <strong>ClassNotFoundException</strong>：加载阶段未找到类定义
+• <strong>LinkageError</strong>：不同加载器加载的类存在依赖冲突</p>
+<h3 id="72-性能调优建议">7.2 性能调优建议</h3>
+<p>• 合理配置-Xss参数控制加载器元空间
+• 避免过度创建自定义类加载器
+• 监控PermGen/Metaspace使用情况</p>
+<h2 id="八参考资料">八、参考资料</h2>
+<p>• 《深入理解Java虚拟机》第三版（周志明）
+• Oracle官方文档：ClassLoader API
+• Tomcat类加载机制源码分析
+• Java模块化系统（JPMS）规范</p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2025 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是JAVA全栈工程师</p>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>

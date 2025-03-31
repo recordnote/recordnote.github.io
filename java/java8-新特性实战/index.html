@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Java 8 新特性实战指南 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.119.0">
+
+<link rel="canonical" href="https://recordnote.github.io/java/java8-%E6%96%B0%E7%89%B9%E6%80%A7%E5%AE%9E%E6%88%98/" />
+
+
+<meta property="og:title" content="Java 8 新特性实战指南" />
+<meta property="og:description" content="Java 8 新特性实战指南 目录 接口的默认方法与静态方法 函数式接口与Lambda表达式 Stream API Optional类 新的日期时间API 接口的默认方法与静态方法" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/java/java8-%E6%96%B0%E7%89%B9%E6%80%A7%E5%AE%9E%E6%88%98/" /><meta property="og:image" content="https://recordnote.github.io/img/java.png" /><meta property="article:section" content="java" />
+<meta property="article:published_time" content="2024-05-18T14:21:26+08:00" />
+<meta property="article:modified_time" content="2024-05-18T14:21:26+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/java.png"/>
+
+<meta name="twitter:title" content="Java 8 新特性实战指南"/>
+<meta name="twitter:description" content="Java 8 新特性实战指南 目录 接口的默认方法与静态方法 函数式接口与Lambda表达式 Stream API Optional类 新的日期时间API 接口的默认方法与静态方法"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#目录">目录</a></li>
+    <li><a href="#接口的默认方法与静态方法">接口的默认方法与静态方法</a>
+      <ul>
+        <li><a href="#设计初衷">设计初衷</a></li>
+        <li><a href="#核心特性">核心特性</a></li>
+        <li><a href="#使用规范">使用规范</a></li>
+        <li><a href="#冲突解决">冲突解决</a></li>
+        <li><a href="#接口-vs-抽象类">接口 vs 抽象类</a></li>
+      </ul>
+    </li>
+    <li><a href="#函数式接口与lambda表达式">函数式接口与Lambda表达式</a>
+      <ul>
+        <li><a href="#函数式接口定义">函数式接口定义</a></li>
+        <li><a href="#lambda语法">Lambda语法</a></li>
+        <li><a href="#方法引用">方法引用</a></li>
+        <li><a href="#变量捕获">变量捕获</a></li>
+      </ul>
+    </li>
+    <li><a href="#stream-api">Stream API</a>
+      <ul>
+        <li><a href="#核心特性-1">核心特性</a></li>
+        <li><a href="#常用操作">常用操作</a></li>
+        <li><a href="#操作类型">操作类型</a></li>
+      </ul>
+    </li>
+    <li><a href="#optional类">Optional类</a>
+      <ul>
+        <li><a href="#空值处理">空值处理</a></li>
+        <li><a href="#核心方法">核心方法</a></li>
+      </ul>
+    </li>
+    <li><a href="#新的日期时间api">新的日期时间API</a>
+      <ul>
+        <li><a href="#核心类">核心类</a></li>
+        <li><a href="#使用示例">使用示例</a></li>
+        <li><a href="#优势对比">优势对比</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">Java 8 新特性实战指南<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2024-05-18T14:21:26&#43;08:00</span>
+                
+
+              | 2 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2024-05-18T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=Java%208%20%e6%96%b0%e7%89%b9%e6%80%a7%e5%ae%9e%e6%88%98%e6%8c%87%e5%8d%97&url=https%3a%2f%2frecordnote.github.io%2fjava%2fjava8-%25E6%2596%25B0%25E7%2589%25B9%25E6%2580%25A7%25E5%25AE%259E%25E6%2588%2598%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fjava%2fjava8-%25E6%2596%25B0%25E7%2589%25B9%25E6%2580%25A7%25E5%25AE%259E%25E6%2588%2598%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/java.png" />
+        
+
+        <h1 id="java-8-新特性实战指南">Java 8 新特性实战指南</h1>
+<h2 id="目录">目录</h2>
+<ul>
+<li><a href="#%E6%8E%A5%E5%8F%A3%E7%9A%84%E9%BB%98%E8%AE%A4%E6%96%B9%E6%B3%95%E4%B8%8E%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95">接口的默认方法与静态方法</a></li>
+<li><a href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3%E4%B8%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F">函数式接口与Lambda表达式</a></li>
+<li><a href="#stream-api">Stream API</a></li>
+<li><a href="#optional%E7%B1%BB">Optional类</a></li>
+<li><a href="#%E6%96%B0%E7%9A%84%E6%97%A5%E6%9C%9F%E6%97%B6%E9%97%B4api">新的日期时间API</a></li>
+</ul>
+<hr>
+<h2 id="接口的默认方法与静态方法">接口的默认方法与静态方法</h2>
+<h3 id="设计初衷">设计初衷</h3>
+<ul>
+<li>解决接口修改与现有实现不兼容的问题</li>
+<li>允许接口包含具体方法实现（默认方法）</li>
+<li>支持静态方法定义</li>
+</ul>
+<h3 id="核心特性">核心特性</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">InterfaceNew</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sm</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;接口静态方法&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">def</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;默认方法&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">f</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 抽象方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="使用规范">使用规范</h3>
+<ol>
+<li><strong>默认方法</strong>：
+<ul>
+<li>实例方法，可用<code>this</code>调用</li>
+<li>可被子类继承/重写</li>
+</ul>
+</li>
+<li><strong>静态方法</strong>：
+<ul>
+<li>只能通过接口名调用</li>
+<li>不能被实现类继承</li>
+</ul>
+</li>
+</ol>
+<h3 id="冲突解决">冲突解决</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">InterfaceNewImpl</span> <span style="color:#66d9ef">implements</span> InterfaceNew<span style="color:#f92672">,</span> InterfaceNew1 <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">def</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        InterfaceNew1<span style="color:#f92672">.</span><span style="color:#a6e22e">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">def</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 显式指定接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="接口-vs-抽象类">接口 vs 抽象类</h3>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>接口</th>
+<th>抽象类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>继承方式</td>
+<td>多实现</td>
+<td>单继承</td>
+</tr>
+<tr>
+<td>方法修饰符</td>
+<td>public abstract</td>
+<td>任意访问修饰符</td>
+</tr>
+<tr>
+<td>变量修饰符</td>
+<td>public static final</td>
+<td>无限制</td>
+</tr>
+<tr>
+<td>设计目的</td>
+<td>行为扩展</td>
+<td>代码复用</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="函数式接口与lambda表达式">函数式接口与Lambda表达式</h2>
+<h3 id="函数式接口定义">函数式接口定义</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@FunctionalInterface</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">Comparator</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">compare</span><span style="color:#f92672">(</span>T o1<span style="color:#f92672">,</span> T o2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="lambda语法">Lambda语法</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 传统方式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Runnable<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;传统实现&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Lambda实现
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Lambda表达式&#34;</span><span style="color:#f92672">)).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span></code></pre></div><h3 id="方法引用">方法引用</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">asList</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;b&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;c&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>list<span style="color:#f92672">.</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">);</span>  <span style="color:#75715e">// 静态方法引用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>list<span style="color:#f92672">.</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>String<span style="color:#f92672">::</span>toUpperCase<span style="color:#f92672">);</span>  <span style="color:#75715e">// 实例方法引用
+</span></span></span></code></pre></div><h3 id="变量捕获">变量捕获</h3>
+<ul>
+<li>只能引用final或等效final的局部变量</li>
+<li>禁止修改捕获变量</li>
+</ul>
+<hr>
+<h2 id="stream-api">Stream API</h2>
+<h3 id="核心特性-1">核心特性</h3>
+<ul>
+<li><strong>无存储</strong>：不存储数据</li>
+<li><strong>函数式编程</strong>：支持lambda表达式</li>
+<li><strong>延迟执行</strong>：终端操作触发执行</li>
+<li><strong>并行处理</strong>：parallelStream()</li>
+</ul>
+<h3 id="常用操作">常用操作</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> strings <span style="color:#f92672">=</span> Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">asList</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;abc&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;bc&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;efg&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 过滤空字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">long</span> count <span style="color:#f92672">=</span> strings<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>                   <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>string <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">!</span>string<span style="color:#f92672">.</span><span style="color:#a6e22e">isEmpty</span><span style="color:#f92672">())</span>
+</span></span><span style="display:flex;"><span>                   <span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 映射转换
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>List<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> numbers <span style="color:#f92672">=</span> Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">asList</span><span style="color:#f92672">(</span><span style="color:#ae81ff">3</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">3</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>List<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> squares <span style="color:#f92672">=</span> numbers<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>                              <span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>i <span style="color:#f92672">-&gt;</span> i<span style="color:#f92672">*</span>i<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                              <span style="color:#f92672">.</span><span style="color:#a6e22e">distinct</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>                              <span style="color:#f92672">.</span><span style="color:#a6e22e">collect</span><span style="color:#f92672">(</span>Collectors<span style="color:#f92672">.</span><span style="color:#a6e22e">toList</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 并行处理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>strings<span style="color:#f92672">.</span><span style="color:#a6e22e">parallelStream</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>s <span style="color:#f92672">-&gt;</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">startsWith</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a&#34;</span><span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#f92672">.</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">);</span>
+</span></span></code></pre></div><h3 id="操作类型">操作类型</h3>
+<table>
+<thead>
+<tr>
+<th>操作类型</th>
+<th>方法示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>中间操作</td>
+<td>filter(), map(), sorted()</td>
+</tr>
+<tr>
+<td>终端操作</td>
+<td>forEach(), collect(), count()</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="optional类">Optional类</h2>
+<h3 id="空值处理">空值处理</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getCity</span><span style="color:#f92672">(</span>User user<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Optional<span style="color:#f92672">.</span><span style="color:#a6e22e">ofNullable</span><span style="color:#f92672">(</span>user<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">.</span><span style="color:#a6e22e">flatMap</span><span style="color:#f92672">(</span>User<span style="color:#f92672">::</span>getAddress<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">.</span><span style="color:#a6e22e">map</span><span style="color:#f92672">(</span>Address<span style="color:#f92672">::</span>getCity<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">.</span><span style="color:#a6e22e">orElse</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Unknown&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="核心方法">核心方法</h3>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ofNullable()</td>
+<td>创建可能为null的Optional</td>
+</tr>
+<tr>
+<td>map()</td>
+<td>值转换</td>
+</tr>
+<tr>
+<td>orElse()</td>
+<td>默认值返回</td>
+</tr>
+<tr>
+<td>ifPresent()</td>
+<td>值存在时执行操作</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="新的日期时间api">新的日期时间API</h2>
+<h3 id="核心类">核心类</h3>
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LocalDate</td>
+<td>日期（yyyy-MM-dd）</td>
+</tr>
+<tr>
+<td>LocalTime</td>
+<td>时间（HH:mm:ss）</td>
+</tr>
+<tr>
+<td>LocalDateTime</td>
+<td>日期+时间</td>
+</tr>
+<tr>
+<td>ZonedDateTime</td>
+<td>带时区时间</td>
+</tr>
+</tbody>
+</table>
+<h3 id="使用示例">使用示例</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 获取当前日期
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>LocalDate today <span style="color:#f92672">=</span> LocalDate<span style="color:#f92672">.</span><span style="color:#a6e22e">now</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 日期计算
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>LocalDate nextWeek <span style="color:#f92672">=</span> today<span style="color:#f92672">.</span><span style="color:#a6e22e">plus</span><span style="color:#f92672">(</span><span style="color:#ae81ff">1</span><span style="color:#f92672">,</span> ChronoUnit<span style="color:#f92672">.</span><span style="color:#a6e22e">WEEKS</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 时区处理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>ZonedDateTime tokyoTime <span style="color:#f92672">=</span> ZonedDateTime<span style="color:#f92672">.</span><span style="color:#a6e22e">now</span><span style="color:#f92672">(</span>ZoneId<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Asia/Tokyo&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 日期格式化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>DateTimeFormatter formatter <span style="color:#f92672">=</span> DateTimeFormatter<span style="color:#f92672">.</span><span style="color:#a6e22e">ofPattern</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;yyyy-MM-dd HH:mm:ss&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>String formatted <span style="color:#f92672">=</span> LocalDateTime<span style="color:#f92672">.</span><span style="color:#a6e22e">now</span><span style="color:#f92672">().</span><span style="color:#a6e22e">format</span><span style="color:#f92672">(</span>formatter<span style="color:#f92672">);</span>
+</span></span></code></pre></div><h3 id="优势对比">优势对比</h3>
+<ol>
+<li><strong>线程安全</strong>：所有类都是不可变的</li>
+<li><strong>清晰设计</strong>：分离日期/时间概念</li>
+<li><strong>时区支持</strong>：内置完善的时区处理</li>
+<li><strong>链式操作</strong>：支持流畅的API调用</li>
+</ol>
+<hr>
+<blockquote>
+<p>完整官方文档参考：<a href="https://docs.oracle.com/javase/8/docs/api/">Oracle Java 8 新特性</a></p>
+</blockquote>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2025 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是JAVA全栈工程师</p>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>

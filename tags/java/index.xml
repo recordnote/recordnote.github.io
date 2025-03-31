@@ -7,7 +7,70 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;&lt;img alt=&#34;知识共享许可协议&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png&#34; /&gt;&lt;/a&gt;&lt;br /&gt;本作品采用&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议&lt;/a&gt;进行许可。&lt;br /&gt;&lt;br /&gt;背景使用了 &lt;a href=&#34;https://www.pexels.com/zh-cn/&#34; target=&#34;_blank&#34;&gt;Pexels&lt;/a&gt; 上 &lt;a href=&#34;https://www.pexels.com/zh-cn/Ungaro&#34; target=&#34;_blank&#34;&gt;Francesco Ungaro&lt;/a&gt; 拍摄的&lt;a href=&#34;https://www.pexels.com/zh-cn/photo/1454794/&#34; target=&#34;_blank&#34;&gt;图片&lt;/a&gt;。</copyright>
-    <lastBuildDate>Wed, 18 Oct 2023 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 30 Aug 2024 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>类加载器详解（重点）</title>
+      <link>https://recordnote.github.io/java/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E8%AF%A6%E8%A7%A3%E9%87%8D%E7%82%B9/</link>
+      <pubDate>Fri, 30 Aug 2024 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E8%AF%A6%E8%A7%A3%E9%87%8D%E7%82%B9/</guid>
+      <description>类加载器详解 一、类加载过程回顾 1.1 核心三阶段 • 加载：获取类的二进制字节流 → 转换为方法区数据结构 → 生成Class对象 • 连接 • 验证：文件格式、元数</description>
+    </item>
+    
+    <item>
+      <title>JVM垃圾回收详解（重点）</title>
+      <link>https://recordnote.github.io/java/jvm%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E8%AF%A6%E8%A7%A3%E9%87%8D%E7%82%B9/</link>
+      <pubDate>Wed, 21 Aug 2024 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/jvm%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E8%AF%A6%E8%A7%A3%E9%87%8D%E7%82%B9/</guid>
+      <description>JVM垃圾回收详解（HotSpot虚拟机） 一、对象存活判定 引用计数法 • 原理：为对象添加引用计数器，引用时+1，失效时-1，计数器为0时判定可</description>
+    </item>
+    
+    <item>
+      <title>Java内存区域详解（重点）</title>
+      <link>https://recordnote.github.io/java/java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E8%AF%A6%E8%A7%A3%E9%87%8D%E7%82%B9/</link>
+      <pubDate>Sun, 11 Aug 2024 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E8%AF%A6%E8%A7%A3%E9%87%8D%E7%82%B9/</guid>
+      <description>Java 内存区域详解（基于 HotSpot 虚拟机） 一、运行时数据区概述 Java 虚拟机（JVM）将内存划分为不同的数据区域，用于管理程序运行时的内存分配。根据 JDK 1.8 的规范</description>
+    </item>
+    
+    <item>
+      <title>Java 21 新特性概览(重要)</title>
+      <link>https://recordnote.github.io/java/java-21-%E6%96%B0%E7%89%B9%E6%80%A7%E6%A6%82%E8%A7%88%E9%87%8D%E8%A6%81/</link>
+      <pubDate>Mon, 15 Jul 2024 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/java-21-%E6%96%B0%E7%89%B9%E6%80%A7%E6%A6%82%E8%A7%88%E9%87%8D%E8%A6%81/</guid>
+      <description>Java 21 新特性概览 1. JDK 21 概述 • 发布信息：2023年9月19日发布，是长期支持版本（LTS），目前LTS版本包括JDK 8、11、17和21。 • 核心</description>
+    </item>
+    
+    <item>
+      <title>Java 17 新特性概览（重要）</title>
+      <link>https://recordnote.github.io/java/java-17-%E6%96%B0%E7%89%B9%E6%80%A7%E6%A6%82%E8%A7%88%E9%87%8D%E8%A6%81/</link>
+      <pubDate>Thu, 20 Jun 2024 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/java-17-%E6%96%B0%E7%89%B9%E6%80%A7%E6%A6%82%E8%A7%88%E9%87%8D%E8%A6%81/</guid>
+      <description>Java 17 新特性概览 一、版本背景与重要性 • 长期支持（LTS）：Java 17 是自 2021 年 9 月发布的 LTS 版本，支持至 2029 年 9 月，是继 Java 8 后最重要的 LTS 版本。 • 生态</description>
+    </item>
+    
+    <item>
+      <title>Java 11 新特性概览</title>
+      <link>https://recordnote.github.io/java/java-11-%E6%96%B0%E7%89%B9%E6%80%A7%E6%A6%82%E8%A7%88/</link>
+      <pubDate>Tue, 11 Jun 2024 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/java-11-%E6%96%B0%E7%89%B9%E6%80%A7%E6%A6%82%E8%A7%88/</guid>
+      <description>Java 11 新特性概览 发布与支持 发布时间：2018年9月25日 长期支持（LTS）：Oracle官方支持至2026年9月 历史定位：Java 8之后首个长</description>
+    </item>
+    
+    <item>
+      <title>Java 8 新特性实战指南</title>
+      <link>https://recordnote.github.io/java/java8-%E6%96%B0%E7%89%B9%E6%80%A7%E5%AE%9E%E6%88%98/</link>
+      <pubDate>Sat, 18 May 2024 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/java8-%E6%96%B0%E7%89%B9%E6%80%A7%E5%AE%9E%E6%88%98/</guid>
+      <description>Java 8 新特性实战指南 目录 接口的默认方法与静态方法 函数式接口与Lambda表达式 Stream API Optional类 新的日期时间API 接口的默认方法与静态方法</description>
+    </item>
+    
     <item>
       <title>jdk8特性-Stream常用方法和特性</title>
       <link>https://recordnote.github.io/java/jdk8%E6%96%B0%E7%89%B9%E6%80%A7-stream%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E5%92%8C%E7%89%B9%E6%80%A7/</link>
