@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>虚拟线程常见问题总结 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.119.0">
+
+<link rel="canonical" href="https://recordnote.github.io/java/threadjuc/%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/" />
+
+
+<meta property="og:title" content="虚拟线程常见问题总结" />
+<meta property="og:description" content="Java 虚拟线程常见问题总结 1. 概述 • 定义：虚拟线程（Virtual Thread）是 Java 21 中引入的轻量级线程，由 JVM 调度，而非操作系统。多个虚拟线程共享" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/java/threadjuc/%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/" /><meta property="og:image" content="https://recordnote.github.io/img/vt.png" /><meta property="article:section" content="java" />
+<meta property="article:published_time" content="2024-11-30T15:21:26+08:00" />
+<meta property="article:modified_time" content="2024-11-30T15:21:26+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/vt.png"/>
+
+<meta name="twitter:title" content="虚拟线程常见问题总结"/>
+<meta name="twitter:description" content="Java 虚拟线程常见问题总结 1. 概述 • 定义：虚拟线程（Virtual Thread）是 Java 21 中引入的轻量级线程，由 JVM 调度，而非操作系统。多个虚拟线程共享"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#java-虚拟线程常见问题总结">Java 虚拟线程常见问题总结</a>
+      <ul>
+        <li><a href="#1-概述"><strong>1. 概述</strong></a></li>
+        <li><a href="#2-核心概念"><strong>2. 核心概念</strong></a></li>
+        <li><a href="#3-优势与特点"><strong>3. 优势与特点</strong></a></li>
+        <li><a href="#4-局限性"><strong>4. 局限性</strong></a></li>
+        <li><a href="#5-创建虚拟线程的方式"><strong>5. 创建虚拟线程的方式</strong></a></li>
+        <li><a href="#6-性能对比测试数据"><strong>6. 性能对比（测试数据）</strong></a></li>
+        <li><a href="#7-注意事项"><strong>7. 注意事项</strong></a></li>
+        <li><a href="#8-扩展学习"><strong>8. 扩展学习</strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">虚拟线程常见问题总结<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2024-11-30T15:21:26&#43;08:00</span>
+                
+
+              | 3 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2024-11-30T15:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=%e8%99%9a%e6%8b%9f%e7%ba%bf%e7%a8%8b%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98%e6%80%bb%e7%bb%93&url=https%3a%2f%2frecordnote.github.io%2fjava%2fthreadjuc%2f%25E8%2599%259A%25E6%258B%259F%25E7%25BA%25BF%25E7%25A8%258B%25E5%25B8%25B8%25E8%25A7%2581%25E9%2597%25AE%25E9%25A2%2598%25E6%2580%25BB%25E7%25BB%2593%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fjava%2fthreadjuc%2f%25E8%2599%259A%25E6%258B%259F%25E7%25BA%25BF%25E7%25A8%258B%25E5%25B8%25B8%25E8%25A7%2581%25E9%2597%25AE%25E9%25A2%2598%25E6%2580%25BB%25E7%25BB%2593%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/vt.png" />
+        
+
+        <h2 id="java-虚拟线程常见问题总结">Java 虚拟线程常见问题总结</h2>
+<h3 id="1-概述"><strong>1. 概述</strong></h3>
+<p>• <strong>定义</strong>：虚拟线程（Virtual Thread）是 Java 21 中引入的轻量级线程，由 <strong>JVM 调度</strong>，而非操作系统。多个虚拟线程共享一个操作系统线程（平台线程），显著减少线程资源开销。<br>
+• <strong>目标</strong>：解决传统线程模型在高并发场景下的资源瓶颈，简化异步编程模型，避免回调地狱。</p>
+<hr>
+<h3 id="2-核心概念"><strong>2. 核心概念</strong></h3>
+<ol>
+<li>
+<p><strong>虚拟线程与平台线程的关系</strong><br>
+• <strong>平台线程（Platform Thread）</strong>：传统的 Java 线程，与操作系统内核线程 <strong>1:1 对应</strong>（Windows/Linux 等主流系统）。<br>
+• <strong>虚拟线程</strong>：由 JVM 调度，<strong>挂载在平台线程（载体线程）上</strong>。当虚拟线程阻塞时，平台线程可切换执行其他虚拟线程。<br>
+• <strong>线程模型</strong>：<br>
+◦ 虚拟线程数量 ≫ 平台线程数量 ≫ 系统内核线程数量。<br>
+◦ 图示关系：<br>
+<code>  [虚拟线程1] [虚拟线程2] ... [虚拟线程N]   ↕               ↕             ↕   [平台线程1]       [平台线程2]   ↕               ↕   [系统内核线程1]   [系统内核线程2]  </code></p>
+</li>
+<li>
+<p><strong>线程调度机制</strong><br>
+• <strong>协作式调度</strong>：虚拟线程通过挂起（yield）主动让出载体线程资源，避免抢占式上下文切换的开销。</p>
+</li>
+</ol>
+<hr>
+<h3 id="3-优势与特点"><strong>3. 优势与特点</strong></h3>
+<p>• <strong>轻量级</strong>：<br>
+• 可创建数百万个虚拟线程，而不会导致内存溢出或频繁上下文切换。<br>
+• <strong>简化异步编程</strong>：<br>
+• 以同步代码风格编写异步逻辑，避免回调地狱。<br>
+• <strong>高效资源利用</strong>：<br>
+• 减少平台线程的创建和切换开销，适合 <strong>I/O 密集型任务</strong>（如网络请求、文件读写）。</p>
+<hr>
+<h3 id="4-局限性"><strong>4. 局限性</strong></h3>
+<ol>
+<li><strong>不适用于计算密集型任务</strong>：<br>
+• 计算密集型任务仍需占用 CPU 资源，虚拟线程无法绕过物理线程的竞争。</li>
+<li><strong>第三方库兼容性</strong>：<br>
+• 依赖平台线程特性（如线程局部变量）的库可能需要适配。</li>
+<li><strong>调试复杂性</strong>：<br>
+• 虚拟线程的调试工具和监控支持仍在完善中。</li>
+</ol>
+<hr>
+<h3 id="5-创建虚拟线程的方式"><strong>5. 创建虚拟线程的方式</strong></h3>
+<ol>
+<li><strong><code>Thread.startVirtualThread()</code></strong>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">startVirtualThread</span><span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Virtual Thread&#34;</span><span style="color:#f92672">));</span>  
+</span></span></code></pre></div></li>
+<li><strong><code>Thread.ofVirtual()</code></strong>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">ofVirtual</span><span style="color:#f92672">().</span><span style="color:#a6e22e">unstarted</span><span style="color:#f92672">(</span>runnable<span style="color:#f92672">).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 手动启动  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">ofVirtual</span><span style="color:#f92672">().</span><span style="color:#a6e22e">start</span><span style="color:#f92672">(</span>runnable<span style="color:#f92672">);</span>              <span style="color:#75715e">// 直接启动  
+</span></span></span></code></pre></div></li>
+<li><strong><code>ThreadFactory</code></strong>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>ThreadFactory factory <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">ofVirtual</span><span style="color:#f92672">().</span><span style="color:#a6e22e">factory</span><span style="color:#f92672">();</span>  
+</span></span><span style="display:flex;"><span>Thread thread <span style="color:#f92672">=</span> factory<span style="color:#f92672">.</span><span style="color:#a6e22e">newThread</span><span style="color:#f92672">(</span>runnable<span style="color:#f92672">);</span>  
+</span></span><span style="display:flex;"><span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>  
+</span></span></code></pre></div></li>
+<li><strong><code>Executors.newVirtualThreadPerTaskExecutor()</code></strong>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>ExecutorService executor <span style="color:#f92672">=</span> Executors<span style="color:#f92672">.</span><span style="color:#a6e22e">newVirtualThreadPerTaskExecutor</span><span style="color:#f92672">();</span>  
+</span></span><span style="display:flex;"><span>executor<span style="color:#f92672">.</span><span style="color:#a6e22e">submit</span><span style="color:#f92672">(</span>runnable<span style="color:#f92672">);</span>  
+</span></span></code></pre></div></li>
+</ol>
+<hr>
+<h3 id="6-性能对比测试数据"><strong>6. 性能对比（测试数据）</strong></h3>
+<p>• <strong>测试场景</strong>：处理 10,000 个请求，每个请求模拟 I/O 阻塞（0.5秒）。<br>
+• <strong>结果对比</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>线程类型</th>
+<th>平台线程数</th>
+<th>总耗时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>虚拟线程</td>
+<td>22</td>
+<td>1316 ms</td>
+</tr>
+<tr>
+<td>平台线程（200）</td>
+<td>209</td>
+<td>25,619 ms</td>
+</tr>
+<tr>
+<td>平台线程（2000）</td>
+<td>2009</td>
+<td>2,865 ms</td>
+</tr>
+</tbody>
+</table>
+<p>• <strong>结论</strong>：<br>
+• 虚拟线程在 <strong>I/O 密集型场景</strong> 下性能显著优于传统线程池，资源开销更低。</p>
+<hr>
+<h3 id="7-注意事项"><strong>7. 注意事项</strong></h3>
+<ol>
+<li><strong>避免阻塞载体线程</strong>：<br>
+• 在虚拟线程中执行长时间阻塞操作（如 <code>Thread.sleep()</code>）会占用载体线程，需改用异步 API（如 NIO）。</li>
+<li><strong>线程局部变量</strong>：<br>
+• 虚拟线程支持 <code>ThreadLocal</code>，但需注意内存泄漏风险（大量虚拟线程可能导致内存占用激增）。</li>
+<li><strong>与响应式编程的关系</strong>：<br>
+• 虚拟线程回归同步编程模型，解决了响应式编程（如 Reactor）的复杂性和调试难题。</li>
+</ol>
+<hr>
+<h3 id="8-扩展学习"><strong>8. 扩展学习</strong></h3>
+<p>• <strong>实现原理</strong>：虚拟线程通过 Continuation 和调度器实现挂起/恢复机制，详见 <a href="https://example-link">虚拟线程 - VirtualThread 源码透视</a>。<br>
+• <strong>适用场景</strong>：Web 服务器、微服务、数据库访问等高并发 I/O 场景。</p>
+<hr>
+<p><strong>总结</strong>：虚拟线程是 Java 并发模型的重要革新，通过轻量级线程和高效调度机制，显著提升了高并发场景下的性能和开发体验，但需结合场景合理使用。</p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2025 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是JAVA全栈工程师</p>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>

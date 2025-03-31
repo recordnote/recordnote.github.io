@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>ThreadLocal 详解 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.119.0">
+
+<link rel="canonical" href="https://recordnote.github.io/java/threadjuc/threadlocal-%E8%AF%A6%E8%A7%A3/" />
+
+
+<meta property="og:title" content="ThreadLocal 详解" />
+<meta property="og:description" content="ThreadLocal 详解总结 1. ThreadLocal 核心概念 • 线程局部变量：每个线程拥有独立的变量副本，实现线程间数据隔离。 • 存储结构：每个线程的 Thread 类维护一个 ThreadLoca" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/java/threadjuc/threadlocal-%E8%AF%A6%E8%A7%A3/" /><meta property="og:image" content="https://recordnote.github.io/img/threadlocal.png" /><meta property="article:section" content="java" />
+<meta property="article:published_time" content="2024-11-16T15:21:26+08:00" />
+<meta property="article:modified_time" content="2024-11-16T15:21:26+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/threadlocal.png"/>
+
+<meta name="twitter:title" content="ThreadLocal 详解"/>
+<meta name="twitter:description" content="ThreadLocal 详解总结 1. ThreadLocal 核心概念 • 线程局部变量：每个线程拥有独立的变量副本，实现线程间数据隔离。 • 存储结构：每个线程的 Thread 类维护一个 ThreadLoca"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#threadlocal-详解总结">ThreadLocal 详解总结</a>
+      <ul>
+        <li><a href="#1-threadlocal-核心概念"><strong>1. ThreadLocal 核心概念</strong></a></li>
+        <li><a href="#2-threadlocalmap-数据结构"><strong>2. ThreadLocalMap 数据结构</strong></a></li>
+        <li><a href="#3-哈希算法与黄金分割数"><strong>3. 哈希算法与黄金分割数</strong></a></li>
+        <li><a href="#4-过期键清理机制"><strong>4. 过期键清理机制</strong></a></li>
+        <li><a href="#5-key-的弱引用与-gc-影响"><strong>5. Key 的弱引用与 GC 影响</strong></a></li>
+        <li><a href="#6-set-方法实现原理"><strong>6. <code>set()</code> 方法实现原理</strong></a></li>
+        <li><a href="#7-get-方法实现原理"><strong>7. <code>get()</code> 方法实现原理</strong></a></li>
+        <li><a href="#8-项目中的使用与常见问题"><strong>8. 项目中的使用与常见问题</strong></a></li>
+        <li><a href="#9-补充扩容与清理示例"><strong>9. 补充：扩容与清理示例</strong></a></li>
+        <li><a href="#10-总结"><strong>10. 总结</strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">ThreadLocal 详解<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2024-11-16T15:21:26&#43;08:00</span>
+                
+
+              | 3 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2024-11-16T15:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=ThreadLocal%20%e8%af%a6%e8%a7%a3&url=https%3a%2f%2frecordnote.github.io%2fjava%2fthreadjuc%2fthreadlocal-%25E8%25AF%25A6%25E8%25A7%25A3%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fjava%2fthreadjuc%2fthreadlocal-%25E8%25AF%25A6%25E8%25A7%25A3%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/threadlocal.png" />
+        
+
+        <h2 id="threadlocal-详解总结">ThreadLocal 详解总结</h2>
+<hr>
+<h3 id="1-threadlocal-核心概念"><strong>1. ThreadLocal 核心概念</strong></h3>
+<p>• <strong>线程局部变量</strong>：每个线程拥有独立的变量副本，实现线程间数据隔离。
+• <strong>存储结构</strong>：每个线程的 <code>Thread</code> 类维护一个 <code>ThreadLocalMap</code>（键值对结构），键为 <code>ThreadLocal</code> 的弱引用，值为存储的数据。</p>
+<hr>
+<h3 id="2-threadlocalmap-数据结构"><strong>2. ThreadLocalMap 数据结构</strong></h3>
+<p>• <strong>Entry 数组</strong>：基于数组实现，<code>Entry</code> 继承自 <code>WeakReference</code>，键（<code>ThreadLocal</code>）为弱引用，值为强引用。
+• <strong>哈希冲突解决</strong>：采用<strong>线性探测法</strong>（开放寻址法），冲突时向后查找下一个空槽位。
+• <strong>扩容机制</strong>：
+• <strong>触发条件</strong>：元素数量达到阈值（数组长度的 2/3）。
+• <strong>扩容步骤</strong>：先执行探测式清理过期键，若仍超过阈值 3/4，则扩容为原容量 2 倍，并重新哈希。</p>
+<hr>
+<h3 id="3-哈希算法与黄金分割数"><strong>3. 哈希算法与黄金分割数</strong></h3>
+<p>• <strong>哈希计算</strong>：<code>ThreadLocal</code> 的 <code>threadLocalHashCode</code> 使用黄金分割数 <strong>0x61c88647</strong> 递增生成，确保分布均匀。
+• <strong>优势</strong>：减少哈希冲突，提升散列效率。</p>
+<hr>
+<h3 id="4-过期键清理机制"><strong>4. 过期键清理机制</strong></h3>
+<p>• <strong>探测式清理（<code>expungeStaleEntry</code>）</strong>：
+• <strong>触发场景</strong>：<code>set()</code> 或 <code>get()</code> 时遇到过期键（键为 <code>null</code>）。
+• <strong>过程</strong>：从当前槽位向后遍历，清理过期键并重新哈希有效键。
+• <strong>启发式清理（<code>cleanSomeSlots</code>）</strong>：
+• <strong>触发场景</strong>：插入或删除操作后，扫描 <code>log2(n)</code> 次，尝试清理过期键。
+• <strong>内存泄漏风险</strong>：若未显式调用 <code>remove()</code>，即使键被回收，值仍可能残留（需手动清理）。</p>
+<hr>
+<h3 id="5-key-的弱引用与-gc-影响"><strong>5. Key 的弱引用与 GC 影响</strong></h3>
+<p>• <strong>弱引用特性</strong>：若 <code>ThreadLocal</code> 实例仅被弱引用关联，GC 后键变为 <code>null</code>。
+• <strong>GC 后 Key 是否为 <code>null</code></strong>：
+• <strong>存在强引用</strong>：<code>ThreadLocal</code> 实例仍被引用时，GC 不会回收，<code>key</code> 不为 <code>null</code>。
+• <strong>无强引用</strong>：GC 后 <code>key</code> 变为 <code>null</code>，但对应的 <code>value</code> 仍存在，需通过清理机制或 <code>remove()</code> 释放。</p>
+<hr>
+<h3 id="6-set-方法实现原理"><strong>6. <code>set()</code> 方法实现原理</strong></h3>
+<ol>
+<li><strong>计算哈希槽位</strong>：<code>key.threadLocalHashCode &amp; (len-1)</code>。</li>
+<li><strong>处理冲突</strong>：
+• 若槽位被占用且键匹配，更新值。
+• 若槽位键为 <code>null</code>（过期键），触发探测式清理并替换。</li>
+<li><strong>扩容检查</strong>：清理后若元素数仍超过阈值，触发扩容。</li>
+</ol>
+<hr>
+<h3 id="7-get-方法实现原理"><strong>7. <code>get()</code> 方法实现原理</strong></h3>
+<ol>
+<li><strong>直接定位槽位</strong>：哈希计算后检查键是否匹配。</li>
+<li><strong>线性探测</strong>：若未命中，向后查找并清理过期键。</li>
+<li><strong>返回结果</strong>：找到匹配键或返回 <code>null</code>。</li>
+</ol>
+<hr>
+<h3 id="8-项目中的使用与常见问题"><strong>8. 项目中的使用与常见问题</strong></h3>
+<p>• <strong>典型场景</strong>：
+• <strong>线程安全工具类</strong>：如 <code>SimpleDateFormat</code>。
+• <strong>链路追踪</strong>：通过 <code>MDC</code>（日志上下文）传递 <code>traceId</code>。
+• <strong>常见问题</strong>：
+• <strong>内存泄漏</strong>：未调用 <code>remove()</code> 导致值残留。
+• <strong>异步线程问题</strong>：子线程无法继承父线程的 <code>ThreadLocal</code> 数据。
+◦ <strong>解决方案</strong>：使用 <code>InheritableThreadLocal</code> 或 <code>TransmittableThreadLocal</code>（支持线程池）。
+• <strong>正确实践</strong>：
+• 使用 <code>try-finally</code> 确保 <code>remove()</code> 调用。
+• 避免存储大对象。</p>
+<hr>
+<h3 id="9-补充扩容与清理示例"><strong>9. 补充：扩容与清理示例</strong></h3>
+<p>• <strong>探测式清理流程</strong>：</p>
+<ol>
+<li>清理当前过期槽位，向后遍历。</li>
+<li>遇到有效键时重新哈希到正确位置。</li>
+<li>更新清理后的数组状态。
+• <strong>启发式清理示例</strong>：在插入时扫描 <code>log2(n)</code> 个槽位，优化清理效率。</li>
+</ol>
+<hr>
+<h3 id="10-总结"><strong>10. 总结</strong></h3>
+<p>• <strong>核心机制</strong>：弱引用键 + 线性探测 + 双清理策略（探测式/启发式）。
+• <strong>注意事项</strong>：显式清理、避免内存泄漏、异步场景处理。
+• <strong>适用场景</strong>：线程隔离数据、上下文传递、性能优化（避免竞争）。</p>
+<p>通过理解 <code>ThreadLocal</code> 的内部机制（如 <code>ThreadLocalMap</code> 结构、哈希算法、清理逻辑），可以更安全地应用于高并发场景，避免常见陷阱。</p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2025 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是JAVA全栈工程师</p>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>

@@ -27,6 +27,69 @@
     </item>
     
     <item>
+      <title>CompletableFuture 详解</title>
+      <link>https://recordnote.github.io/java/threadjuc/completablefuture-%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Sat, 30 Nov 2024 15:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/threadjuc/completablefuture-%E8%AF%A6%E8%A7%A3/</guid>
+      <description>CompletableFuture 详解 1. 核心概念 • 异步编程模型：通过异步执行任务提升程序性能，避免线程阻塞等待。 • Future 的局限性： • 不支持任务编排（如链式调用、组合任务）。 • get()</description>
+    </item>
+    
+    <item>
+      <title>虚拟线程常见问题总结</title>
+      <link>https://recordnote.github.io/java/threadjuc/%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Sat, 30 Nov 2024 15:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/threadjuc/%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/</guid>
+      <description>Java 虚拟线程常见问题总结 1. 概述 • 定义：虚拟线程（Virtual Thread）是 Java 21 中引入的轻量级线程，由 JVM 调度，而非操作系统。多个虚拟线程共享</description>
+    </item>
+    
+    <item>
+      <title>ThreadLocal 详解</title>
+      <link>https://recordnote.github.io/java/threadjuc/threadlocal-%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Sat, 16 Nov 2024 15:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/threadjuc/threadlocal-%E8%AF%A6%E8%A7%A3/</guid>
+      <description>ThreadLocal 详解总结 1. ThreadLocal 核心概念 • 线程局部变量：每个线程拥有独立的变量副本，实现线程间数据隔离。 • 存储结构：每个线程的 Thread 类维护一个 ThreadLoca</description>
+    </item>
+    
+    <item>
+      <title>Atomic 原子类总结</title>
+      <link>https://recordnote.github.io/java/threadjuc/atomic-%E5%8E%9F%E5%AD%90%E7%B1%BB%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Sat, 26 Oct 2024 15:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/threadjuc/atomic-%E5%8E%9F%E5%AD%90%E7%B1%BB%E6%80%BB%E7%BB%93/</guid>
+      <description>Java Atomic 原子类总结 一、概述 定义 Atomic 原子类位于 java.util.concurrent.atomic 包下，提供线程安全的原子操作，通过 CAS（Compare And Swap）和 volatile 实现无锁并发，避免传统锁机制</description>
+    </item>
+    
+    <item>
+      <title>AQS 详解</title>
+      <link>https://recordnote.github.io/java/threadjuc/aqs-%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Tue, 15 Oct 2024 15:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/threadjuc/aqs-%E8%AF%A6%E8%A7%A3/</guid>
+      <description>AQS（AbstractQueuedSynchronizer）核心原理与源码解析 一、AQS概述 定义与作用 • AQS是Java并发包中的基础框架</description>
+    </item>
+    
+    <item>
+      <title>CAS 详解</title>
+      <link>https://recordnote.github.io/java/threadjuc/cas-%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Tue, 08 Oct 2024 15:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/threadjuc/cas-%E8%AF%A6%E8%A7%A3/</guid>
+      <description>Java CAS 机制详解 一、CAS 概述 • 定义：Compare-And-Swap（比较并交换），一种无锁并发控制机制，属于乐观锁范畴。 • 核心思想：通过比较</description>
+    </item>
+    
+    <item>
+      <title>乐观锁和悲观锁详解</title>
+      <link>https://recordnote.github.io/java/threadjuc/%E4%B9%90%E8%A7%82%E9%94%81%E5%92%8C%E6%82%B2%E8%A7%82%E9%94%81%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Mon, 30 Sep 2024 15:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/java/threadjuc/%E4%B9%90%E8%A7%82%E9%94%81%E5%92%8C%E6%82%B2%E8%A7%82%E9%94%81%E8%AF%A6%E8%A7%A3/</guid>
+      <description>乐观锁和悲观锁详解 1. 核心概念对比 悲观锁（Pessimistic Lock） • 定义： 假设共享资源每次访问都会发生冲突，每次操作前加锁，其他线程需</description>
+    </item>
+    
+    <item>
       <title>JVM线上问题排查和性能调优案例</title>
       <link>https://recordnote.github.io/java/jvm%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E5%92%8C%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98%E6%A1%88%E4%BE%8B/</link>
       <pubDate>Tue, 10 Sep 2024 14:21:26 +0800</pubDate>

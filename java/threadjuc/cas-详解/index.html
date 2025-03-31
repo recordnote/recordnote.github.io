@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title> | Lin 的博客</title>
+    <title>CAS 详解 | Lin 的博客</title>
 
     
 <link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
@@ -19,21 +19,23 @@
 
 <meta name="generator" content="Hugo 0.119.0">
 
-<link rel="canonical" href="https://recordnote.github.io/uml/" />
+<link rel="canonical" href="https://recordnote.github.io/java/threadjuc/cas-%E8%AF%A6%E8%A7%A3/" />
 
 
-<meta property="og:title" content="Umls" />
-<meta property="og:description" content="Lin 的生活记录～" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://recordnote.github.io/uml/" /><meta property="og:image" content="https://recordnote.github.io/me/background.jpg"/>
+<meta property="og:title" content="CAS 详解" />
+<meta property="og:description" content="Java CAS 机制详解 一、CAS 概述 • 定义：Compare-And-Swap（比较并交换），一种无锁并发控制机制，属于乐观锁范畴。 • 核心思想：通过比较" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/java/threadjuc/cas-%E8%AF%A6%E8%A7%A3/" /><meta property="og:image" content="https://recordnote.github.io/img/cas.png" /><meta property="article:section" content="java" />
+<meta property="article:published_time" content="2024-10-08T15:21:26+08:00" />
+<meta property="article:modified_time" content="2024-10-08T15:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/me/background.jpg"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/cas.png"/>
 
-<meta name="twitter:title" content="Umls"/>
-<meta name="twitter:description" content="Lin 的生活记录～"/>
+<meta name="twitter:title" content="CAS 详解"/>
+<meta name="twitter:description" content="Java CAS 机制详解 一、CAS 概述 • 定义：Compare-And-Swap（比较并交换），一种无锁并发控制机制，属于乐观锁范畴。 • 核心思想：通过比较"/>
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
@@ -85,7 +87,17 @@
 </style>
 
 
-     
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
 
     
     <link rel="stylesheet" href="/css/custom.css" />
@@ -119,188 +131,165 @@
         <section class="front">
           <div class="dream-max-width">
             
-
-<header class="ui basic very padded segment dream-header">
-  
-  <div class="ui small circular image">
-    <img src="/me/yy.jpg" alt="avatar" />
-  </div>
-  
-
-  <div class="content">
-    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
-    </h1>
-
-    <article class="ui horizontal list">
-      
-      <a class="item" href="/posts">
-        <i class="archive icon" title="归档"></i>
-      </a>
-      
-      <a class="item" href="/categories">
-        <i class="th list icon" title="所有分类"></i>
-      </a>
-      <a class="item" href="/tags">
-        <i class="tags icon" title="所有标签"></i>
-      </a>
-    </article>
-
-    
-    
-    
-    
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-    
-
-    
-
-    
-    
-    
-          <div class="dream-tags">
-          
-          
-          
-            <a class="ui label" href="/tags/java/" title="Java">
-              Java
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/spring/" title="spring">
-              spring
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
-              前端
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
-              微服务
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
-              感悟
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
-              数据库
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
-              杂谈
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
-              架构设计
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
-              消息队列
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
-              生活
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
-              算法与数据结构
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
-              运维
-            </a>
-          
-          </div>
-    
-
-    
-  </div>
-</header>
-
-
-<div class="ui relaxed grid dream-grid">
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
   
   
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  <a class="image" href="https://recordnote.github.io/uml/uml/">
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
     
-    <img src="/img/default4.jpg" alt="" />
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一cas-概述">一、CAS 概述</a></li>
+    <li><a href="#二java-中-cas-的实现">二、Java 中 CAS 的实现</a>
+      <ul>
+        <li><a href="#1-unsafe-类">1. <strong>Unsafe 类</strong></a></li>
+        <li><a href="#2-atomic-原子类">2. <strong>Atomic 原子类</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#三cas-的三大问题及解决方案">三、CAS 的三大问题及解决方案</a>
+      <ul>
+        <li><a href="#1-aba-问题">1. <strong>ABA 问题</strong></a></li>
+        <li><a href="#2-循环时间长开销大">2. <strong>循环时间长开销大</strong></a></li>
+        <li><a href="#3-只能保证单一变量的原子性">3. <strong>只能保证单一变量的原子性</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#四cas-的应用场景">四、CAS 的应用场景</a></li>
+    <li><a href="#五总结">五、总结</a></li>
+  </ul>
+</nav>
+    </div>
     
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">CAS 详解<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2024-10-08T15:21:26&#43;08:00</span>
+                
+
+              | 2 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2024-10-08T15:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
   </a>
+  <a href="https://twitter.com/intent/tweet?text=CAS%20%e8%af%a6%e8%a7%a3&url=https%3a%2f%2frecordnote.github.io%2fjava%2fthreadjuc%2fcas-%25E8%25AF%25A6%25E8%25A7%25A3%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fjava%2fthreadjuc%2fcas-%25E8%25AF%25A6%25E8%25A7%25A3%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
 
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/uml/uml/"></a>
-    </h2>
-    <div class="meta">
-      <p class="date">
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
         
-          <span data-format="luxon">0001-01-01T00:00:00Z</span>
+        <img class="cover" src="/img/cas.png" />
         
-      </p>
-    </div>
-    <div class="description">
-      uml 用例图 活动图 序列图
-    </div>
-  </div>
 
-  <div class="extra content">
-    <div class="author">@&nbsp;Lin</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>1 分钟阅读</div>
-  </div>
-</article>
+        <h1 id="java-cas-机制详解">Java CAS 机制详解</h1>
+<h2 id="一cas-概述">一、CAS 概述</h2>
+<p>• <strong>定义</strong>：Compare-And-Swap（比较并交换），一种无锁并发控制机制，属于乐观锁范畴。
+• <strong>核心思想</strong>：通过比较内存值与期望值是否一致来决定是否更新，若一致则更新，否则重试或放弃。</p>
+<hr>
+<h2 id="二java-中-cas-的实现">二、Java 中 CAS 的实现</h2>
+<h3 id="1-unsafe-类">1. <strong>Unsafe 类</strong></h3>
+<p>• <strong>作用</strong>：提供底层原子操作（位于 <code>sun.misc.Unsafe</code>），直接操作内存和硬件指令。
+• <strong>关键方法</strong>：
+• <code>compareAndSwapObject()</code>：原子更新对象引用。
+• <code>compareAndSwapInt()</code>：原子更新 <code>int</code> 类型。
+• <code>compareAndSwapLong()</code>：原子更新 <code>long</code> 类型。
+• <strong>特点</strong>：
+• <strong>Native 方法</strong>：通过 JNI 调用本地代码（C++/内联汇编），依赖 CPU 指令（如 x86 的 <code>CMPXCHG</code>）。
+• <strong>不推荐直接使用</strong>：设计为 JVM 内部使用，普通开发者应通过 <code>java.util.concurrent.atomic</code> 包间接使用。</p>
+<h3 id="2-atomic-原子类">2. <strong>Atomic 原子类</strong></h3>
+<p>• <strong>实现原理</strong>：基于 <code>Unsafe</code> 的 CAS 方法实现无锁线程安全。
+• <strong>示例</strong>：<code>AtomicInteger</code> 核心源码分析：
+• <strong>字段偏移量</strong>：静态初始化时通过 <code>Unsafe.objectFieldOffset()</code> 获取 <code>value</code> 字段的内存偏移量。
+• <strong>volatile 保证可见性</strong>：<code>private volatile int value</code>。
+• <strong>原子方法</strong>：
+<code>java public final boolean compareAndSet(int expect, int update) { return unsafe.compareAndSwapInt(this, valueOffset, expect, update); } </code>
+• <strong>自旋机制</strong>：例如 <code>getAndAddInt()</code> 通过循环 + CAS 实现原子递增。</p>
+<hr>
+<h2 id="三cas-的三大问题及解决方案">三、CAS 的三大问题及解决方案</h2>
+<h3 id="1-aba-问题">1. <strong>ABA 问题</strong></h3>
+<p>• <strong>原因</strong>：变量被其他线程修改为 B 后又改回 A，CAS 无法感知中间变化。
+• <strong>解决方案</strong>：
+• <strong>版本号/时间戳</strong>：使用 <code>AtomicStampedReference</code>，在比较值的同时检查版本戳。
+• <strong>示例</strong>：
+<code>java public boolean compareAndSet(V expectedReference, V newReference, int expectedStamp, int newStamp) { Pair&lt;V&gt; current = pair; return expectedReference == current.reference  &amp;&amp; expectedStamp == current.stamp  &amp;&amp; ((newReference == current.reference &amp;&amp; newStamp == current.stamp)  || casPair(current, Pair.of(newReference, newStamp))); } </code></p>
+<h3 id="2-循环时间长开销大">2. <strong>循环时间长开销大</strong></h3>
+<p>• <strong>原因</strong>：高并发下 CAS 失败频繁，导致自旋消耗 CPU 资源。
+• <strong>优化手段</strong>：
+• <strong>CPU 指令支持</strong>：<code>pause</code> 指令（延迟流水线执行、避免内存顺序冲突）。
+• <strong>适应性自旋</strong>：JVM 根据历史成功率动态调整自旋次数。</p>
+<h3 id="3-只能保证单一变量的原子性">3. <strong>只能保证单一变量的原子性</strong></h3>
+<p>• <strong>限制</strong>：无法直接对多个变量进行原子操作。
+• <strong>解决方案</strong>：
+• <strong>封装对象</strong>：使用 <code>AtomicReference</code> 将多个变量封装为单一对象。
+• <strong>显式锁</strong>：通过 <code>synchronized</code> 或 <code>ReentrantLock</code> 保证复合操作的原子性。</p>
+<hr>
+<h2 id="四cas-的应用场景">四、CAS 的应用场景</h2>
+<ol>
+<li><strong>原子类</strong>：如 <code>AtomicInteger</code>、<code>AtomicLong</code> 等。</li>
+<li><strong>并发容器</strong>：<code>ConcurrentHashMap</code> 的桶节点操作。</li>
+<li><strong>无锁数据结构</strong>：无锁队列、栈等高性能数据结构。</li>
+</ol>
+<hr>
+<h2 id="五总结">五、总结</h2>
+<p>• <strong>优势</strong>：避免线程阻塞，提升高并发场景性能。
+• <strong>劣势</strong>：需处理 ABA 问题、自旋开销、多变量限制。
+• <strong>适用性</strong>：适合竞争不激烈的场景，替代部分锁的使用以提升效率。</p>
 
-  </div>
-  
+      </article>
+    </section>
 
-  
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
 </div>
 
 
@@ -651,9 +640,40 @@
 
 
 
-<script src="/js/imagesloaded.pkgd.min.js"></script>
-<script src="/js/masonry.pkgd.min.js"></script>
-<script src="/js/grid.js"></script>
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
 
 
     
