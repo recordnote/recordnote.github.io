@@ -7,7 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;&lt;img alt=&#34;知识共享许可协议&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png&#34; /&gt;&lt;/a&gt;&lt;br /&gt;本作品采用&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议&lt;/a&gt;进行许可。&lt;br /&gt;&lt;br /&gt;背景使用了 &lt;a href=&#34;https://www.pexels.com/zh-cn/&#34; target=&#34;_blank&#34;&gt;Pexels&lt;/a&gt; 上 &lt;a href=&#34;https://www.pexels.com/zh-cn/Ungaro&#34; target=&#34;_blank&#34;&gt;Francesco Ungaro&lt;/a&gt; 拍摄的&lt;a href=&#34;https://www.pexels.com/zh-cn/photo/1454794/&#34; target=&#34;_blank&#34;&gt;图片&lt;/a&gt;。</copyright>
-    <lastBuildDate>Fri, 01 Mar 2024 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 01 Apr 2025 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>数据冷热分离详解</title>
+      <link>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Tue, 01 Apr 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AF%A6%E8%A7%A3/</guid>
+      <description>📚 数据冷热分离：用“断舍离”思维优化你的存储系统 大家好，我是小K，一个总在深夜和代码较劲的技术博主。今天想和大家聊聊一个看似高深、实则充满生</description>
+    </item>
+    
+    <item>
+      <title>深度分页介绍及优化建议</title>
+      <link>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%B7%B1%E5%BA%A6%E5%88%86%E9%A1%B5%E4%BB%8B%E7%BB%8D%E5%8F%8A%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE/</link>
+      <pubDate>Fri, 21 Feb 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%B7%B1%E5%BA%A6%E5%88%86%E9%A1%B5%E4%BB%8B%E7%BB%8D%E5%8F%8A%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE/</guid>
+      <description>深度分页问题及优化策略解析 一、深度分页问题概述 定义：深度分页指在数据库查询中，当使用 LIMIT offset, size 且偏移量（offset）极大时，导致查询性能显著下</description>
+    </item>
+    
     <item>
       <title>sql如何拼接数据</title>
       <link>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/sql%E5%A6%82%E4%BD%95%E6%8B%BC%E6%8E%A5%E6%95%B0%E6%8D%AE/</link>
