@@ -18,6 +18,15 @@
     </item>
     
     <item>
+      <title>高可用系统设计</title>
+      <link>https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E9%AB%98%E5%8F%AF%E7%94%A8%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97/</link>
+      <pubDate>Wed, 05 Mar 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E9%AB%98%E5%8F%AF%E7%94%A8%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97/</guid>
+      <description>高可用系统设计完全指南：从理论到实战 引言：为什么高可用系统是技术人的必修课？ 在互联网服务中，“高可用” 是系统设计的生死线。一个经典的案例是2</description>
+    </item>
+    
+    <item>
       <title>权限设计详解</title>
       <link>https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E8%AF%A6%E8%A7%A3/</link>
       <pubDate>Fri, 10 Jan 2025 14:21:26 +0800</pubDate>

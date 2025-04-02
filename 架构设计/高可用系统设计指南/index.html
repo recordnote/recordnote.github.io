@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>高可用系统设计 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.119.0">
+
+<link rel="canonical" href="https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E9%AB%98%E5%8F%AF%E7%94%A8%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97/" />
+
+
+<meta property="og:title" content="高可用系统设计" />
+<meta property="og:description" content="高可用系统设计完全指南：从理论到实战 引言：为什么高可用系统是技术人的必修课？ 在互联网服务中，“高可用” 是系统设计的生死线。一个经典的案例是2" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E9%AB%98%E5%8F%AF%E7%94%A8%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E6%8C%87%E5%8D%97/" /><meta property="og:image" content="https://recordnote.github.io/img/ha.png" /><meta property="article:section" content="架构设计" />
+<meta property="article:published_time" content="2025-03-05T14:21:26+08:00" />
+<meta property="article:modified_time" content="2025-03-05T14:21:26+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/ha.png"/>
+
+<meta name="twitter:title" content="高可用系统设计"/>
+<meta name="twitter:description" content="高可用系统设计完全指南：从理论到实战 引言：为什么高可用系统是技术人的必修课？ 在互联网服务中，“高可用” 是系统设计的生死线。一个经典的案例是2"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#引言为什么高可用系统是技术人的必修课">引言：为什么高可用系统是技术人的必修课？</a></li>
+    <li><a href="#一高可用系统的核心逻辑">一、高可用系统的核心逻辑</a>
+      <ul>
+        <li><a href="#11-什么是高可用数字背后的意义">1.1 什么是高可用？——数字背后的意义</a></li>
+        <li><a href="#12-高可用的四大核心原则">1.2 高可用的四大核心原则</a></li>
+      </ul>
+    </li>
+    <li><a href="#二高可用架构的七大实战策略">二、高可用架构的七大实战策略</a>
+      <ul>
+        <li><a href="#21-冗余与集群让单点成为历史">2.1 冗余与集群：让“单点”成为历史</a></li>
+        <li><a href="#22-流量控制与熔断守住最后一道防线">2.2 流量控制与熔断：守住最后一道防线</a></li>
+        <li><a href="#23-超时与重试避免雪崩的利器">2.3 超时与重试：避免“雪崩”的利器</a></li>
+        <li><a href="#24-异步化与消息队列削峰填谷的终极武器">2.4 异步化与消息队列：削峰填谷的终极武器</a></li>
+        <li><a href="#25-缓存设计四两拨千斤的加速器">2.5 缓存设计：四两拨千斤的加速器</a></li>
+        <li><a href="#26-灰度发布与回滚安全上线的双保险">2.6 灰度发布与回滚：安全上线的双保险</a></li>
+        <li><a href="#27-监控与告警系统的听诊器">2.7 监控与告警：系统的“听诊器”</a></li>
+      </ul>
+    </li>
+    <li><a href="#三从代码到运维全链路高可用保障">三、从代码到运维：全链路高可用保障</a>
+      <ul>
+        <li><a href="#31-代码质量高可用的第一道防线">3.1 代码质量：高可用的第一道防线</a></li>
+        <li><a href="#32-混沌工程主动制造故障的训练">3.2 混沌工程：主动制造故障的训练</a></li>
+      </ul>
+    </li>
+    <li><a href="#四高可用设计的常见误区与避坑指南">四、高可用设计的常见误区与避坑指南</a>
+      <ul>
+        <li><a href="#41-误区一过度追求五个9">4.1 误区一：过度追求“五个9”</a></li>
+        <li><a href="#42-误区二集群高可用">4.2 误区二：集群=高可用？</a></li>
+        <li><a href="#43-误区三忽视幂等性设计">4.3 误区三：忽视“幂等性设计”</a></li>
+      </ul>
+    </li>
+    <li><a href="#结语高可用是一场永不停歇的修行">结语：高可用是一场永不停歇的修行</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">高可用系统设计<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2025-03-05T14:21:26&#43;08:00</span>
+                
+
+              | 4 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2025-03-05T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=%e9%ab%98%e5%8f%af%e7%94%a8%e7%b3%bb%e7%bb%9f%e8%ae%be%e8%ae%a1&url=https%3a%2f%2frecordnote.github.io%2f%25E6%259E%25B6%25E6%259E%2584%25E8%25AE%25BE%25E8%25AE%25A1%2f%25E9%25AB%2598%25E5%258F%25AF%25E7%2594%25A8%25E7%25B3%25BB%25E7%25BB%259F%25E8%25AE%25BE%25E8%25AE%25A1%25E6%258C%2587%25E5%258D%2597%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2f%25E6%259E%25B6%25E6%259E%2584%25E8%25AE%25BE%25E8%25AE%25A1%2f%25E9%25AB%2598%25E5%258F%25AF%25E7%2594%25A8%25E7%25B3%25BB%25E7%25BB%259F%25E8%25AE%25BE%25E8%25AE%25A1%25E6%258C%2587%25E5%258D%2597%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/ha.png" />
+        
+
+        <h1 id="高可用系统设计完全指南从理论到实战">高可用系统设计完全指南：从理论到实战</h1>
+<hr>
+<h2 id="引言为什么高可用系统是技术人的必修课">引言：为什么高可用系统是技术人的必修课？</h2>
+<p>在互联网服务中，<strong>“高可用”</strong> 是系统设计的生死线。一个经典的案例是2017年某知名电商平台在“双11”期间因数据库雪崩导致服务中断30分钟，直接损失超亿元。这样的教训告诉我们：<strong>高可用不是可选项，而是必选项</strong>。本文将从设计原则、核心策略、实战工具到避坑指南，为你构建一个完整的高可用知识体系。</p>
+<hr>
+<h2 id="一高可用系统的核心逻辑">一、高可用系统的核心逻辑</h2>
+<h3 id="11-什么是高可用数字背后的意义">1.1 什么是高可用？——数字背后的意义</h3>
+<p>• <strong>定义</strong>：系统在 <strong>99.9%~99.999%</strong> 的时间可正常服务（即“3个9”到“5个9”）。
+• <strong>可用性计算</strong>：<code>可用性 = (总时间 - 故障时间)/总时间 × 100%</code>
+• <strong>不同等级的影响</strong>：
+| 可用性等级 | 年故障时间    | 适用场景               |
+|&mdash;&mdash;&mdash;&mdash;|&mdash;&mdash;&mdash;&mdash;&mdash;|&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;|
+| 99.9%      | 8.76小时      | 普通企业应用           |
+| 99.99%     | 52.56分钟     | 金融交易系统           |
+| 99.999%    | 5.26分钟      | 电信、航空控制系统     |</p>
+<h3 id="12-高可用的四大核心原则">1.2 高可用的四大核心原则</h3>
+<ol>
+<li><strong>冗余设计</strong>：无单点，多副本（如Redis Cluster、MySQL主从）</li>
+<li><strong>快速故障转移</strong>：秒级切换（如Keepalived VIP漂移）</li>
+<li><strong>弹性伸缩</strong>：自动扩容应对流量洪峰（如Kubernetes HPA）</li>
+<li><strong>防御性编程</strong>：预判并隔离故障（如熔断、降级）</li>
+</ol>
+<hr>
+<h2 id="二高可用架构的七大实战策略">二、高可用架构的七大实战策略</h2>
+<h3 id="21-冗余与集群让单点成为历史">2.1 冗余与集群：让“单点”成为历史</h3>
+<p>• <strong>Redis高可用方案对比</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th>原理</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主从复制</td>
+<td>一主多从，数据异步复制</td>
+<td>简单易用</td>
+<td>主节点故障需手动切换</td>
+</tr>
+<tr>
+<td>哨兵模式</td>
+<td>哨兵监控自动故障转移</td>
+<td>自动化切换</td>
+<td>写操作受限</td>
+</tr>
+<tr>
+<td>Cluster集群</td>
+<td>数据分片，多主多从</td>
+<td>支持水平扩展</td>
+<td>配置复杂</td>
+</tr>
+</tbody>
+</table>
+<p>• <strong>数据库高可用</strong>：
+• <strong>MySQL MHA</strong>：30秒内完成主从切换
+• <strong>TiDB</strong>：分布式NewSQL，自动分片+多副本</p>
+<h3 id="22-流量控制与熔断守住最后一道防线">2.2 流量控制与熔断：守住最后一道防线</h3>
+<p>• <strong>Sentinel vs Hystrix</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// Alibaba Sentinel 限流规则配置示例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>FlowRule rule <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FlowRule<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>rule<span style="color:#f92672">.</span><span style="color:#a6e22e">setResource</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;orderService&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>rule<span style="color:#f92672">.</span><span style="color:#a6e22e">setGrade</span><span style="color:#f92672">(</span>RuleConstant<span style="color:#f92672">.</span><span style="color:#a6e22e">FLOW_GRADE_QPS</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>rule<span style="color:#f92672">.</span><span style="color:#a6e22e">setCount</span><span style="color:#f92672">(</span><span style="color:#ae81ff">1000</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 阈值1000 QPS
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>FlowRuleManager<span style="color:#f92672">.</span><span style="color:#a6e22e">loadRules</span><span style="color:#f92672">(</span>Collections<span style="color:#f92672">.</span><span style="color:#a6e22e">singletonList</span><span style="color:#f92672">(</span>rule<span style="color:#f92672">));</span>
+</span></span></code></pre></div><p>• <strong>熔断策略</strong>：
+◦ <strong>慢调用比例</strong>：响应时间&gt;1s的请求占比超过50%时熔断
+◦ <strong>异常比例</strong>：错误率超过60%时触发</p>
+<h3 id="23-超时与重试避免雪崩的利器">2.3 超时与重试：避免“雪崩”的利器</h3>
+<p>• <strong>黄金参数建议</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>超时时间</th>
+<th>重试次数</th>
+<th>退避策略</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>内部微服务调用</td>
+<td>200ms~1s</td>
+<td>1~2次</td>
+<td>固定间隔</td>
+</tr>
+<tr>
+<td>第三方API调用</td>
+<td>2s~5s</td>
+<td>0~1次</td>
+<td>指数退避（Exponential Backoff）</td>
+</tr>
+<tr>
+<td>数据库查询</td>
+<td>100ms~500ms</td>
+<td>不重试</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h3 id="24-异步化与消息队列削峰填谷的终极武器">2.4 异步化与消息队列：削峰填谷的终极武器</h3>
+<p>• <strong>Kafka实战案例</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 创建Topic（3副本，6分区）</span>
+</span></span><span style="display:flex;"><span>bin/kafka-topics.sh --create --topic order-events <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --bootstrap-server localhost:9092 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>  --partitions <span style="color:#ae81ff">6</span> --replication-factor <span style="color:#ae81ff">3</span>
+</span></span></code></pre></div><p>• <strong>异步处理流程</strong>：
+<code>用户请求 → API网关 → 写入Kafka → 消费者处理 → 数据库 ↑           |             | 响应完成    异步通知      重试死信队列</code></p>
+<h3 id="25-缓存设计四两拨千斤的加速器">2.5 缓存设计：四两拨千斤的加速器</h3>
+<p>• <strong>多级缓存架构</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-plaintext" data-lang="plaintext"><span style="display:flex;"><span>┌─────────┐       ┌──────────┐       ┌─────────┐
+</span></span><span style="display:flex;"><span>│ 客户端  │───→──│ CDN缓存  │───→──│ 本地缓存 │
+</span></span><span style="display:flex;"><span>└─────────┘       └──────────┘       └─────────┘
+</span></span><span style="display:flex;"><span>                        ↓
+</span></span><span style="display:flex;"><span>                  ┌──────────┐
+</span></span><span style="display:flex;"><span>                  │ Redis集群│
+</span></span><span style="display:flex;"><span>                  └──────────┘
+</span></span></code></pre></div><p>• <strong>缓存穿透解决方案</strong>：
+◦ <strong>布隆过滤器</strong>：拦截无效请求
+◦ <strong>空值缓存</strong>：缓存NULL值（设置短TTL）</p>
+<h3 id="26-灰度发布与回滚安全上线的双保险">2.6 灰度发布与回滚：安全上线的双保险</h3>
+<p>• <strong>Kubernetes滚动更新策略</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">strategy</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">rollingUpdate</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">maxSurge</span>: <span style="color:#ae81ff">25</span><span style="color:#ae81ff">%       </span> <span style="color:#75715e"># 最大临时副本数</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">maxUnavailable</span>: <span style="color:#ae81ff">25</span><span style="color:#ae81ff">%  </span> <span style="color:#75715e"># 最大不可用比例</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">RollingUpdate</span>
+</span></span></code></pre></div><h3 id="27-监控与告警系统的听诊器">2.7 监控与告警：系统的“听诊器”</h3>
+<p>• <strong>Prometheus + Grafana监控体系</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-promql" data-lang="promql"><span style="display:flex;"><span><span style="color:#75715e"># 计算服务错误率</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">sum</span><span style="color:#f92672">(</span><span style="color:#66d9ef">rate</span><span style="color:#f92672">(</span>http_requests_total{status<span style="color:#f92672">=~</span>&#34;<span style="color:#e6db74">5..</span>&#34;}[<span style="color:#e6db74">5m</span>]<span style="color:#f92672">))</span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">/</span> <span style="color:#66d9ef">sum</span><span style="color:#f92672">(</span><span style="color:#66d9ef">rate</span><span style="color:#f92672">(</span>http_requests_total[<span style="color:#e6db74">5m</span>]<span style="color:#f92672">))</span>
+</span></span></code></pre></div><p>• <strong>关键监控指标</strong>：
+◦ <strong>RED指标</strong>：请求率（Rate）、错误率（Errors）、耗时（Duration）
+◦ <strong>USE指标</strong>：使用率（Utilization）、饱和度（Saturation）、错误数（Errors）</p>
+<hr>
+<h2 id="三从代码到运维全链路高可用保障">三、从代码到运维：全链路高可用保障</h2>
+<h3 id="31-代码质量高可用的第一道防线">3.1 代码质量：高可用的第一道防线</h3>
+<p>• <strong>内存泄漏检测实战</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 使用Arthas排查OOM</span>
+</span></span><span style="display:flex;"><span>$ ./arthas-boot.jar
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>arthas@12345<span style="color:#f92672">]</span>$ jvm
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>arthas@12345<span style="color:#f92672">]</span>$ heapdump /tmp/heap.hprof  <span style="color:#75715e"># 导出堆快照</span>
+</span></span></code></pre></div><p>• <strong>代码规范检查</strong>：
+◦ SonarQube配置示例：
+<code>xml &lt;!-- 自定义规则：禁止System.out --&gt; &lt;rule&gt; &lt;key&gt;PrintStackTrace&lt;/key&gt; &lt;name&gt;禁止直接打印堆栈&lt;/name&gt; &lt;priority&gt;CRITICAL&lt;/priority&gt; &lt;configKey&gt;common-java:PrintStackTrace&lt;/configKey&gt; &lt;/rule&gt; </code></p>
+<h3 id="32-混沌工程主动制造故障的训练">3.2 混沌工程：主动制造故障的训练</h3>
+<p>• <strong>Chaos Mesh实验</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">chaos-mesh.org/v1alpha1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">NetworkChaos</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">simulate-network-latency</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">action</span>: <span style="color:#ae81ff">delay</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">mode</span>: <span style="color:#ae81ff">one</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">namespaces</span>: [<span style="color:#e6db74">&#34;production&#34;</span>]
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">delay</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">latency</span>: <span style="color:#e6db74">&#34;500ms&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">correlation</span>: <span style="color:#e6db74">&#34;100&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">duration</span>: <span style="color:#e6db74">&#34;300s&#34;</span>
+</span></span></code></pre></div><hr>
+<h2 id="四高可用设计的常见误区与避坑指南">四、高可用设计的常见误区与避坑指南</h2>
+<h3 id="41-误区一过度追求五个9">4.1 误区一：过度追求“五个9”</h3>
+<p>• <strong>成本陷阱</strong>：从99.99%到99.999%可能需要10倍投入
+• <strong>适用性原则</strong>：电商订单系统需99.99%，内部CMS系统99.9%即可</p>
+<h3 id="42-误区二集群高可用">4.2 误区二：集群=高可用？</h3>
+<p>• <strong>隐藏风险</strong>：
+• 脑裂问题（ZooKeeper需配置<code>quorum</code>）
+• 伪多活（未做单元化拆分）</p>
+<h3 id="43-误区三忽视幂等性设计">4.3 误区三：忽视“幂等性设计”</h3>
+<p>• <strong>重复请求导致资损</strong>案例：
+• 支付接口未做幂等 → 用户双击生成两笔订单
+• 解决方案：Token机制或数据库唯一索引</p>
+<hr>
+<h2 id="结语高可用是一场永不停歇的修行">结语：高可用是一场永不停歇的修行</h2>
+<p>高可用不是一次性的架构设计，而是需要持续优化的过程。建议每季度进行一次<strong>故障演练</strong>，每年做一次<strong>全链路压测</strong>。记住：<strong>“没有经过真实流量考验的高可用设计都是纸上谈兵”</strong>。</p>
+<p><strong>延伸阅读推荐</strong>：
+• 书籍：《Site Reliability Engineering》
+• 工具：Chaos Engineering Principles（混沌工程原则）
+• 开源项目：Envoy（服务网格）、Vitess（数据库分片）</p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2025 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是JAVA全栈工程师</p>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>
