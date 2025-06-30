@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Model Context Protocol(MCP) 编程极速入门 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.119.0">
+
+<link rel="canonical" href="https://recordnote.github.io/ai/mcp/" />
+
+
+<meta property="og:title" content="Model Context Protocol(MCP) 编程极速入门" />
+<meta property="og:description" content="[TOC] 简介 模型上下文协议（MCP）是一个创新的开源协议，它重新定义了大语言模型（LLM）与外部世界的互动方式。MCP 提供了一种标准化方法，使任意" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/ai/mcp/" /><meta property="og:image" content="https://recordnote.github.io/img/ai2.png" /><meta property="article:section" content="ai" />
+<meta property="article:published_time" content="2025-04-25T15:21:26+08:00" />
+<meta property="article:modified_time" content="2025-04-25T16:21:26+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/ai2.png"/>
+
+<meta name="twitter:title" content="Model Context Protocol(MCP) 编程极速入门"/>
+<meta name="twitter:description" content="[TOC] 简介 模型上下文协议（MCP）是一个创新的开源协议，它重新定义了大语言模型（LLM）与外部世界的互动方式。MCP 提供了一种标准化方法，使任意"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#开发-mcp-服务器">开发 MCP 服务器</a></li>
+    <li><a href="#调试-mcp-服务器">调试 MCP 服务器</a></li>
+    <li><a href="#开发-mcp-客户端">开发 MCP 客户端</a></li>
+    <li><a href="#sampling-讲解">Sampling 讲解</a></li>
+    <li><a href="#claude-desktop-加载-mcp-server">Claude Desktop 加载 MCP Server</a></li>
+    <li><a href="#其他功能">其他功能</a>
+      <ul>
+        <li><a href="#prompt">Prompt</a></li>
+        <li><a href="#resource">Resource</a></li>
+        <li><a href="#生命周期">生命周期</a></li>
+      </ul>
+    </li>
+    <li><a href="#在-langchain-中使用-mcp-服务器">在 LangChain 中使用 MCP 服务器</a></li>
+    <li><a href="#deepseek--cline--自定义mcp--图文大师">DeepSeek + cline + 自定义MCP = 图文大师</a></li>
+    <li><a href="#借助-serverless-将-mcp-服务部署到云端">借助 serverless 将 MCP 服务部署到云端</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">Model Context Protocol(MCP) 编程极速入门<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2025-04-25T15:21:26&#43;08:00</span>
+                
+
+              | 14 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2025-04-25T16:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=Model%20Context%20Protocol%28MCP%29%20%e7%bc%96%e7%a8%8b%e6%9e%81%e9%80%9f%e5%85%a5%e9%97%a8&url=https%3a%2f%2frecordnote.github.io%2fai%2fmcp%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fai%2fmcp%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/ai2.png" />
+        
+
+        <p>[TOC]</p>
+<h2 id="简介">简介</h2>
+<p>模型上下文协议（MCP）是一个创新的开源协议，它重新定义了大语言模型（LLM）与外部世界的互动方式。MCP 提供了一种标准化方法，使任意大语言模型能够轻松连接各种数据源和工具，实现信息的无缝访问和处理。MCP 就像是 AI 应用程序的 USB-C 接口，为 AI 模型提供了一种标准化的方式来连接不同的数据源和工具。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250223214308430.png" alt="image-20250223214308430"></p>
+<p>MCP 有以下几个核心功能：</p>
+<ul>
+<li>Resources 资源</li>
+<li>Prompts 提示词</li>
+<li>Tools 工具</li>
+<li>Sampling 采样</li>
+<li>Roots 根目录</li>
+<li>Transports 传输层</li>
+</ul>
+<p>因为大部分功能其实都是服务于 Claude 客户端的，本文更希望编写的 MCP 服务器服务与通用大语言模型，所以本文将会主要以“工具”为重点，其他功能会放到最后进行简单讲解。</p>
+<p>其中 MCP 的传输层支持了 2 种协议的实现：stdio（标准输入/输出）和 SSE（服务器发送事件），因为 stdio 更为常用，所以本文会以 stdio 为例进行讲解。</p>
+<p>本文将会使用 3.11 的 Python 版本，并使用 uv 来管理 Python 项目。同时代码将会在文末放到 Github 上，废话不多说，我们这就开始吧~</p>
+<h2 id="开发-mcp-服务器">开发 MCP 服务器</h2>
+<p>在这一小节中，我们将会实现一个用于网络搜索的服务器。首先，我们先来通过 uv 初始化我们的项目。</p>
+<blockquote>
+<p>uv 官方文档：https://docs.astral.sh/uv/</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 初始化项目</span>
+</span></span><span style="display:flex;"><span>uv init mcp_getting_started
+</span></span><span style="display:flex;"><span>cd mcp_getting_started
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 创建虚拟环境并进入虚拟环境</span>
+</span></span><span style="display:flex;"><span>uv venv
+</span></span><span style="display:flex;"><span>.venv<span style="color:#ae81ff">\S</span>cripts<span style="color:#ae81ff">\a</span>ctivate.bat
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 安装依赖</span>
+</span></span><span style="display:flex;"><span>uv add <span style="color:#e6db74">&#34;mcp[cli]&#34;</span> httpx openai
+</span></span></code></pre></div><p>然后我们来创建一个叫 <code>web_search.py</code> 文件，来实现我们的服务。MCP 为我们提供了2个对象：<code>mcp.server.FastMCP</code> 和 <code>mcp.server.Server</code>，<code>mcp.server.FastMCP</code> 是更高层的封装，我们这里就来使用它。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> httpx
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.server <span style="color:#f92672">import</span> FastMCP
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># # 初始化 FastMCP 服务器</span>
+</span></span><span style="display:flex;"><span>app <span style="color:#f92672">=</span> FastMCP(<span style="color:#e6db74">&#39;web-search&#39;</span>)
+</span></span></code></pre></div><p>实现执行的方法非常简单，MCP 为我们提供了一个 <code>@mcp.tool()</code> 我们只需要将实现函数用这个装饰器装饰即可。函数名称将作为工具名称，参数将作为工具参数，并通过注释来描述工具与参数，以及返回值。</p>
+<p>这里我们直接使用智谱的接口，它这个接口不仅能帮我们搜索到相关的结果链接，并帮我们生成了对应链接中文章总结后的内容的，<del>并且现阶段是免费的</del>(目前已经开始收费，0.03元/次)，非常适合我们。</p>
+<blockquote>
+<p>官方文档：https://bigmodel.cn/dev/api/search-tool/web-search-pro</p>
+<p>API Key 生成地址：https://bigmodel.cn/usercenter/proj-mgmt/apikeys</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a6e22e">@app.tool</span>()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">web_search</span>(query: str) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    搜索互联网内容
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Args:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        query: 要搜索内容
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Returns:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        搜索结果的总结
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> httpx<span style="color:#f92672">.</span>AsyncClient() <span style="color:#66d9ef">as</span> client:
+</span></span><span style="display:flex;"><span>        response <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>post(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;https://open.bigmodel.cn/api/paas/v4/tools&#39;</span>,
+</span></span><span style="display:flex;"><span>            headers<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;Authorization&#39;</span>: <span style="color:#e6db74">&#39;换成你自己的API KEY&#39;</span>},
+</span></span><span style="display:flex;"><span>            json<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;tool&#39;</span>: <span style="color:#e6db74">&#39;web-search-pro&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;messages&#39;</span>: [
+</span></span><span style="display:flex;"><span>                    {<span style="color:#e6db74">&#39;role&#39;</span>: <span style="color:#e6db74">&#39;user&#39;</span>, <span style="color:#e6db74">&#39;content&#39;</span>: query}
+</span></span><span style="display:flex;"><span>                ],
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;stream&#39;</span>: <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        res_data <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> choice <span style="color:#f92672">in</span> response<span style="color:#f92672">.</span>json()[<span style="color:#e6db74">&#39;choices&#39;</span>]:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> message <span style="color:#f92672">in</span> choice[<span style="color:#e6db74">&#39;message&#39;</span>][<span style="color:#e6db74">&#39;tool_calls&#39;</span>]:
+</span></span><span style="display:flex;"><span>                search_results <span style="color:#f92672">=</span> message<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;search_result&#39;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> search_results:
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> result <span style="color:#f92672">in</span> search_results:
+</span></span><span style="display:flex;"><span>                    res_data<span style="color:#f92672">.</span>append(result[<span style="color:#e6db74">&#39;content&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n\n\n</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>join(res_data)
+</span></span></code></pre></div><p>最后，我们来添加运行服务器的代码。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    app<span style="color:#f92672">.</span>run(transport<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;stdio&#39;</span>)
+</span></span></code></pre></div><h2 id="调试-mcp-服务器">调试 MCP 服务器</h2>
+<p>此时，我们就完成了 MCP 服务端的编写。下面，我们来使用官方提供的 <code>Inspector</code> 可视化工具来调试我们的服务器。</p>
+<p>我们可以通过两种方法来运行<code>Inspector</code>：</p>
+<blockquote>
+<p>请先确保已经安装了 node 环境。</p>
+</blockquote>
+<p>通过 npx：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>npx -y @modelcontextprotocol/inspector &lt;command&gt; &lt;arg1&gt; &lt;arg2&gt;
+</span></span></code></pre></div><p>我们的这个代码运行命令为：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>npx -y @modelcontextprotocol/inspector uv run web_search.py
+</span></span></code></pre></div><p>通过 mcp dev 来运行：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mcp dev PYTHONFILE
+</span></span></code></pre></div><p>我们的这个代码运行命令为：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mcp dev web_search.py
+</span></span></code></pre></div><p>当出现如下提示则代表运行成功。如果提示连接出错，可能是端口被占用，可以看这个 issue 的解决方法：https://github.com/liaokongVFX/MCP-Chinese-Getting-Started-Guide/issues/6</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250223223638135.png" alt="image-20250223223638135"></p>
+<p>然后，我们打开这个地址，点击左侧的 <code>Connect</code> 按钮，即可连接我们刚写的服务。然后我们切换到 <code>Tools</code> 栏中，点击 <code>List Tools</code> 按钮即可看到我们刚写的工具，我们就可以开始进行调试啦。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250223224052795.png" alt="image-20250223224052795"></p>
+<h2 id="开发-mcp-客户端">开发 MCP 客户端</h2>
+<p>首先，我们先来看看如何在客户端如何调用我们刚才开发的 MCP 服务器中的工具。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> asyncio
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.client.stdio <span style="color:#f92672">import</span> stdio_client
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp <span style="color:#f92672">import</span> ClientSession, StdioServerParameters
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 为 stdio 连接创建服务器参数</span>
+</span></span><span style="display:flex;"><span>server_params <span style="color:#f92672">=</span> StdioServerParameters(
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 服务器执行的命令，这里我们使用 uv 来运行 web_search.py</span>
+</span></span><span style="display:flex;"><span>    command<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;uv&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 运行的参数</span>
+</span></span><span style="display:flex;"><span>    args<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;run&#39;</span>, <span style="color:#e6db74">&#39;web_search.py&#39;</span>],
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 环境变量，默认为 None，表示使用当前环境变量</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># env=None</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 创建 stdio 客户端</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> stdio_client(server_params) <span style="color:#66d9ef">as</span> (stdio, write):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 创建 ClientSession 对象</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> ClientSession(stdio, write) <span style="color:#66d9ef">as</span> session:
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 初始化 ClientSession</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>initialize()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 列出可用的工具</span>
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>list_tools()
+</span></span><span style="display:flex;"><span>            print(response)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 调用工具</span>
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>call_tool(<span style="color:#e6db74">&#39;web_search&#39;</span>, {<span style="color:#e6db74">&#39;query&#39;</span>: <span style="color:#e6db74">&#39;今天杭州天气&#39;</span>})
+</span></span><span style="display:flex;"><span>            print(response)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    asyncio<span style="color:#f92672">.</span>run(main())
+</span></span></code></pre></div><p>因为我们的python脚本需要在虚拟环境中才能运行，所以这里我们通过 <code>uv</code> 来启动我们的脚本。</p>
+<p>下面我们来通过一个小例子来看看如何让 <code>DeepSeek</code> 来调用我们 MCP 服务器中的方法。</p>
+<p>这里我们会用 <code>dotenv</code> 来管理我们相关的环境变量。.env 文件内容如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>OPENAI_API_KEY<span style="color:#f92672">=</span>sk-89baxxxxxxxxxxxxxxxxxx
+</span></span><span style="display:flex;"><span>OPENAI_BASE_URL<span style="color:#f92672">=</span>https://api.deepseek.com
+</span></span><span style="display:flex;"><span>OPENAI_MODEL<span style="color:#f92672">=</span>deepseek-chat
+</span></span></code></pre></div><p>首先我们来编写我们的 <code>MCPClient</code> 类。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> asyncio
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> typing <span style="color:#f92672">import</span> Optional
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> contextlib <span style="color:#f92672">import</span> AsyncExitStack
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> openai <span style="color:#f92672">import</span> OpenAI
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> dotenv <span style="color:#f92672">import</span> load_dotenv
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp <span style="color:#f92672">import</span> ClientSession, StdioServerParameters
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.client.stdio <span style="color:#f92672">import</span> stdio_client
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>load_dotenv()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MCPClient</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>session: Optional[ClientSession] <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>exit_stack <span style="color:#f92672">=</span> AsyncExitStack()
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>client <span style="color:#f92672">=</span> OpenAI()
+</span></span></code></pre></div><p>然后我们添加 <code>connect_to_server</code> 方法来初始化我们的 MCP 服务器的 session。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">connect_to_server</span>(self):
+</span></span><span style="display:flex;"><span>        server_params <span style="color:#f92672">=</span> StdioServerParameters(
+</span></span><span style="display:flex;"><span>            command<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;uv&#39;</span>,
+</span></span><span style="display:flex;"><span>            args<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;run&#39;</span>, <span style="color:#e6db74">&#39;web_search.py&#39;</span>],
+</span></span><span style="display:flex;"><span>            env<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        stdio_transport <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> self<span style="color:#f92672">.</span>exit_stack<span style="color:#f92672">.</span>enter_async_context(
+</span></span><span style="display:flex;"><span>            stdio_client(server_params))
+</span></span><span style="display:flex;"><span>        stdio, write <span style="color:#f92672">=</span> stdio_transport
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>session <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> self<span style="color:#f92672">.</span>exit_stack<span style="color:#f92672">.</span>enter_async_context(
+</span></span><span style="display:flex;"><span>            ClientSession(stdio, write))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> self<span style="color:#f92672">.</span>session<span style="color:#f92672">.</span>initialize()
+</span></span></code></pre></div><p>然后我们再实现一个用于调用 MCP 服务器的方法来处理和 DeepSeek 之间的交互。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">process_query</span>(self, query: str) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 这里需要通过 system prompt 来约束一下大语言模型，</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 否则会出现不调用工具，自己乱回答的情况</span>
+</span></span><span style="display:flex;"><span>        system_prompt <span style="color:#f92672">=</span> (
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;You are a helpful assistant.&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;You have the function of online search. &#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Please MUST call web_search tool to search the Internet content before answering.&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Please do not lose the user&#39;s question information when searching,&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;and try to maintain the completeness of the question content as much as possible.&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;When there is a date related question in the user&#39;s question,&#34;</span> 
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;please use the search function directly to search and PROHIBIT inserting specific time.&#34;</span>
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        messages <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>            {<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;system&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: system_prompt},
+</span></span><span style="display:flex;"><span>            {<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: query}
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 获取所有 mcp 服务器 工具列表信息</span>
+</span></span><span style="display:flex;"><span>        response <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> self<span style="color:#f92672">.</span>session<span style="color:#f92672">.</span>list_tools()
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 生成 function call 的描述信息</span>
+</span></span><span style="display:flex;"><span>        available_tools <span style="color:#f92672">=</span> [{
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;function&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;function&#34;</span>: {
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;name&#34;</span>: tool<span style="color:#f92672">.</span>name,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;description&#34;</span>: tool<span style="color:#f92672">.</span>description,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;input_schema&#34;</span>: tool<span style="color:#f92672">.</span>inputSchema
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">for</span> tool <span style="color:#f92672">in</span> response<span style="color:#f92672">.</span>tools]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 请求 deepseek，function call 的描述信息通过 tools 参数传入</span>
+</span></span><span style="display:flex;"><span>        response <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>client<span style="color:#f92672">.</span>chat<span style="color:#f92672">.</span>completions<span style="color:#f92672">.</span>create(
+</span></span><span style="display:flex;"><span>            model<span style="color:#f92672">=</span>os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#34;OPENAI_MODEL&#34;</span>),
+</span></span><span style="display:flex;"><span>            messages<span style="color:#f92672">=</span>messages,
+</span></span><span style="display:flex;"><span>            tools<span style="color:#f92672">=</span>available_tools
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 处理返回的内容</span>
+</span></span><span style="display:flex;"><span>        content <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>choices[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> content<span style="color:#f92672">.</span>finish_reason <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;tool_calls&#34;</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 如何是需要使用工具，就解析工具</span>
+</span></span><span style="display:flex;"><span>            tool_call <span style="color:#f92672">=</span> content<span style="color:#f92672">.</span>message<span style="color:#f92672">.</span>tool_calls[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>            tool_name <span style="color:#f92672">=</span> tool_call<span style="color:#f92672">.</span>function<span style="color:#f92672">.</span>name
+</span></span><span style="display:flex;"><span>            tool_args <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>loads(tool_call<span style="color:#f92672">.</span>function<span style="color:#f92672">.</span>arguments)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 执行工具</span>
+</span></span><span style="display:flex;"><span>            result <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> self<span style="color:#f92672">.</span>session<span style="color:#f92672">.</span>call_tool(tool_name, tool_args)
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">[Calling tool </span><span style="color:#e6db74">{</span>tool_name<span style="color:#e6db74">}</span><span style="color:#e6db74"> with args </span><span style="color:#e6db74">{</span>tool_args<span style="color:#e6db74">}</span><span style="color:#e6db74">]</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>			
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 将 deepseek 返回的调用哪个工具数据和工具执行完成后的数据都存入messages中</span>
+</span></span><span style="display:flex;"><span>            messages<span style="color:#f92672">.</span>append(content<span style="color:#f92672">.</span>message<span style="color:#f92672">.</span>model_dump())
+</span></span><span style="display:flex;"><span>            messages<span style="color:#f92672">.</span>append({
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;tool&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;content&#34;</span>: result<span style="color:#f92672">.</span>content[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>text,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;tool_call_id&#34;</span>: tool_call<span style="color:#f92672">.</span>id,
+</span></span><span style="display:flex;"><span>            })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 将上面的结果再返回给 deepseek 用于生产最终的结果</span>
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>client<span style="color:#f92672">.</span>chat<span style="color:#f92672">.</span>completions<span style="color:#f92672">.</span>create(
+</span></span><span style="display:flex;"><span>                model<span style="color:#f92672">=</span>os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#34;OPENAI_MODEL&#34;</span>),
+</span></span><span style="display:flex;"><span>                messages<span style="color:#f92672">=</span>messages,
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> response<span style="color:#f92672">.</span>choices[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>message<span style="color:#f92672">.</span>content
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> content<span style="color:#f92672">.</span>message<span style="color:#f92672">.</span>content
+</span></span></code></pre></div><p>接着，我们来实现循环提问和最后退出后关闭session的操作。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">chat_loop</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>                query <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">Query: &#34;</span>)<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> query<span style="color:#f92672">.</span>lower() <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;quit&#39;</span>:
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                response <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> self<span style="color:#f92672">.</span>process_query(query)
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span> response)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">import</span> traceback
+</span></span><span style="display:flex;"><span>                traceback<span style="color:#f92672">.</span>print_exc()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">cleanup</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;Clean up resources&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> self<span style="color:#f92672">.</span>exit_stack<span style="color:#f92672">.</span>aclose()
+</span></span></code></pre></div><p>最后，我们来完成运行这个客户端相关的代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    client <span style="color:#f92672">=</span> MCPClient()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>connect_to_server()
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>chat_loop()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">finally</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>cleanup()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> sys
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    asyncio<span style="color:#f92672">.</span>run(main())
+</span></span></code></pre></div><p>这是一个最精简的代码，里面没有实现记录上下文消息等功能，只是为了用最简单的代码来了解如何通过大语言模型来调动 MCP 服务器。这里只演示了如何连接单服务器，如果你期望连接多个 MCP 服务器，无非就是循环一下 <code>connect_to_server</code> 中的代码，可以将他们封装成一个类，然后将所有的 MCP 服务器中的工具循环遍历生成一个大的 <code>available_tools</code>，然后在通过大语言模型的返回结果进行调用即可，这里就不再赘述了。</p>
+<blockquote>
+<p>可以参考官方案例：https://github.com/modelcontextprotocol/python-sdk/blob/main/examples/clients/simple-chatbot/mcp_simple_chatbot/main.py</p>
+</blockquote>
+<h2 id="sampling-讲解">Sampling 讲解</h2>
+<p>MCP 还为我们提供了一个 <code>Sampling</code> 的功能，这个如果从字面来理解会让人摸不到头脑，但实际上这个功能就给了我们一个在执行工具的前后的接口，我们可以在工具执行前后来执行一些操作。比如，当调用本地文件的删除的工具的时候，肯定是期望我们确认后再进行删除。那么，此时就可以使用这个功能。</p>
+<p>下面我们就来实现这个人工监督的小功能。</p>
+<p>首先，我们来创建个模拟拥有删除文件的 MCP 服务器：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 服务端</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.server <span style="color:#f92672">import</span> FastMCP
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.types <span style="color:#f92672">import</span> SamplingMessage, TextContent
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app <span style="color:#f92672">=</span> FastMCP(<span style="color:#e6db74">&#39;file_server&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.tool</span>()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">delete_file</span>(file_path: str):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 创建 SamplingMessage 用于触发 sampling callback 函数</span>
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> app<span style="color:#f92672">.</span>get_context()<span style="color:#f92672">.</span>session<span style="color:#f92672">.</span>create_message(
+</span></span><span style="display:flex;"><span>        messages<span style="color:#f92672">=</span>[
+</span></span><span style="display:flex;"><span>            SamplingMessage(
+</span></span><span style="display:flex;"><span>                role<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;user&#39;</span>, content<span style="color:#f92672">=</span>TextContent(
+</span></span><span style="display:flex;"><span>                    type<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;text&#39;</span>, text<span style="color:#f92672">=</span><span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;是否要删除文件: </span><span style="color:#e6db74">{</span>file_path<span style="color:#e6db74">}</span><span style="color:#e6db74"> (Y)&#39;</span>)
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>        ],
+</span></span><span style="display:flex;"><span>        max_tokens<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 获取到 sampling callback 函数的返回值，并根据返回值进行处理</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> result<span style="color:#f92672">.</span>content<span style="color:#f92672">.</span>text <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Y&#39;</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;文件 </span><span style="color:#e6db74">{</span>file_path<span style="color:#e6db74">}</span><span style="color:#e6db74"> 已被删除！！&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    app<span style="color:#f92672">.</span>run(transport<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;stdio&#39;</span>)
+</span></span></code></pre></div><p>这里最重要的就是需要通过<code>create_message</code>方法来创建一个 <code>SamplingMessage</code> 类型的 message，他会将这个 message 发送给 sampling callback 对应的函数中。</p>
+<p>接着，我们来创建客户端的代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 客户端</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> asyncio
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.client.stdio <span style="color:#f92672">import</span> stdio_client
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp <span style="color:#f92672">import</span> ClientSession, StdioServerParameters
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.shared.context <span style="color:#f92672">import</span> RequestContext
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.types <span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>    TextContent,
+</span></span><span style="display:flex;"><span>    CreateMessageRequestParams,
+</span></span><span style="display:flex;"><span>    CreateMessageResult,
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server_params <span style="color:#f92672">=</span> StdioServerParameters(
+</span></span><span style="display:flex;"><span>    command<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;uv&#39;</span>,
+</span></span><span style="display:flex;"><span>    args<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;run&#39;</span>, <span style="color:#e6db74">&#39;file_server.py&#39;</span>],
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sampling_callback</span>(
+</span></span><span style="display:flex;"><span>        context: RequestContext[ClientSession, <span style="color:#66d9ef">None</span>],
+</span></span><span style="display:flex;"><span>        params: CreateMessageRequestParams,
+</span></span><span style="display:flex;"><span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 获取工具发送的消息并显示给用户</span>
+</span></span><span style="display:flex;"><span>    input_message <span style="color:#f92672">=</span> input(params<span style="color:#f92672">.</span>messages[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>content<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 将用户输入发送回工具</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> CreateMessageResult(
+</span></span><span style="display:flex;"><span>        role<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;user&#39;</span>,
+</span></span><span style="display:flex;"><span>        content<span style="color:#f92672">=</span>TextContent(
+</span></span><span style="display:flex;"><span>            type<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;text&#39;</span>,
+</span></span><span style="display:flex;"><span>            text<span style="color:#f92672">=</span>input_message<span style="color:#f92672">.</span>strip()<span style="color:#f92672">.</span>upper() <span style="color:#f92672">or</span> <span style="color:#e6db74">&#39;Y&#39;</span>
+</span></span><span style="display:flex;"><span>        ),
+</span></span><span style="display:flex;"><span>        model<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;user-input&#39;</span>,
+</span></span><span style="display:flex;"><span>        stopReason<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;endTurn&#39;</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> stdio_client(server_params) <span style="color:#66d9ef">as</span> (stdio, write):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> ClientSession(
+</span></span><span style="display:flex;"><span>                stdio, write,
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># 设置 sampling_callback 对应的方法</span>
+</span></span><span style="display:flex;"><span>                sampling_callback<span style="color:#f92672">=</span>sampling_callback
+</span></span><span style="display:flex;"><span>        ) <span style="color:#66d9ef">as</span> session:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>initialize()
+</span></span><span style="display:flex;"><span>            res <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>call_tool(
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;delete_file&#39;</span>,
+</span></span><span style="display:flex;"><span>                {<span style="color:#e6db74">&#39;file_path&#39;</span>: <span style="color:#e6db74">&#39;C:/xxx.txt&#39;</span>}
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 获取工具最后执行完的返回结果</span>
+</span></span><span style="display:flex;"><span>            print(res)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    asyncio<span style="color:#f92672">.</span>run(main())
+</span></span></code></pre></div><p>特别要注意的是，目前在工具里面打印的内容实际上使用 <code>stdio_client</code> 是无法显示到命令行窗口的。所以，我们调试的话，可以使用 <code>mcp.shared.memory.create_connected_server_and_client_session</code>。</p>
+<p>具体代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 客户端</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.shared.memory <span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>    create_connected_server_and_client_session <span style="color:#66d9ef">as</span> create_session
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 这里需要引入服务端的 app 对象</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> file_server <span style="color:#f92672">import</span> app
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sampling_callback</span>(context, params):
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> create_session(
+</span></span><span style="display:flex;"><span>        app<span style="color:#f92672">.</span>_mcp_server,
+</span></span><span style="display:flex;"><span>        sampling_callback<span style="color:#f92672">=</span>sampling_callback
+</span></span><span style="display:flex;"><span>    ) <span style="color:#66d9ef">as</span> client_session:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> client_session<span style="color:#f92672">.</span>call_tool(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;delete_file&#39;</span>, 
+</span></span><span style="display:flex;"><span>            {<span style="color:#e6db74">&#39;file_path&#39;</span>: <span style="color:#e6db74">&#39;C:/xxx.txt&#39;</span>}
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    asyncio<span style="color:#f92672">.</span>run(main())
+</span></span></code></pre></div><h2 id="claude-desktop-加载-mcp-server">Claude Desktop 加载 MCP Server</h2>
+<p>因为后面的两个功能实际上都是为了提供给 Claude 桌面端用的，所以这里先说下如何加载我们自定义的 MCP Server 到 Claude 桌面端。</p>
+<p>首先，我们先打开配置。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250227221154638.png" alt="image-20250227221154638"></p>
+<p>我们点击 <code>Developer</code> 菜单，然后点击 <code>Edit Config</code> 按钮打开 Claude 桌面端的配置文件 <code>claude_desktop_config.json</code></p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250227221302174.png" alt="image-20250227221302174"></p>
+<p>然后开始添加我们的服务器，服务器需要在 <code>mcpServers</code> 层级下，参数有 <code>command</code>、<code>args</code>、<code>env</code>。实际上，参数和 <code>StdioServerParameters</code> 对象初始化时候的参数是一样的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;mcpServers&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;web-search-server&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;command&#34;</span>: <span style="color:#e6db74">&#34;uv&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;args&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;--directory&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;D:/projects/mcp_getting_started&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;run&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;web_search.py&#34;</span>
+</span></span><span style="display:flex;"><span>      ]
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>最后，我们保存文件后重启 Claude 桌面端就可以在这里看到我们的插件了。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250227221911231.png" alt="image-20250227221911231"></p>
+<p>当然，我们也可以直接在我们插件的目录下运行以下命令来直接安装：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mcp install web_search.py
+</span></span></code></pre></div><h2 id="其他功能">其他功能</h2>
+<h3 id="prompt">Prompt</h3>
+<p>MCP 还为我们提供了一个生成 Prompt 模板的功能。他使用起来也很简单，只需要使用 <code>prompt</code> 装饰器装饰一下即可，代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.server <span style="color:#f92672">import</span> FastMCP
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app <span style="color:#f92672">=</span> FastMCP(<span style="color:#e6db74">&#39;prompt_and_resources&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.prompt</span>(<span style="color:#e6db74">&#39;翻译专家&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">translate_expert</span>(
+</span></span><span style="display:flex;"><span>        target_language: str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Chinese&#39;</span>,
+</span></span><span style="display:flex;"><span>) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;你是一个翻译专家，擅长将任何语言翻译成</span><span style="color:#e6db74">{</span>target_language<span style="color:#e6db74">}</span><span style="color:#e6db74">。请翻译以下内容：&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    app<span style="color:#f92672">.</span>run(transport<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;stdio&#39;</span>)
+</span></span></code></pre></div><p>然后我们用上一节讲到的配置 Claude 桌面端 MCP 服务器的方法添加下我们的新 MCP 服务器。然后我们就可以点击右下角的图标开始使用啦。</p>
+<p>他会让我们设置一下我们传入的参数，然后他会在我们的聊天窗口上生成一个附件。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/mcp001-1740666812436-2.gif" alt="mcp001"></p>
+<h3 id="resource">Resource</h3>
+<p>我们还可以在 Claude 客户端上选择我们为用户提供的预设资源，同时也支持自定义的协议。具体代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.server <span style="color:#f92672">import</span> FastMCP
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app <span style="color:#f92672">=</span> FastMCP(<span style="color:#e6db74">&#39;prompt_and_resources&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.resource</span>(<span style="color:#e6db74">&#39;echo://static&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">echo_resource</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 返回的是，当用户使用这个资源时，资源的内容</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;Echo!&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.resource</span>(<span style="color:#e6db74">&#39;greeting://</span><span style="color:#e6db74">{name}</span><span style="color:#e6db74">&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_greeting</span>(name):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Hello, </span><span style="color:#e6db74">{</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74">!&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    app<span style="color:#f92672">.</span>run(transport<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;stdio&#39;</span>)
+</span></span></code></pre></div><p>然后，我们到 Claude 桌面端上看看。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/mcp002.gif" alt="mcp002"></p>
+<p>这里要特别注意的是，目前 Claude 桌面端是没法读到资源装饰器设置 <code>greeting://{name}</code> 这种通配符的路径，未来将会被支持。但是，在我们的客户端代码中是可以当做资源模板来使用的，具体代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> asyncio
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> pydantic <span style="color:#f92672">import</span> AnyUrl
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.client.stdio <span style="color:#f92672">import</span> stdio_client
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp <span style="color:#f92672">import</span> ClientSession, StdioServerParameters
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server_params <span style="color:#f92672">=</span> StdioServerParameters(
+</span></span><span style="display:flex;"><span>    command<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;uv&#39;</span>,
+</span></span><span style="display:flex;"><span>    args<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;run&#39;</span>, <span style="color:#e6db74">&#39;prompt_and_resources.py&#39;</span>],
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> stdio_client(server_params) <span style="color:#66d9ef">as</span> (stdio, write):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> ClientSession(stdio, write) <span style="color:#66d9ef">as</span> session:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>initialize()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 获取无通配符的资源列表</span>
+</span></span><span style="display:flex;"><span>            res <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>list_resources()
+</span></span><span style="display:flex;"><span>            print(res)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 获取有通配符的资源列表(资源模板)</span>
+</span></span><span style="display:flex;"><span>            res <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>list_resource_templates()
+</span></span><span style="display:flex;"><span>            print(res)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 读取资源，会匹配通配符</span>
+</span></span><span style="display:flex;"><span>            res <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>read_resource(AnyUrl(<span style="color:#e6db74">&#39;greeting://liming&#39;</span>))
+</span></span><span style="display:flex;"><span>            print(res)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 获取 Prompt 模板列表</span>
+</span></span><span style="display:flex;"><span>            res <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>list_prompts()
+</span></span><span style="display:flex;"><span>            print(res)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 使用 Prompt 模板</span>
+</span></span><span style="display:flex;"><span>            res <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>get_prompt(
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;翻译专家&#39;</span>, arguments<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;target_language&#39;</span>: <span style="color:#e6db74">&#39;英语&#39;</span>})
+</span></span><span style="display:flex;"><span>            print(res)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    asyncio<span style="color:#f92672">.</span>run(main())
+</span></span></code></pre></div><h3 id="生命周期">生命周期</h3>
+<p>MCP 生命周期分为3个阶段：</p>
+<ul>
+<li>初始化</li>
+<li>交互通信中</li>
+<li>服务被关闭</li>
+</ul>
+<p>因此，我们可以在这个三个阶段的开始和结束来做一些事情，比如创建数据库连接和关闭数据库连接、记录日志、记录工具使用信息等。</p>
+<p>下面我们将以网页搜索工具，把工具调用时的查询和查询到的结果存储到一个全局上下文中作为缓存为例，来看看生命周期如何使用。完整代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> httpx
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> dataclasses <span style="color:#f92672">import</span> dataclass
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> contextlib <span style="color:#f92672">import</span> asynccontextmanager
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.server <span style="color:#f92672">import</span> FastMCP
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.server.fastmcp <span style="color:#f92672">import</span> Context
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@dataclass</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 初始化一个生命周期上下文对象</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AppContext</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 里面有一个字段用于存储请求历史</span>
+</span></span><span style="display:flex;"><span>    histories: dict
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@asynccontextmanager</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">app_lifespan</span>(server):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 在 MCP 初始化时执行</span>
+</span></span><span style="display:flex;"><span>    histories <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 每次通信会把这个上下文通过参数传入工具</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">yield</span> AppContext(histories<span style="color:#f92672">=</span>histories)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">finally</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 当 MCP 服务关闭时执行</span>
+</span></span><span style="display:flex;"><span>        print(histories)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app <span style="color:#f92672">=</span> FastMCP(
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;web-search&#39;</span>, 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 设置生命周期监听函数</span>
+</span></span><span style="display:flex;"><span>    lifespan<span style="color:#f92672">=</span>app_lifespan
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.tool</span>()
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 第一个参数会被传入上下文对象</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">web_search</span>(ctx: Context, query: str) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    搜索互联网内容
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Args:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        query: 要搜索内容
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Returns:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        搜索结果的总结
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 如果之前问过同样的问题，就直接返回缓存</span>
+</span></span><span style="display:flex;"><span>    histories <span style="color:#f92672">=</span> ctx<span style="color:#f92672">.</span>request_context<span style="color:#f92672">.</span>lifespan_context<span style="color:#f92672">.</span>histories
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> query <span style="color:#f92672">in</span> histories<span style="color:#960050;background-color:#1e0010">：</span>
+</span></span><span style="display:flex;"><span>    	<span style="color:#66d9ef">return</span> histories[query]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> httpx<span style="color:#f92672">.</span>AsyncClient() <span style="color:#66d9ef">as</span> client:
+</span></span><span style="display:flex;"><span>        response <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>post(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;https://open.bigmodel.cn/api/paas/v4/tools&#39;</span>,
+</span></span><span style="display:flex;"><span>            headers<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;Authorization&#39;</span>: <span style="color:#e6db74">&#39;YOUR API KEY&#39;</span>},
+</span></span><span style="display:flex;"><span>            json<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;tool&#39;</span>: <span style="color:#e6db74">&#39;web-search-pro&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;messages&#39;</span>: [
+</span></span><span style="display:flex;"><span>                    {<span style="color:#e6db74">&#39;role&#39;</span>: <span style="color:#e6db74">&#39;user&#39;</span>, <span style="color:#e6db74">&#39;content&#39;</span>: query}
+</span></span><span style="display:flex;"><span>                ],
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;stream&#39;</span>: <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        res_data <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> choice <span style="color:#f92672">in</span> response<span style="color:#f92672">.</span>json()[<span style="color:#e6db74">&#39;choices&#39;</span>]:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> message <span style="color:#f92672">in</span> choice[<span style="color:#e6db74">&#39;message&#39;</span>][<span style="color:#e6db74">&#39;tool_calls&#39;</span>]:
+</span></span><span style="display:flex;"><span>                search_results <span style="color:#f92672">=</span> message<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;search_result&#39;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> search_results:
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> result <span style="color:#f92672">in</span> search_results:
+</span></span><span style="display:flex;"><span>                    res_data<span style="color:#f92672">.</span>append(result[<span style="color:#e6db74">&#39;content&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        return_data <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n\n\n</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>join(res_data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 将查询值和返回值存入到 histories 中</span>
+</span></span><span style="display:flex;"><span>        ctx<span style="color:#f92672">.</span>request_context<span style="color:#f92672">.</span>lifespan_context<span style="color:#f92672">.</span>histories[query] <span style="color:#f92672">=</span> return_data
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> return_data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    app<span style="color:#f92672">.</span>run()
+</span></span></code></pre></div><h2 id="在-langchain-中使用-mcp-服务器">在 LangChain 中使用 MCP 服务器</h2>
+<p>最近 LangChain 发布了一个新的开源项目 <code>langchain-mcp-adapters</code>，可以很方便的将 MCP 服务器集成到 LangChain 中。下面我们来看看如何使用它:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp <span style="color:#f92672">import</span> ClientSession, StdioServerParameters
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.client.stdio <span style="color:#f92672">import</span> stdio_client
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> langchain_mcp_adapters.tools <span style="color:#f92672">import</span> load_mcp_tools
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> langgraph.prebuilt <span style="color:#f92672">import</span> create_react_agent
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> langchain_openai <span style="color:#f92672">import</span> ChatOpenAI
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> ChatOpenAI(model<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;gpt-4o&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>server_params <span style="color:#f92672">=</span> StdioServerParameters(
+</span></span><span style="display:flex;"><span>    command<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;uv&#39;</span>,
+</span></span><span style="display:flex;"><span>    args<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;run&#39;</span>, <span style="color:#e6db74">&#39;web_search.py&#39;</span>],
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> stdio_client(server_params) <span style="color:#66d9ef">as</span> (read, write):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> ClientSession(read, write) <span style="color:#66d9ef">as</span> session:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>initialize()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 获取工具列表</span>
+</span></span><span style="display:flex;"><span>        tools <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> load_mcp_tools(session)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 创建并使用 ReAct agent</span>
+</span></span><span style="display:flex;"><span>        agent <span style="color:#f92672">=</span> create_react_agent(model, tools)
+</span></span><span style="display:flex;"><span>        agent_response <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> agent<span style="color:#f92672">.</span>ainvoke({<span style="color:#e6db74">&#39;messages&#39;</span>: <span style="color:#e6db74">&#39;杭州今天天气怎么样？&#39;</span>})
+</span></span></code></pre></div><p>更详细的使用方法请参考：https://github.com/langchain-ai/langchain-mcp-adapters</p>
+<h2 id="deepseek--cline--自定义mcp--图文大师">DeepSeek + cline + 自定义MCP = 图文大师</h2>
+<p>最后，我们来使用 VsCode 的 cline 插件，来通过 DeepSeek 和我们自定义的一个图片生成的 mcp 服务器来构建一个图文大师的应用。废话不多说，我们直接开始。</p>
+<p>首先先来构建我们的图片生成的 mcp server，这里我们直接用 huggingface 上的 <code>FLUX.1-schnell</code> 模型，地址是：https://huggingface.co/spaces/black-forest-labs/FLUX.1-schnell 。这里我们不使用 <code>gradio_client</code> 库，而是会使用 <code>httpx</code> 手搓一个，因为使用 <code>gradio_client</code> 库可能会出现编码错误的bug。具体代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># image_server.py</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> httpx
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.server <span style="color:#f92672">import</span> FastMCP
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app <span style="color:#f92672">=</span> FastMCP(<span style="color:#e6db74">&#39;image_server&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.tool</span>()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">image_generation</span>(image_prompt: str):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    生成图片
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    :param image_prompt: 图片描述，需要是英文
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    :return: 图片保存到的本地路径
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> httpx<span style="color:#f92672">.</span>AsyncClient() <span style="color:#66d9ef">as</span> client:
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;data&#39;</span>: [image_prompt, <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">True</span>, <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">3</span>]}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 创建生成图片任务</span>
+</span></span><span style="display:flex;"><span>        response1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>post(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;https://black-forest-labs-flux-1-schnell.hf.space/call/infer&#39;</span>,
+</span></span><span style="display:flex;"><span>            json<span style="color:#f92672">=</span>data,
+</span></span><span style="display:flex;"><span>            headers<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;Content-Type&#34;</span>: <span style="color:#e6db74">&#34;application/json&#34;</span>}
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 解析响应获取事件 ID</span>
+</span></span><span style="display:flex;"><span>        response_data <span style="color:#f92672">=</span> response1<span style="color:#f92672">.</span>json()
+</span></span><span style="display:flex;"><span>        event_id <span style="color:#f92672">=</span> response_data<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;event_id&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> event_id:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;无法获取事件 ID&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 通过流式的方式拿到返回数据</span>
+</span></span><span style="display:flex;"><span>        url <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;https://black-forest-labs-flux-1-schnell.hf.space/call/infer/</span><span style="color:#e6db74">{</span>event_id<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>
+</span></span><span style="display:flex;"><span>        full_response <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> client<span style="color:#f92672">.</span>stream(<span style="color:#e6db74">&#39;GET&#39;</span>, url) <span style="color:#66d9ef">as</span> response2:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">for</span> chunk <span style="color:#f92672">in</span> response2<span style="color:#f92672">.</span>aiter_text():
+</span></span><span style="display:flex;"><span>                full_response <span style="color:#f92672">+=</span> chunk
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> json<span style="color:#f92672">.</span>loads(full_response<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;data: &#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])[<span style="color:#ae81ff">0</span>][<span style="color:#e6db74">&#39;url&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    app<span style="color:#f92672">.</span>run(transport<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;stdio&#39;</span>)
+</span></span></code></pre></div><p>然后我们可以在虚拟环境下使用下面的命令打开 MCP Inspector 进行调试下我们的工具。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mcp dev image_server.py
+</span></span></code></pre></div><p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250301231332749.png" alt="image-20250301231332749"></p>
+<p>接着我们在 VsCode 中安装 cline 插件，当安装完插件后，我们配置一下我们的 deepseek 的 api key。接着，我们点击右上角的 <code>MCP Server</code> 按钮打开 mcp server 列表。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250301232248034.png" alt="image-20250301232248034"></p>
+<p>然后切换到 <code>Installed</code> Tab 点击 <code>Configure MCP Servers</code> 按钮来编辑自定义的 mcp 服务器。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250301232417966.png" alt="image-20250301232417966"></p>
+<p>配置如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;mcpServers&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;image_server&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;command&#34;</span>: <span style="color:#e6db74">&#34;uv&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;args&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;--directory&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;D:/projects/mcp_getting_started&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;run&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;image_server.py&#34;</span>
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;env&#34;</span>: {},
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;disabled&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;autoApprove&#34;</span>: []
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>我们保存后，这里的这个小点是绿色的就表示我们的服务器已连接，然后我们就可以开始使用啦。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250301232809433.png" alt="image-20250301232809433"></p>
+<p>然后，我们就打开输入框，来输入我们的要写的文章的内容：</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250301233421292.png" alt="image-20250301233421292"></p>
+<p>我们可以看到，他正确的调用了我们的工具</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250301233726301.png" alt="image-20250301233726301"></p>
+<p>最后，就是可以看到生成的文章啦。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250301234532249.png" alt="image-20250301234532249"></p>
+<h2 id="借助-serverless-将-mcp-服务部署到云端">借助 serverless 将 MCP 服务部署到云端</h2>
+<p>上面我们讲的都是如何使用本地的 MCP 服务，但是有时我们希望直接把 MCP 服务部署到云端来直接调用，就省去了本地下载启动的烦恼了。此时，我们就需要来使用 MCP 的 SSE 的协议来实现了。</p>
+<p>此时，我们先来写 SSE 协议的 MCP 服务。实现起来很简单，只需要将我们最后的 <code>run</code> 命令中的 <code>transport</code> 参数设置为 <code>sse</code> 即可。下面还是以上面的网络搜索为例子，来实现一下 ，具体代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># sse_web_search.py</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> httpx
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.server <span style="color:#f92672">import</span> FastMCP
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app <span style="color:#f92672">=</span> FastMCP(<span style="color:#e6db74">&#39;web-search&#39;</span>, port<span style="color:#f92672">=</span><span style="color:#ae81ff">9000</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.tool</span>()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">web_search</span>(query: str) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    搜索互联网内容
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Args:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        query: 要搜索内容
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Returns:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        搜索结果的总结
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> httpx<span style="color:#f92672">.</span>AsyncClient() <span style="color:#66d9ef">as</span> client:
+</span></span><span style="display:flex;"><span>        response <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> client<span style="color:#f92672">.</span>post(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;https://open.bigmodel.cn/api/paas/v4/tools&#39;</span>,
+</span></span><span style="display:flex;"><span>            headers<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;Authorization&#39;</span>: <span style="color:#e6db74">&#39;YOUR API KEY&#39;</span>},
+</span></span><span style="display:flex;"><span>            json<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;tool&#39;</span>: <span style="color:#e6db74">&#39;web-search-pro&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;messages&#39;</span>: [
+</span></span><span style="display:flex;"><span>                    {<span style="color:#e6db74">&#39;role&#39;</span>: <span style="color:#e6db74">&#39;user&#39;</span>, <span style="color:#e6db74">&#39;content&#39;</span>: query}
+</span></span><span style="display:flex;"><span>                ],
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#39;stream&#39;</span>: <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        res_data <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> choice <span style="color:#f92672">in</span> response<span style="color:#f92672">.</span>json()[<span style="color:#e6db74">&#39;choices&#39;</span>]:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> message <span style="color:#f92672">in</span> choice[<span style="color:#e6db74">&#39;message&#39;</span>][<span style="color:#e6db74">&#39;tool_calls&#39;</span>]:
+</span></span><span style="display:flex;"><span>                search_results <span style="color:#f92672">=</span> message<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;search_result&#39;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> search_results:
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> result <span style="color:#f92672">in</span> search_results:
+</span></span><span style="display:flex;"><span>                    res_data<span style="color:#f92672">.</span>append(result[<span style="color:#e6db74">&#39;content&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n\n\n</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>join(res_data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    app<span style="color:#f92672">.</span>run(transport<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sse&#39;</span>)
+</span></span></code></pre></div><p>在 <code>FastMCP</code> 中，有几个可以设置 SSE 协议相关的参数：</p>
+<ul>
+<li>host: 服务地址，默认为 <code>0.0.0.0</code></li>
+<li>port: 服务端口，默认为 8000。上述代码中，我设置为 <code>9000</code></li>
+<li>sse_path：sse 的路由，默认为 <code>/sse</code></li>
+</ul>
+<p>此时，我们就可以直接写一个客户端的代码来进行测试了。具体代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> asyncio
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.client.sse <span style="color:#f92672">import</span> sse_client
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp <span style="color:#f92672">import</span> ClientSession
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> sse_client(<span style="color:#e6db74">&#39;http://localhost:9000/sse&#39;</span>) <span style="color:#66d9ef">as</span> streams:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> ClientSession(<span style="color:#f92672">*</span>streams) <span style="color:#66d9ef">as</span> session:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>initialize()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            res <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>call_tool(<span style="color:#e6db74">&#39;web_search&#39;</span>, {<span style="color:#e6db74">&#39;query&#39;</span>: <span style="color:#e6db74">&#39;杭州今天天气&#39;</span>})
+</span></span><span style="display:flex;"><span>            print(res)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    asyncio<span style="color:#f92672">.</span>run(main())
+</span></span></code></pre></div><p>我们可以看到，他正常工作了，并搜索到了内容：</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406152518223.png" alt="image-20250406152518223"></p>
+<p>当然，我们也可以使用 <code>mcp dev sse_web_search.py</code> 的方式来测试。这里要注意的是，<code>Transport Type</code> 需要改成 <code>SSE</code>，然后下面填写我们的本地服务地址。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406153106098.png" alt="image-20250406153106098"></p>
+<p>当一切都测试没有问题后，我们就来将他通过 severless 的方式来部署到云端。这里我们选择的是阿里云的函数计算服务。首先我们先进入到阿里云的 <code>函数计算 FC 3.0</code> 的 <code>函数</code> 菜单，并点击 <code>创建函数</code> 来创建我们的服务。地址是：https://fcnext.console.aliyun.com/cn-hangzhou/functions</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406153655185.png" alt="image-20250406153655185"></p>
+<p>我们这里选择 <code>Web函数</code> ，运行环境我们选择 <code>Python 10</code>。代码上传方式这里可以根据大家需求来，因为我这里就一个 python 文件，所以我这里就直接选择<code>使用示例代码</code>了，这样我后面直接把我的代码覆盖进去了就行了。启动命令和监听端口我这里都保留为默认(<strong>端口需要和代码中一致</strong>)。</p>
+<p>环境变量大家可以将代码中用到的 apikey 可以设置为一个环境变量，这里我就不设置了。最后设置完成截图如下：</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406154115438.png" alt="image-20250406154115438"></p>
+<p>在高级设置中，为了方便调试，我启动了日志功能。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406154228341.png" alt="image-20250406154228341"></p>
+<p>设置完成后，点创建即可。他就跳转到代码编辑部分，然后我们把之前的代码复制进去即可。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406154441634.png" alt="image-20250406154441634"></p>
+<p>完成后，我们来安装下依赖。我们点击右上角的<code>编辑层</code>。这里默认会有个默认的 flask 的层，因为开始的模板用的是 flask，这里我们就不需要了。我们删除他，再添加一个 mcp 的层。选择<code>添加官方公共层</code>，然后搜索 <code>mcp</code> 就能看到了一个 python 版的 MCP 层，里面包含了 MCP 所有用到的依赖。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406154753623.png" alt="image-20250406154753623"></p>
+<p>如果你还有其他第三方的，可以先搜索下看看公共层中是否有，没有就可以自行构建一个自定义的层。点击这里就可以，只需要提供一个 <code>requirements</code> 列表就可以了，这里就不赘述了。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406154935751.png" alt="image-20250406154935751"></p>
+<p>当我们都设置完成后，点击右下角的部署即可。</p>
+<p>然后我们又回到了我们代码编辑的页面，此时，我们再点击左上角的部署代码。稍等一两秒就会提示代码部署成功。此时，我们的 MCP 服务就被部署到了云端。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406155135563.png" alt="image-20250406155135563"></p>
+<blockquote>
+<p>20250409 更新：不知道是不是官方看到了这篇文章，现在运行时可以直接选择 <code>MCP 运行时</code> 了，就不用再在层那里手动添加 <code>MCP 层</code> 了。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250409213302652.png" alt="image-20250409213302652"></p>
+</blockquote>
+<p>然后，我们切换到<code>配置</code>的<code>触发器</code>中，就可以看到我们用来访问的 URL 地址了。当然，你也可以绑定自己的域名。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406155353662.png" alt="image-20250406155353662"></p>
+<p>然后，我们就可以用我们上面的客户端代码进行测试了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> asyncio
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp.client.sse <span style="color:#f92672">import</span> sse_client
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> mcp <span style="color:#f92672">import</span> ClientSession
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> sse_client(<span style="color:#e6db74">&#39;https://mcp-test-whhergsbso.cn-hangzhou.fcapp.run/sse&#39;</span>) <span style="color:#66d9ef">as</span> streams:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> ClientSession(<span style="color:#f92672">*</span>streams) <span style="color:#66d9ef">as</span> session:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>initialize()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            res <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> session<span style="color:#f92672">.</span>call_tool(<span style="color:#e6db74">&#39;web_search&#39;</span>, {<span style="color:#e6db74">&#39;query&#39;</span>: <span style="color:#e6db74">&#39;杭州今天天气&#39;</span>})
+</span></span><span style="display:flex;"><span>            print(res)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    asyncio<span style="color:#f92672">.</span>run(main())
+</span></span></code></pre></div><p>如果我们发现在客户端有报错也不用慌，我们可以直接在日志中找到对应出错的请求点击<code>请求日志</code>查看报错来修复。</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406155803071.png" alt="image-20250406155803071"></p>
+<p>到这里，我们的 MCP 服务就被部署到了云端，我们就可以在任何地方直接来使用它了。</p>
+<p>比如，在 <code>Cherry-Studio</code> 中，我们可以这样来设置：</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406160152782.png" alt="image-20250406160152782"></p>
+<p>在 <code>Cline</code> 中：</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406160709759.png" alt="image-20250406160709759"></p>
+<p>在 <code>Cursor</code> 中：</p>
+<p><img src="https://raw.githubusercontent.com/recordnote/cdn/main/img/image-20250406161055717.png" alt="image-20250406161055717"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;mcpServers&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;web-search&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;url&#34;</span>: <span style="color:#e6db74">&#34;https://mcp-test-whhergsbso.cn-hangzhou.fcapp.run/sse&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2025 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/ai/" title="AI">
+              AI
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是JAVA全栈工程师</p>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>
