@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Spring AI Alibaba &#43; Nacos 发布企业级 MCP 分布式部署方案 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.119.0">
+
+<link rel="canonical" href="https://recordnote.github.io/ai/spring-ai-alibaba-&#43;-nacos-%E5%8F%91%E5%B8%83%E4%BC%81%E4%B8%9A%E7%BA%A7-mcp-%E5%88%86%E5%B8%83%E5%BC%8F%E9%83%A8%E7%BD%B2%E6%96%B9%E6%A1%88/" />
+
+
+<meta property="og:title" content="Spring AI Alibaba &#43; Nacos 发布企业级 MCP 分布式部署方案" />
+<meta property="og:description" content="Spring AI 通过集成 MCP 官方的 java sdk，让 Spring Boot 开发者可以非常方便的开发自己的 MCP 服务，把自己企业内部的业务系统通过标准 MCP 形式发布为 AI Agent 能够接入的工具；另" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/ai/spring-ai-alibaba-&#43;-nacos-%E5%8F%91%E5%B8%83%E4%BC%81%E4%B8%9A%E7%BA%A7-mcp-%E5%88%86%E5%B8%83%E5%BC%8F%E9%83%A8%E7%BD%B2%E6%96%B9%E6%A1%88/" /><meta property="og:image" content="https://recordnote.github.io/img/mcp2.png" /><meta property="article:section" content="ai" />
+<meta property="article:published_time" content="2025-05-05T16:21:26+08:00" />
+<meta property="article:modified_time" content="2025-05-05T17:21:26+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/mcp2.png"/>
+
+<meta name="twitter:title" content="Spring AI Alibaba &#43; Nacos 发布企业级 MCP 分布式部署方案"/>
+<meta name="twitter:description" content="Spring AI 通过集成 MCP 官方的 java sdk，让 Spring Boot 开发者可以非常方便的开发自己的 MCP 服务，把自己企业内部的业务系统通过标准 MCP 形式发布为 AI Agent 能够接入的工具；另"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#企业级-mcp-部署需要的分布式能力">企业级 MCP 部署需要的分布式能力</a></li>
+    <li><a href="#适用业务场景">适用业务场景</a>
+      <ul>
+        <li><a href="#通过-mcp-接入存量业务系统">通过 MCP 接入存量业务系统</a></li>
+        <li><a href="#开发全新-mcp">开发全新 MCP</a></li>
+      </ul>
+    </li>
+    <li><a href="#完整开发指南">完整开发指南</a>
+      <ul>
+        <li><a href="#开发-spring-ai-alibaba-mcp-server">开发 Spring AI Alibaba MCP Server</a></li>
+        <li><a href="#开发-spring-ai-alibaba-mcp-client">开发 Spring AI Alibaba MCP Client</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">Spring AI Alibaba &#43; Nacos 发布企业级 MCP 分布式部署方案<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2025-05-05T16:21:26&#43;08:00</span>
+                
+
+              | 6 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2025-05-05T17:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=Spring%20AI%20Alibaba%20%2b%20Nacos%20%e5%8f%91%e5%b8%83%e4%bc%81%e4%b8%9a%e7%ba%a7%20MCP%20%e5%88%86%e5%b8%83%e5%bc%8f%e9%83%a8%e7%bd%b2%e6%96%b9%e6%a1%88&url=https%3a%2f%2frecordnote.github.io%2fai%2fspring-ai-alibaba-%2b-nacos-%25E5%258F%2591%25E5%25B8%2583%25E4%25BC%2581%25E4%25B8%259A%25E7%25BA%25A7-mcp-%25E5%2588%2586%25E5%25B8%2583%25E5%25BC%258F%25E9%2583%25A8%25E7%25BD%25B2%25E6%2596%25B9%25E6%25A1%2588%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fai%2fspring-ai-alibaba-%2b-nacos-%25E5%258F%2591%25E5%25B8%2583%25E4%25BC%2581%25E4%25B8%259A%25E7%25BA%25A7-mcp-%25E5%2588%2586%25E5%25B8%2583%25E5%25BC%258F%25E9%2583%25A8%25E7%25BD%25B2%25E6%2596%25B9%25E6%25A1%2588%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/mcp2.png" />
+        
+
+        <p>Spring AI 通过集成 MCP 官方的 java sdk，让 Spring Boot 开发者可以非常方便的开发自己的 MCP 服务，把自己企业内部的业务系统通过标准 MCP 形式发布为 AI Agent 能够接入的工具；另一方面，开发者也可以使用 Spring AI 开发自己的 AI Agent，去接入提供各种能力的 MCP 服务。</p>
+<p>在企业级 AI Agent 的应用与落地场景，只是能发布或者调通 MCP 服务是远远不够的，其中一个非常重要的原因就是企业级的系统部署往往都是分布式的，不论是 Agent 还是 MCP Server，作为企业内部的一个个应用，它们都是要部署在多个机器上，要支持分布式的调用（这包括流量的负载均衡、节点变更动态感知等）。这么分析起来，Agent 与 MCP 需要的分布式能力与我们熟知微服务架构基本是一致的，Spring AI MCP 只是解决了 Agent 与 MCP 服务的编码与通信协议问题，我们还需要为 MCP 服务构建起一套地址自动发现、负载均衡调用的体系，这就是 Spring AI Alibaba MCP 整体方案解决的问题，接下来我们将在这篇文章中详细展开。</p>
+<h2 id="企业级-mcp-部署需要的分布式能力">企业级 MCP 部署需要的分布式能力</h2>
+<p>市面上有很多公开可用的 MCP 服务，如生活类的高德地图、天气预报等 MCP 服务，这类服务的一个特点是他们都通过公开可访问的域名地址提供服务，因此对于消费端来说只需要配置访问地址即可使用。</p>
+<p>区别于此类公共服务，Spring AI Alibaba MCP 解决的是企业内部 MCP 服务的部署与访问架构问题，接下来我们通过一个 Agent 的开发示例，一起来看一下 Spring AI Alibaba MCP 的整体架构。</p>
+<p><img src="https://java2ai.com/img/blog/mcp-nacos/img.png" alt="Spring AI Alibaba MCP Nacos"></p>
+<p>在整个系统中，我们有一个使用 Spring AI Alibaba 开发的 MCP Server 应用，它为企业内提供机票预订的服务，该应用部署在多个实例，在实例启动过程中，Spring AI Alibaba 框架会将当前 IP 实例、工具列表等元数据注册到 Nacos，机票助手是一个基于 Spring AI Alibaba 开发的智能体应用，借助 Spring AI Alibaba 封装的分布式 MCP 能力，机票助手能够动态感知 MCP 订票系统的实例变化、工具变化，并基于内置的负载均衡策略对多个 MCP 实例节点发起调用。</p>
+<ol>
+<li>企业内部订票服务是一个独立的 MCP Server 应用，使用 Spring AI Alibaba 框架开发，具备自动注册 MCP 实例与元数据到 Nacos 注册中心的能力，目前同时兼容 Nacos2 与 Nacos3。</li>
+<li>机票助手 Agent 使用 Spring AI Alibaba 框架开发，作为 MCP Client 可以自动感知下游 MCP 服务实例的动态变化，动态感知 MCP 服务元数据的变化（如工具增加、参数更新、描述更新等），能够在保证负载均衡的情况下调用后端实例。</li>
+</ol>
+<h2 id="适用业务场景">适用业务场景</h2>
+<p>对于任何需要在企业内部构建 MCP 业务系统的开发者，都可以使用 Spring AI Alibaba MCP</p>
+<p>接下来，我们从企业现实情况出发，分析在不同场景下，应该如何发布自己的 MCP 服务，并将Agent接入 MCP 服务：</p>
+<ol>
+<li>企业内存在大量的已有微服务应用、HTTP接口，需要将这些应用或接口发布为 MCP 服务</li>
+<li>无需考虑存量应用，直接开发全新的 MCP 服务</li>
+</ol>
+<h3 id="通过-mcp-接入存量业务系统">通过 MCP 接入存量业务系统</h3>
+<p>对于存量应用或接口的接入，我们推荐使用增加代理应用的模式实现平滑接入，如下架构图所示，在存量应用和 Agent 之间部署一个新应用，这个应用主要有两个职责：</p>
+<ol>
+<li>作为 server，该应用是一个标准的 MCP server，对外发布 Agent 可以使用的 MCP Tool。</li>
+<li>作为 client，该应用负责转发 MCP 请求到后端应用，它使用 HttpClient 或 Dubbo 消费后端的存量应用。</li>
+</ol>
+<p><img src="https://java2ai.com/img/blog/mcp-nacos/saa-mcp-proxy.png" alt="Spring AI Alibaba MCP Nacos"></p>
+<p>以下是一个代码片段，展示如何在新开发的 MCP Server 应用中定义 MCP 服务并代理转发到后端微服务（rest 或 dubbo）：</p>
+<pre tabindex="0"><code>@Bean@LoadBalancedpublic RestTemplate restTemplate() {    return new RestTemplate();}
+// ......
+@Autowiredprivate RestTemplate restTemplate;
+@Tool(description = &#34;获取指定订单号的订单详情&#34;)public Order getAirQuality(@ToolParam(description = &#34;订单号&#34;) String orderId) {   return restTemplate.getForObject(&#34;http://order-service/order?id&#34; + orderId, Order.class)}
+</code></pre><p>其中，<code>restTemplate</code>基于 Spring Cloud Alibaba 的服务发现能力，可以动态发现后端 <code>order-service</code>服务与实例地址。而<code>@Tool</code>和<code>@ToolParam</code>注解将发布为可被 Agent 使用的 MCP 工具。</p>
+<h3 id="开发全新-mcp">开发全新 MCP</h3>
+<p>如果您不需要考虑存量的应用或服务，则整体会更简单，只需要使用 Spring AI Alibaba MCP 开发一个 MCP server，并将业务逻辑发布为 MCP tool 就可以了。</p>
+<p>以下是使用 Spring AI Alibaba 开发的整体架构图：</p>
+<p><img src="https://java2ai.com/img/blog/mcp-nacos/img_1.png" alt="Spring AI Alibaba MCP Nacos"></p>
+<h2 id="完整开发指南">完整开发指南</h2>
+<p>以下示例完整源码地址：https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-mcp-example/starter-example</p>
+<p>首先，您需要安装部署 Nacos，访问 Nacos Server 控制台，创建 MCP 服务专属的命名空间 <code>nacos-default-mcp</code>。</p>
+<p><img src="https://java2ai.com/img/blog/mcp-nacos/img_2.png" alt="Spring AI Alibaba MCP Nacos"></p>
+<p>注册 <code>nacos-default-mcp</code> 命名空间后，记住命名空间 ID：9ba5f1aa-b37d-493b-9057-72918a40ef35</p>
+<h3 id="开发-spring-ai-alibaba-mcp-server">开发 Spring AI Alibaba MCP Server</h3>
+<h5 id="pomxml-文件">pom.xml 文件</h5>
+<p>添加如下<code>spring-ai-alibaba-starter-nacos-mcp-server</code>关键 starter 依赖到项目中：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;properties&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;spring-ai.version&gt;</span>1.0.0<span style="color:#f92672">&lt;/spring-ai.version&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ai-alibaba.version&gt;</span>1.0.0.2<span style="color:#f92672">&lt;/ai-alibaba.version&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/properties&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>com.alibaba.cloud.ai<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-ai-alibaba-starter-nacos-mcp-server<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;version&gt;</span>${ai-alibaba.version}<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span></code></pre></div><h5 id="修改-applicationyml-文件">修改 <code>application.yml</code> 文件</h5>
+<p>在 <code>application.yml</code> 文件中，增加 Nacos 地址配置，这样应用就可以连接到 Nacos Server 并实现 MCP 地址与元数据自动注册。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">server</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">port</span>: <span style="color:#ae81ff">${SERVER_PORT:19000}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">application</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">mcp-server-provider</span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">main</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">banner-mode</span>: <span style="color:#66d9ef">off</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ai</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">mcp</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">server</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">mcp-server-provider</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">version</span>: <span style="color:#ae81ff">1.0.1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">sse-message-endpoint</span>: <span style="color:#ae81ff">/mcp/messages_</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">type</span>: <span style="color:#ae81ff">SYNC</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">alibaba</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">mcp</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">nacos</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">server-addr</span>: <span style="color:#ae81ff">127.0.0.1</span>:<span style="color:#ae81ff">8848</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">username</span>: <span style="color:#ae81ff">nacos</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">password</span>: <span style="color:#ae81ff">nacos</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">registry</span>:
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">service-namespace</span>: <span style="color:#ae81ff">9ba5f1aa-b37d-493b-9057-72918a40ef35</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">_# 调试日志_</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">logging</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">level</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">io</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">modelcontextprotocol</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">client</span>: <span style="color:#ae81ff">DEBUG</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">spec</span>: <span style="color:#ae81ff">DEBUG</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">server</span>: <span style="color:#ae81ff">DEBUG</span>
+</span></span></code></pre></div><p>这里注意两个配置：</p>
+<ol>
+<li>MCP Server 的服务名称：mcp-server-provider</li>
+<li>MCP 的命名空间 ID：9ba5f1aa-b37d-493b-9057-72918a40ef35</li>
+</ol>
+<h5 id="效果演示">效果演示</h5>
+<p>打开 Nacos 控制台，可以看到 MCP Server 自动注册服务与实例信息。</p>
+<p><img src="https://java2ai.com/img/blog/mcp-nacos/img_3.png" alt="Spring AI Alibaba MCP Nacos"></p>
+<p>打开 Nacos 控制台，可以查看 MCP Server 自动注册上来的元数据信息</p>
+<p><img src="https://java2ai.com/img/blog/mcp-nacos/img_4.png" alt="Spring AI Alibaba MCP Nacos"></p>
+<h3 id="开发-spring-ai-alibaba-mcp-client">开发 Spring AI Alibaba MCP Client</h3>
+<h5 id="pomxml-文件-1">pom.xml 文件</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;properties&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;spring-ai.version&gt;</span>1.0.0<span style="color:#f92672">&lt;/spring-ai.version&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;ai-alibaba.version&gt;</span>1.0.0.2<span style="color:#f92672">&lt;/ai-alibaba.version&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/properties&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;dependencies&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;groupId&gt;</span>com.alibaba.cloud.ai<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;artifactId&gt;</span>spring-ai-alibaba-starter-nacos-mcp-client<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;version&gt;</span>${ai-alibaba.version}<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependencies&gt;</span>
+</span></span></code></pre></div><p>这里需要在应用中新增引入 <code>spring-ai-alibaba-starter-nacos-mcp-client</code> 依赖。</p>
+<h5 id="applicationyml-文件">application.yml 文件</h5>
+<p>在 <code>application.yml</code> 文件中，增加 Nacos 地址配置，这样应用就可以连接到 Nacos Server 并实现 MCP 地址与元数据自动发现。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">server</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8080</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">application</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">mcp-client-webflux</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ai</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">openai</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">api-key</span>: <span style="color:#ae81ff">${DASHSCOPE_API_KEY}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">base-url</span>: <span style="color:#ae81ff">https://dashscope.aliyuncs.com/compatible-mode</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">chat</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">options</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">model</span>: <span style="color:#ae81ff">qwen-max</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">alibaba</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">mcp</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">nacos</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">service-namespace</span>: <span style="color:#ae81ff">9ba5f1aa-b37d-493b-9057-72918a40ef35</span> <span style="color:#75715e"># nacos的命名空间ID</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">server-addr</span>: <span style="color:#ae81ff">127.0.0.1</span>:<span style="color:#ae81ff">8848</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">username</span>: <span style="color:#ae81ff">nacos</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">password</span>: <span style="color:#ae81ff">nacos</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">client</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">sse</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">connections</span>:
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">server1</span>: <span style="color:#ae81ff">mcp-server-provider</span> <span style="color:#75715e"># 对应的MCP Server服务名</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">mcp</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">client</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">mcp-client-webflux</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">version</span>: <span style="color:#ae81ff">0.0.1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">initialized</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">request-timeout</span>: <span style="color:#ae81ff">600s</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">nacos-enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">type</span>: <span style="color:#ae81ff">sync</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">toolcallback</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">root-change-notification</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 调试日志</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">logging</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">level</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">io</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">modelcontextprotocol</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">client</span>: <span style="color:#ae81ff">DEBUG</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">spec</span>: <span style="color:#ae81ff">DEBUG</span>
+</span></span></code></pre></div><p>请注意，我们需要在配置中指定要连接的 MCP 服务，这样 Client 将只订阅该服务相关地址与元数据的更新</p>
+<pre tabindex="0"><code>  client:
+
+    sse:
+
+      connections:
+
+        server1: mcp-server-provider # 对应的MCP Server服务名
+</code></pre><h5 id="使用方式">使用方式</h5>
+<p>MCP Client 注入</p>
+<pre tabindex="0"><code>@Autowiredprivate List&lt;LoadbalancedMcpSyncClient&gt; mcpClients;  // For sync client
+// OR
+@Autowiredprivate List&lt;LoadbalancedMcpAsyncClient&gt; mcpClients;  // For async client
+</code></pre><p>ToolCallbackProvider 注入</p>
+<pre tabindex="0"><code># sync类型，Bean名称为&#34;loadbalancedSyncMcpToolCallbacks&#34;@Autowiredprivate LoadbalancedSyncMcpToolCallbackProvider toolCallbackProvider;ToolCallback[] toolCallbacks = toolCallbackProvider.getToolCallbacks();
+// OR
+# Async类型，Bean名称为&#34;loadbalancedMcpAsyncToolCallbacks&#34;@Autowiredprivate LoadbalancedAsyncMcpToolCallbackProvider toolCallbackProvider;ToolCallback[] toolCallbacks = toolCallbackProvider.getToolCallbacks();
+</code></pre><h5 id="效果演示-1">效果演示</h5>
+<p>MCP Client 注入</p>
+<p><img src="https://java2ai.com/img/blog/mcp-nacos/img_5.png" alt="Spring AI Alibaba MCP Nacos"></p>
+<p>ToolCallbackProvider 注入</p>
+<p><img src="https://java2ai.com/img/blog/mcp-nacos/img_6.png" alt="Spring AI Alibaba MCP Nacos"></p>
+<h2 id="总结">总结</h2>
+<p>Spring AI Alibaba MCP 联合 Nacos，解决了企业级 AI Agent 的应用与落地场景中 MCP 分布式部署与动态更新的关键问题，其中包括流量的负载均衡、节点变更动态感知等关键解决方案。</p>
+<ol>
+<li>查看完整示例源码：<a href="https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-mcp-example">spring-ai-alibaba-mcp-example</a></li>
+<li>Github 项目仓库：https://github.com/alibaba/spring-ai-alibaba</li>
+</ol>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2025 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/ai/" title="AI">
+              AI
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是JAVA全栈工程师</p>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>
