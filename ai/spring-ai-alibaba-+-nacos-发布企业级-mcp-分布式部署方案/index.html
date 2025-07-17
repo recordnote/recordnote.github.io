@@ -68,7 +68,7 @@
     
 
     
-    background-image: url(/me/background.jpg);
+    background-image: url(/me/background1.jpg);
     
   }
   
@@ -80,7 +80,7 @@
     
 
     
-    background-image: url(/me/background.jpg);
+    background-image: url(/me/background1.jpg);
     
   }
   
@@ -409,14 +409,14 @@
         server1: mcp-server-provider # 对应的MCP Server服务名
 </code></pre><h5 id="使用方式">使用方式</h5>
 <p>MCP Client 注入</p>
-<pre tabindex="0"><code>@Autowiredprivate List&lt;LoadbalancedMcpSyncClient&gt; mcpClients;  // For sync client
-// OR
-@Autowiredprivate List&lt;LoadbalancedMcpAsyncClient&gt; mcpClients;  // For async client
-</code></pre><p>ToolCallbackProvider 注入</p>
-<pre tabindex="0"><code># sync类型，Bean名称为&#34;loadbalancedSyncMcpToolCallbacks&#34;@Autowiredprivate LoadbalancedSyncMcpToolCallbackProvider toolCallbackProvider;ToolCallback[] toolCallbacks = toolCallbackProvider.getToolCallbacks();
-// OR
-# Async类型，Bean名称为&#34;loadbalancedMcpAsyncToolCallbacks&#34;@Autowiredprivate LoadbalancedAsyncMcpToolCallbackProvider toolCallbackProvider;ToolCallback[] toolCallbacks = toolCallbackProvider.getToolCallbacks();
-</code></pre><h5 id="效果演示-1">效果演示</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Autowiredprivate</span> List<span style="color:#f92672">&lt;</span>LoadbalancedMcpSyncClient<span style="color:#f92672">&gt;</span> mcpClients<span style="color:#f92672">;</span>  <span style="color:#75715e">// For sync client
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// OR
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Autowiredprivate</span> List<span style="color:#f92672">&lt;</span>LoadbalancedMcpAsyncClient<span style="color:#f92672">&gt;</span> mcpClients<span style="color:#f92672">;</span>  <span style="color:#75715e">// For async client
+</span></span></span></code></pre></div><p>ToolCallbackProvider 注入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span> sync类型<span style="color:#960050;background-color:#1e0010">，</span>Bean名称为<span style="color:#e6db74">&#34;loadbalancedSyncMcpToolCallbacks&#34;</span><span style="color:#a6e22e">@Autowiredprivate</span> LoadbalancedSyncMcpToolCallbackProvider toolCallbackProvider<span style="color:#f92672">;</span>ToolCallback<span style="color:#f92672">[]</span> toolCallbacks <span style="color:#f92672">=</span> toolCallbackProvider<span style="color:#f92672">.</span><span style="color:#a6e22e">getToolCallbacks</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// OR
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">#</span> Async类型<span style="color:#960050;background-color:#1e0010">，</span>Bean名称为<span style="color:#e6db74">&#34;loadbalancedMcpAsyncToolCallbacks&#34;</span><span style="color:#a6e22e">@Autowiredprivate</span> LoadbalancedAsyncMcpToolCallbackProvider toolCallbackProvider<span style="color:#f92672">;</span>ToolCallback<span style="color:#f92672">[]</span> toolCallbacks <span style="color:#f92672">=</span> toolCallbackProvider<span style="color:#f92672">.</span><span style="color:#a6e22e">getToolCallbacks</span><span style="color:#f92672">();</span>
+</span></span></code></pre></div><h5 id="效果演示-1">效果演示</h5>
 <p>MCP Client 注入</p>
 <p><img src="https://java2ai.com/img/blog/mcp-nacos/img_5.png" alt="Spring AI Alibaba MCP Nacos"></p>
 <p>ToolCallbackProvider 注入</p>
@@ -755,7 +755,7 @@
   window.background = "#fff"
   window.defaultDark =  null 
   window.backgroundDark = "#333"
-  window.backgroundImageDark = "/me/background.jpg"
+  window.backgroundImageDark = "/me/background1.jpg"
   window.darkNav =  null 
   window.maxTags =  null 
   window.hasTwitterEmbed =  null 
