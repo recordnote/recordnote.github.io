@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;&lt;img alt=&#34;知识共享许可协议&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png&#34; /&gt;&lt;/a&gt;&lt;br /&gt;本作品采用&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议&lt;/a&gt;进行许可。&lt;br /&gt;&lt;br /&gt;背景使用了 &lt;a href=&#34;https://www.pexels.com/zh-cn/&#34; target=&#34;_blank&#34;&gt;Pexels&lt;/a&gt; 上 &lt;a href=&#34;https://www.pexels.com/zh-cn/Ungaro&#34; target=&#34;_blank&#34;&gt;Francesco Ungaro&lt;/a&gt; 拍摄的&lt;a href=&#34;https://www.pexels.com/zh-cn/photo/1454794/&#34; target=&#34;_blank&#34;&gt;图片&lt;/a&gt;。</copyright>
-    <lastBuildDate>Mon, 16 Jun 2025 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/ai/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 20 Aug 2025 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/ai/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>智能体代理模式（Agent Agentic Patterns）</title>
+      <link>https://recordnote.github.io/ai/%E6%99%BA%E8%83%BD%E4%BD%93%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8Fagent-agentic-patterns-/</link>
+      <pubDate>Wed, 20 Aug 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/%E6%99%BA%E8%83%BD%E4%BD%93%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8Fagent-agentic-patterns-/</guid>
+      <description>AgentAgenticPatterns 简介 在最近的一篇研究报告《构建高效代理》 中，Anthropic分享了关于构建高效大语言模型（LLM）代理的宝贵见解。这项研究特别有趣的地方</description>
+    </item>
+    
     <item>
       <title>Java 也能快速搭建 AI 应用</title>
       <link>https://recordnote.github.io/ai/java-%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA-ai-%E5%BA%94%E7%94%A8/</link>
@@ -24,15 +33,6 @@
       
       <guid>https://recordnote.github.io/ai/spring-ai-alibaba-mcp-gateway-%E6%AD%A3%E5%BC%8F%E5%8F%91%E5%B8%83%E9%9B%B6%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E5%AD%98%E9%87%8F%E5%BA%94%E7%94%A8%E8%BD%AC%E6%8D%A2-mcp-%E5%B7%A5%E5%85%B7/</guid>
       <description>Spring AI Alibaba MCP Gateway 简介 Spring AI Alibaba MCP Gateway 基于 Nacos 提供的 MCP server registry 实现，为普通应用建立一个中间代理层 Java MCP 应用。一方面将 Nacos 中注册的服务信息转换成 MCP 协议的服务器信息，以</description>
-    </item>
-    
-    <item>
-      <title>智能体代理模式（Agent Agentic Patterns）</title>
-      <link>https://recordnote.github.io/ai/%E6%99%BA%E8%83%BD%E4%BD%93%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8Fagent-agentic-patterns-/</link>
-      <pubDate>Thu, 29 May 2025 14:21:26 +0800</pubDate>
-      
-      <guid>https://recordnote.github.io/ai/%E6%99%BA%E8%83%BD%E4%BD%93%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8Fagent-agentic-patterns-/</guid>
-      <description>AgentAgenticPatterns 简介 在最近的一篇研究报告《构建高效代理》 中，Anthropic分享了关于构建高效大语言模型（LLM）代理的宝贵见解。这项研究特别有趣的地方</description>
     </item>
     
     <item>
