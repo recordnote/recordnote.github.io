@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>架构设计 | Lin 的博客</title>
+    <title>我所知的良好的系统设计 | Lin 的博客</title>
 
     
 <link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
@@ -19,21 +19,23 @@
 
 <meta name="generator" content="Hugo 0.119.0">
 
-<link rel="canonical" href="https://recordnote.github.io/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" />
+<link rel="canonical" href="https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E8%89%AF%E5%A5%BD%E7%9A%84%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" />
 
 
-<meta property="og:title" content="架构设计" />
-<meta property="og:description" content="Lin 的生活记录～" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://recordnote.github.io/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" /><meta property="og:image" content="https://recordnote.github.io/me/background1.jpg"/>
+<meta property="og:title" content="我所知的良好的系统设计" />
+<meta property="og:description" content="1、 程序设计是组装代码，系统设计是组装服务。 程序设计的组件是变量、函数、类等，系统设计的组件是服务器、数据库、缓存、队列、事件总线、代理等。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E8%89%AF%E5%A5%BD%E7%9A%84%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" /><meta property="og:image" content="https://recordnote.github.io/img/xncs.png" /><meta property="article:section" content="架构设计" />
+<meta property="article:published_time" content="2025-09-01T14:21:26+08:00" />
+<meta property="article:modified_time" content="2025-09-01T14:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/me/background1.jpg"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/xncs.png"/>
 
-<meta name="twitter:title" content="架构设计"/>
-<meta name="twitter:description" content="Lin 的生活记录～"/>
+<meta name="twitter:title" content="我所知的良好的系统设计"/>
+<meta name="twitter:description" content="1、 程序设计是组装代码，系统设计是组装服务。 程序设计的组件是变量、函数、类等，系统设计的组件是服务器、数据库、缓存、队列、事件总线、代理等。"/>
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
@@ -85,7 +87,17 @@
 </style>
 
 
-     
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
 
     
     <link rel="stylesheet" href="/css/custom.css" />
@@ -119,345 +131,120 @@
         <section class="front">
           <div class="dream-max-width">
             
-
-<header class="ui basic very padded segment dream-header">
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
   
-  <div class="ui small circular image">
-    <img src="/me/yy.jpg" alt="avatar" />
-  </div>
+  
+  
   
 
-  <div class="content">
-    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
-    </h1>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">我所知的良好的系统设计<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
 
-    <article class="ui horizontal list">
-      
-      <a class="item" href="/posts">
-        <i class="archive icon" title="归档"></i>
-      </a>
-      
-      <a class="item" href="/categories">
-        <i class="th list icon" title="所有分类"></i>
-      </a>
-      <a class="item" href="/tags">
-        <i class="tags icon" title="所有标签"></i>
-      </a>
+              | 
+                  <span data-format="luxon">2025-09-01T14:21:26&#43;08:00</span>
+                
+
+              | 3 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2025-09-01T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=%e6%88%91%e6%89%80%e7%9f%a5%e7%9a%84%e8%89%af%e5%a5%bd%e7%9a%84%e7%b3%bb%e7%bb%9f%e8%ae%be%e8%ae%a1&url=https%3a%2f%2frecordnote.github.io%2f%25E6%259E%25B6%25E6%259E%2584%25E8%25AE%25BE%25E8%25AE%25A1%2f%25E8%2589%25AF%25E5%25A5%25BD%25E7%259A%2584%25E7%25B3%25BB%25E7%25BB%259F%25E8%25AE%25BE%25E8%25AE%25A1%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2f%25E6%259E%25B6%25E6%259E%2584%25E8%25AE%25BE%25E8%25AE%25A1%2f%25E8%2589%25AF%25E5%25A5%25BD%25E7%259A%2584%25E7%25B3%25BB%25E7%25BB%259F%25E8%25AE%25BE%25E8%25AE%25A1%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/xncs.png" />
+        
+
+        <p>1、</p>
+<p>程序设计是组装代码，系统设计是组装服务。</p>
+<p>程序设计的组件是变量、函数、类等，系统设计的组件是服务器、数据库、缓存、队列、事件总线、代理等。</p>
+<p>2、</p>
+<p>如果一个系统很长时间不出错，它的设计就是良好的。</p>
+<p>如果你进一步看了代码，脱口而出：&ldquo;哈，这比我想的要简单&rdquo;，或者&quot;这个部分不用我操心，即使出问题也容易解决&quot;，它的设计就是优秀的。</p>
+<p>3、</p>
+<p>良好的系统设计，总是从一个有效的简单系统发展而来。千万不要从零开始设计一个复杂的系统。</p>
+<p>4、</p>
+<p>系统设计的难点在于状态。尽量采用无状态组件，最小化&quot;有状态组件&quot;的数量。</p>
+<p>状态的复杂性在于，你无法简单地重启服务。一旦出错，往往需要手动修复状态。</p>
+<p>5、</p>
+<p>状态需要保存在数据库。数据库是最重要的系统组件，用来管理状态。</p>
+<p>数据库的设计目标是每张表易于理解：打开看一下表结构，就能大致了解存储的数据内容及其原因。</p>
+<p>千万不要采用复杂的表结构（也就是数据结构），会给代码带来极大的复杂性和性能约束。</p>
+<p>6、</p>
+<p>数据库往往是系统瓶颈，因为每个页面请求可能要调用数十次、数百次数据库，而且是按顺序调用。</p>
+<p>为了避免瓶颈，数据库可以做成一个写入节点和多个只读副本。数据查询都发往只读副本，数据写入发往写入节点。</p>
+<p>写入节点与只读副本之间，存在数据复制延迟。如果更新一条记录后，你需要立即读取它，那么可以将数据放入内存，写入数据库成功后从内存读取。</p>
+<p>7、</p>
+<p>耗时的操作要拆分出来，放在后台作业（即系统外部的单独服务），排队完成。</p>
+<p>后台作业主要分成两个组件：一个队列服务，一个作业运行器（从队列中获取任务并执行）。</p>
+<p>队列任务的软件，可以用 Redis（需要尽快执行的任务），也可以用数据库（不着急的任务）。</p>
+<p>8、</p>
+<p>如果数据的生成速度和读取速度不匹配，经典解决方案就是缓存。</p>
+<p>缓存的最简单做法，就是把数据保存在内存，否则就使用专门的键值存储软件（比如 Redis 或 Memcached），后者的好处是多个服务器可以共享缓存。</p>
+<p>初级工程师希望缓存所有内容，而高级工程师希望尽量少用缓存。因为缓存是状态的来源，不可避免需要校验状态和处理状态过期。</p>
+<p>9、</p>
+<p>除了缓存和后台作业，大型系统通常还有事件中心，一般用的是 Kafka。</p>
+<p>事件中心也是一个队列，存放的是&quot;某件事发生了&quot;的消息。比如，用户注册触发了&quot;新帐户创建&quot;事件，该事件就放入事件中心，然后由事件中心去通知订阅该事件的多个服务：发送欢迎电子邮件、设置个人空间等等。</p>
+<p>事件中心适用于，发送事件的代码不关心其他服务如何处理事件，或者事件量很大且对响应时间不太敏感。</p>
+<p>不要过度使用事件，很多时候，更简单的做法是让一个服务请求另一个服务的 API。</p>
+<p>为了便于除错，所有日志最好都放在一起，你可以立即看到另一个服务的响应。</p>
+<p>10、推拉</p>
+<p>如果数据需要传送到多处，有拉取（pull）和推送（push）两种选择。</p>
+<p>一般来说，拉取比较简单（比如大多数网站采用的轮询），推送更节省资源，不需要用户主动请求数据，一旦后端数据发生变化，服务器主动将数据推送给每个客户端。</p>
+<p>如果你确实需要向100万个客户端提供最新数据（就像 GMail 那样），应该采用推送还是拉取？这要视情况而定。如果采用推送，就要把每次推送放入一个事件队列，并让一大群事件处理器从队列中拉取数据并推送。如果采用拉取，就要部署一堆（比如100台）快速的只读缓存服务器，处理所有读取流量。</p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
     </article>
-
-    
-    
-    
-    
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-    
-
-    
-
-    
-    
-    
-          <div class="dream-tags">
-          
-          
-          
-            <a class="ui label" href="/tags/ai/" title="AI">
-              AI
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/java/" title="Java">
-              Java
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/spring/" title="spring">
-              spring
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
-              前端
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
-              微服务
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
-              感悟
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
-              数据库
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
-              杂谈
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
-              架构设计
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
-              消息队列
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
-              生活
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
-              算法与数据结构
-            </a>
-          
-          
-          
-            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
-              运维
-            </a>
-          
-          </div>
     
 
     
   </div>
-</header>
-
-
-<div class="ui relaxed grid dream-grid">
-  
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  <a class="image" href="https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8Fid/">
-    
-    <img src="/img/java.png" alt="分布式ID" />
-    
-  </a>
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8Fid/">分布式ID</a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">2024-02-04T14:21:26&#43;08:00</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      1.业务背景： 传统方案在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。如在美团点评的金融、支付、餐饮、酒店、猫眼电影等产品。对数
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author"><img class="ui avatar image" src="/me/yy.jpg" alt="avatar" />Lin</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>2 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  <a class="image" href="https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/servicemesh/">
-    
-    <img src="" alt="ServiceMesh" />
-    
-  </a>
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/servicemesh/">ServiceMesh</a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">2022-08-05T14:21:26&#43;08:00</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      ServiceMesh概念 服务网格 是概念，不是产品 解决网络层面的问题 代表项目 Linkerd 始于2016年的CNCF的官方项目 1.x基于节点（虚拟机、物理
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author"><img class="ui avatar image" src="/me/yy.jpg" alt="avatar" />Lin</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>1 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  <a class="image" href="https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8F/">
-    
-    <img src="/img/java.png" alt="分布式" />
-    
-  </a>
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">2022-07-31T14:21:26&#43;08:00</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author"><img class="ui avatar image" src="/me/yy.jpg" alt="avatar" />Lin</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>0 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  <a class="image" href="https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8Fsession/">
-    
-    <img src="/img/java.png" alt="分布式session" />
-    
-  </a>
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8Fsession/">分布式session</a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">0001-01-01T00:00:00Z</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      1.传统session session存在服务端tomcat里面，coockie存在客户端，请求过程如下： 第一次请求的时候，服务端设置sess
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author"><img class="ui avatar image" src="/me/yy.jpg" alt="avatar" />Lin</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>2 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  <a class="image" href="https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/">
-    
-    <img src="/img/java.png" alt="分布式任务调度" />
-    
-  </a>
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/">分布式任务调度</a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">0001-01-01T00:00:00Z</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      任务调度场景 报表，ex：电商系统的每周每月的订单量 日/月结单，ex：支付金融领域的系统 爬虫 数据归档，ex：将三个月前数据归档 非分布式任务调度
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author"><img class="ui avatar image" src="/me/yy.jpg" alt="avatar" />Lin</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>2 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    
-<article class="ui center aligned attached segment card dream-card">
-  <div class="content">
-    <div class="ui medium header">
-      <a href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="上一页">
-        上一页
-      </a>
-    </div>
-  </div>
-</article>
-
-
-
-
-  </div>
-  
 </div>
 
 
@@ -816,9 +603,40 @@
 
 
 
-<script src="/js/imagesloaded.pkgd.min.js"></script>
-<script src="/js/masonry.pkgd.min.js"></script>
-<script src="/js/grid.js"></script>
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
 
 
     
