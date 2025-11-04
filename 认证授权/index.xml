@@ -20,7 +20,7 @@
     <item>
       <title>认证授权基础概念详解</title>
       <link>https://recordnote.github.io/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%A6%E8%A7%A3/</link>
-      <pubDate>Wed, 15 Oct 2025 14:21:26 +0800</pubDate>
+      <pubDate>Fri, 15 Aug 2025 14:21:26 +0800</pubDate>
       
       <guid>https://recordnote.github.io/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%A6%E8%A7%A3/</guid>
       <description>认证与授权：从基础到实践，一文讲清核心概念与技术方案 在构建现代Web应用时，系统安全是重中之重。而**认证（Authentication）和</description>
@@ -29,7 +29,7 @@
     <item>
       <title>JWT 基础概念详解</title>
       <link>https://recordnote.github.io/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/jwt-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%A6%E8%A7%A3/</link>
-      <pubDate>Thu, 09 Oct 2025 14:21:26 +0800</pubDate>
+      <pubDate>Sat, 09 Aug 2025 14:21:26 +0800</pubDate>
       
       <guid>https://recordnote.github.io/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/jwt-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%A6%E8%A7%A3/</guid>
       <description>JWT 基础概念详解 什么是 JWT？ JWT（JSON Web Token）是一种基于 Token 的认证授权机制，也是目前最流行的跨域认证解决方案。它是一种规范化后的 JSON</description>
