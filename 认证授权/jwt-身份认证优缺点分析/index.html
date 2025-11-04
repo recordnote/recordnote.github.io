@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>JWT 身份认证优缺点分析 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.119.0">
+
+<link rel="canonical" href="https://recordnote.github.io/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/jwt-%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E4%BC%98%E7%BC%BA%E7%82%B9%E5%88%86%E6%9E%90/" />
+
+
+<meta property="og:title" content="JWT 身份认证优缺点分析" />
+<meta property="og:description" content="重新审视JWT：为什么它不再是身份认证的“银弹”？ 在当今的Web开发领域，JSON Web Token（JWT）无疑是身份认证方案中的明星。许多面试" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/jwt-%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E4%BC%98%E7%BC%BA%E7%82%B9%E5%88%86%E6%9E%90/" /><meta property="og:image" content="https://recordnote.github.io/img/jq.png" /><meta property="article:section" content="认证授权" />
+<meta property="article:published_time" content="2025-10-20T14:21:26+08:00" />
+<meta property="article:modified_time" content="2025-10-20T14:21:26+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/jq.png"/>
+
+<meta name="twitter:title" content="JWT 身份认证优缺点分析"/>
+<meta name="twitter:description" content="重新审视JWT：为什么它不再是身份认证的“银弹”？ 在当今的Web开发领域，JSON Web Token（JWT）无疑是身份认证方案中的明星。许多面试"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background1.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background1.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#重新审视jwt为什么它不再是身份认证的银弹"><strong>重新审视JWT：为什么它不再是身份认证的“银弹”？</strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">JWT 身份认证优缺点分析<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2025-10-20T14:21:26&#43;08:00</span>
+                
+
+              | 5 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2025-10-20T14:21:26&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=JWT%20%e8%ba%ab%e4%bb%bd%e8%ae%a4%e8%af%81%e4%bc%98%e7%bc%ba%e7%82%b9%e5%88%86%e6%9e%90&url=https%3a%2f%2frecordnote.github.io%2f%25E8%25AE%25A4%25E8%25AF%2581%25E6%258E%2588%25E6%259D%2583%2fjwt-%25E8%25BA%25AB%25E4%25BB%25BD%25E8%25AE%25A4%25E8%25AF%2581%25E4%25BC%2598%25E7%25BC%25BA%25E7%2582%25B9%25E5%2588%2586%25E6%259E%2590%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2f%25E8%25AE%25A4%25E8%25AF%2581%25E6%258E%2588%25E6%259D%2583%2fjwt-%25E8%25BA%25AB%25E4%25BB%25BD%25E8%25AE%25A4%25E8%25AF%2581%25E4%25BC%2598%25E7%25BC%25BA%25E7%2582%25B9%25E5%2588%2586%25E6%259E%2590%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/jq.png" />
+        
+
+        <h3 id="重新审视jwt为什么它不再是身份认证的银弹"><strong>重新审视JWT：为什么它不再是身份认证的“银弹”？</strong></h3>
+<p>在当今的Web开发领域，JSON Web Token（JWT）无疑是身份认证方案中的明星。许多面试者和开发者都能侃侃而谈它的无状态、可扩展等优点。然而，当我们深入实践时会发现，JWT并非无所不能的“银弹”，其光鲜背后隐藏着一些不容忽视的缺陷。本文将深入剖析JWT的优缺点，并探讨其最佳实践场景，帮助你做出更合理的技术选型。</p>
+<h4 id="一jwt的核心优势我们为何选择它"><strong>一、JWT的核心优势：我们为何选择它？</strong></h4>
+<p>JWT的流行绝非偶然，与传统Session机制相比，它确实带来了显著的优点：</p>
+<ol>
+<li><strong>无状态与可扩展性</strong> JWT的Payload部分能够自行携带用户身份信息（如用户ID、角色），服务器无需在内存或数据库中保存会话状态。 <strong>带来的好处</strong>：这使得服务器集群变得非常简单，任何服务器实例都可以独立验证JWT的有效性，无需进行会话同步，极大地简化了水平扩展。</li>
+<li><strong>有效防御CSRF攻击</strong> <strong>原理</strong>：Session认证依赖浏览器自动携带的Cookie，这使CSRF攻击成为可能。攻击者诱导用户点击恶意链接，浏览器会自动附上含有SessionID的Cookie，导致在用户不知情的情况下执行恶意操作。 <strong>JWT的解决方案</strong>：JWT通常被存储在<code>localStorage</code>中，并通过JavaScript手动添加到HTTP请求头（如<code>Authorization: Bearer &lt;token&gt;</code>）。浏览器不会自动在跨站请求中发送JWT，因此从机制上避免了CSRF攻击。</li>
+<li><strong>跨端与跨语言友好</strong> Session机制与Cookie和浏览器环境强绑定，在移动端（iOS/Android）应用或跨平台场景下处理起来非常棘手。 JWT只是一个标准格式的字符串，任何客户端只要能安全存储它，并在请求中正确携带即可，非常适合API驱动的现代应用架构。</li>
+<li><strong>简化单点登录实现</strong> 在单点登录系统中，认证中心颁发JWT后，其他业务子系统只需用公钥验证JWT签名即可识别用户身份，完美避开了Session共享和Cookie跨域等复杂问题。</li>
+</ol>
+<h4 id="二jwt的致命弱点光环下的阴影"><strong>二、JWT的致命弱点：光环下的阴影</strong></h4>
+<p>JWT最大的优点——无状态，也直接导致了其最核心的缺陷：<strong>令牌的不可控性</strong>。</p>
+<ol>
+<li><strong>令牌废止难题</strong> <strong>问题场景</strong>：用户退出登录、修改密码、管理员禁用用户、用户权限被更改。在Session方案中，服务器只需删除对应的Session记录即可立即生效。 <strong>JWT的困境</strong>：JWT一旦签发，在到期前始终有效，服务器无法单方面作废它。这意味着，即使用户已退出，他人若持有该JWT，在有效期内依然可以访问系统。 <strong>解决方案对比</strong>： <strong>黑名单机制（最常用）</strong>：将需要废止的JWT的ID存入Redis等高速缓存中，每次认证时先检查黑名单。<strong>缺点</strong>：违背了无状态原则，引入了状态查询，但这是实践中权衡后最可行的方案。 <strong>修改签名密钥</strong>：为每个用户分配独立密钥，废止时修改密钥。<strong>缺点</strong>：分布式环境下密钥同步是噩梦，且会导致该用户所有设备被强制下线。 <strong>设置短有效期</strong>：这是一种妥协，通过缩短Token寿命来降低风险，但牺牲了用户体验。</li>
+<li><strong>令牌续签体验不佳</strong> <strong>问题</strong>：为了安全，JWT有效期不宜过长。那么如何实现类似Session的“滑动过期”机制，让活跃用户无需频繁登录？ <strong>最佳实践：双Token机制</strong> <strong>Access Token</strong>：短期有效（如15-30分钟），用于访问业务API。 <strong>Refresh Token</strong>：长期有效（如7天），仅用于获取新的Access Token，且存储于服务端。 <strong>流程</strong>：Access Token过期后，客户端用Refresh Token申请新Token。服务端可校验Refresh Token是否被吊销。此方案在安全与体验间取得了良好平衡。</li>
+<li><strong>面临XSS攻击风险</strong> <strong>问题</strong>：JWT常存于<code>localStorage</code>，易被XSS漏洞攻击窃取。相比之下，<code>HttpOnly</code>的Cookie能免疫XSS窃取。 <strong>安全建议</strong>： <strong>首要任务</strong>：防范XSS于未然，对用户输入进行严格过滤、转义。 <strong>存储选择</strong>：若安全性要求极高，可考虑将JWT存入<code>HttpOnly</code>的Cookie，但这会使JWT重新面临CSRF威胁，需要额外添加CSRF防护措施。</li>
+<li><strong>性能开销</strong> <strong>问题</strong>：JWT的体积远大于一个简单的SessionID（通常只有几十字节），因为其包含了信息并经过Base64编码。这在API请求中会增加额外的网络带宽开销。 <strong>优化建议</strong>：精简Payload，只存放必要信息。对于性能极其敏感的场景，可考虑使用无意义的Token配合服务端存储的方案。</li>
+</ol>
+<h4 id="三核心结论如何明智地选择"><strong>三、核心结论：如何明智地选择？</strong></h4>
+<p>JWT和Session（或类似的有状态Token）都是优秀的工具，关键在于将其用在合适的场景。</p>
+<ul>
+<li><strong>优先选择JWT的场景</strong>： <strong>无状态的分布式API系统</strong>：尤其是微服务架构，服务实例需要独立认证。 <strong>第三方授权（OAuth 2.0）</strong>：JWT是实现Access Token的理想格式。 <strong>一次性的、短期的认证流程</strong>：如邮件中的验证链接。</li>
+<li><strong>慎重考虑JWT，或许Session是更好选择的场景</strong>： <strong>需要频繁管理会话生命周期的系统</strong>：如后台管理系统，需要强控制力，能随时踢用户下线。 <strong>对安全性要求极高，需要绝对控制权的应用</strong>。 <strong>传统的、服务端渲染的Web应用</strong>，Session方案更加简单直接。</li>
+</ul>
+<p><strong>最终建议</strong>：不要陷入“非此即彼”的思维定式。例如，你可以使用一个简单的、随机的Token（如UUID）作为会话标识，并将其与丰富的用户会话数据一起存储在Redis中。这种方案既获得了分布式环境下的可扩展性，又保留了服务端对会话的完全控制力，或许是介于传统Session和纯JWT之间的一个更优解。</p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2025 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/ai/" title="AI">
+              AI
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8/" title="数据安全">
+              数据安全
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/" title="认证授权">
+              认证授权
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<p>职业是JAVA全栈工程师</p>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background1.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>

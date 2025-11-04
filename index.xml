@@ -18,6 +18,60 @@
     </item>
     
     <item>
+      <title>JWT 身份认证优缺点分析</title>
+      <link>https://recordnote.github.io/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/jwt-%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E4%BC%98%E7%BC%BA%E7%82%B9%E5%88%86%E6%9E%90/</link>
+      <pubDate>Mon, 20 Oct 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/jwt-%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E4%BC%98%E7%BC%BA%E7%82%B9%E5%88%86%E6%9E%90/</guid>
+      <description>重新审视JWT：为什么它不再是身份认证的“银弹”？ 在当今的Web开发领域，JSON Web Token（JWT）无疑是身份认证方案中的明星。许多面试</description>
+    </item>
+    
+    <item>
+      <title>认证授权基础概念详解</title>
+      <link>https://recordnote.github.io/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Wed, 15 Oct 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%A6%E8%A7%A3/</guid>
+      <description>认证与授权：从基础到实践，一文讲清核心概念与技术方案 在构建现代Web应用时，系统安全是重中之重。而**认证（Authentication）和</description>
+    </item>
+    
+    <item>
+      <title>JWT 基础概念详解</title>
+      <link>https://recordnote.github.io/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/jwt-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Thu, 09 Oct 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/jwt-%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E8%AF%A6%E8%A7%A3/</guid>
+      <description>JWT 基础概念详解 什么是 JWT？ JWT（JSON Web Token）是一种基于 Token 的认证授权机制，也是目前最流行的跨域认证解决方案。它是一种规范化后的 JSON</description>
+    </item>
+    
+    <item>
+      <title>常见加密算法总结</title>
+      <link>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8/%E5%B8%B8%E8%A7%81%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Tue, 30 Sep 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8/%E5%B8%B8%E8%A7%81%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</guid>
+      <description>洞悉加密世界的三大基石：哈希、对称与非对称加密 在数字世界中，数据安全是重中之重。无论是保护用户密码，还是确保传输中的数据不被窃取，我们都离不</description>
+    </item>
+    
+    <item>
+      <title>数据脱敏方案总结</title>
+      <link>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8/%E6%95%B0%E6%8D%AE%E8%84%B1%E6%95%8F%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Mon, 15 Sep 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8/%E6%95%B0%E6%8D%AE%E8%84%B1%E6%95%8F%E6%96%B9%E6%A1%88%E6%80%BB%E7%BB%93/</guid>
+      <description>数据脱敏方案全面解析：从规则到实战 在当今数据驱动的时代，如何在开发、测试和数据分析等非生产环境中安全地使用真实数据，成为了每个开发者和企业必</description>
+    </item>
+    
+    <item>
+      <title>为什么前后端都要做数据校验</title>
+      <link>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%89%8D%E5%90%8E%E7%AB%AF%E9%83%BD%E8%A6%81%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/</link>
+      <pubDate>Wed, 03 Sep 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%89%8D%E5%90%8E%E7%AB%AF%E9%83%BD%E8%A6%81%E5%81%9A%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/</guid>
+      <description>前后端数据校验与权限校验：构建Web应用的三道坚实防线 在Web应用开发中，数据如同血液，在前后端之间持续流动。确保这些数据的合法、安全与准确</description>
+    </item>
+    
+    <item>
       <title>智能体代理模式（Agent Agentic Patterns）</title>
       <link>https://recordnote.github.io/ai/%E6%99%BA%E8%83%BD%E4%BD%93%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8Fagent-agentic-patterns-/</link>
       <pubDate>Wed, 20 Aug 2025 14:21:26 +0800</pubDate>
