@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Java Agent Framework 实战：Skills 技能系统与按需知识加载 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.119.0">
+
+<link rel="canonical" href="https://recordnote.github.io/ai/java-agent-framework-%E5%AE%9E%E6%88%98skills-%E6%8A%80%E8%83%BD%E7%B3%BB%E7%BB%9F%E4%B8%8E%E6%8C%89%E9%9C%80%E7%9F%A5%E8%AF%86%E5%8A%A0%E8%BD%BD/" />
+
+
+<meta property="og:title" content="Java Agent Framework 实战：Skills 技能系统与按需知识加载" />
+<meta property="og:description" content="概述 当 Agent 需要掌握越来越多的领域知识时，一个最直接、也最容易失控的做法，就是把所有规则、说明、操作手册都塞进系统提示词里。但这种方式的代价很明" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/ai/java-agent-framework-%E5%AE%9E%E6%88%98skills-%E6%8A%80%E8%83%BD%E7%B3%BB%E7%BB%9F%E4%B8%8E%E6%8C%89%E9%9C%80%E7%9F%A5%E8%AF%86%E5%8A%A0%E8%BD%BD/" /><meta property="og:image" content="https://recordnote.github.io/img/ai.png" /><meta property="article:section" content="ai" />
+<meta property="article:published_time" content="2026-02-12T15:00:00+08:00" />
+<meta property="article:modified_time" content="2026-02-12T15:00:00+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/ai.png"/>
+
+<meta name="twitter:title" content="Java Agent Framework 实战：Skills 技能系统与按需知识加载"/>
+<meta name="twitter:description" content="概述 当 Agent 需要掌握越来越多的领域知识时，一个最直接、也最容易失控的做法，就是把所有规则、说明、操作手册都塞进系统提示词里。但这种方式的代价很明"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background1.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background1.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#概述">概述</a></li>
+    <li><a href="#1为什么需要-skills">1、为什么需要 Skills</a></li>
+    <li><a href="#2技能系统的核心机制先暴露目录再按需读取全文">2、技能系统的核心机制：先暴露目录，再按需读取全文</a>
+      <ul>
+        <li><a href="#skills-工作流程图">Skills 工作流程图</a></li>
+      </ul>
+    </li>
+    <li><a href="#3skillregistry技能系统的统一入口">3、SkillRegistry：技能系统的统一入口</a></li>
+    <li><a href="#4技能目录怎么组织">4、技能目录怎么组织</a>
+      <ul>
+        <li><a href="#技能目录结构图">技能目录结构图</a></li>
+      </ul>
+    </li>
+    <li><a href="#5skillmd-的规范">5、SKILL.md 的规范</a></li>
+    <li><a href="#6filesystemskillregistry适合开发和本地维护">6、FileSystemSkillRegistry：适合开发和本地维护</a>
+      <ul>
+        <li><a href="#filesystemskillregistry-结构图">FileSystemSkillRegistry 结构图</a></li>
+      </ul>
+    </li>
+    <li><a href="#7classpathskillregistry适合跟应用一起打包">7、ClasspathSkillRegistry：适合跟应用一起打包</a></li>
+    <li><a href="#8skillsagenthook把技能真正接入-agent">8、SkillsAgentHook：把技能真正接入 Agent</a>
+      <ul>
+        <li><a href="#skillsagenthook-工作图">SkillsAgentHook 工作图</a></li>
+      </ul>
+    </li>
+    <li><a href="#9read_skill-与-groupedtools先读技能再暴露工具">9、read_skill 与 groupedTools：先读技能，再暴露工具</a>
+      <ul>
+        <li><a href="#技能与工具联动图">技能与工具联动图</a></li>
+      </ul>
+    </li>
+    <li><a href="#10autoreload让技能修改更快生效">10、autoReload：让技能修改更快生效</a></li>
+    <li><a href="#11在-reactagent-中集成-skills">11、在 ReactAgent 中集成 Skills</a></li>
+    <li><a href="#12在-chatclient--graph-中使用-skills">12、在 ChatClient / Graph 中使用 Skills</a>
+      <ul>
+        <li><a href="#chatclient-集成图">ChatClient 集成图</a></li>
+      </ul>
+    </li>
+    <li><a href="#13最佳实践把技能当成可维护资产而不是提示词碎片">13、最佳实践：把技能当成可维护资产，而不是提示词碎片</a></li>
+    <li><a href="#14总结">14、总结</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">Java Agent Framework 实战：Skills 技能系统与按需知识加载<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2026-02-12T15:00:00&#43;08:00</span>
+                
+
+              | 9 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2026-02-12T15:00:00&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=Java%20Agent%20Framework%20%e5%ae%9e%e6%88%98%ef%bc%9aSkills%20%e6%8a%80%e8%83%bd%e7%b3%bb%e7%bb%9f%e4%b8%8e%e6%8c%89%e9%9c%80%e7%9f%a5%e8%af%86%e5%8a%a0%e8%bd%bd&url=https%3a%2f%2frecordnote.github.io%2fai%2fjava-agent-framework-%25E5%25AE%259E%25E6%2588%2598skills-%25E6%258A%2580%25E8%2583%25BD%25E7%25B3%25BB%25E7%25BB%259F%25E4%25B8%258E%25E6%258C%2589%25E9%259C%2580%25E7%259F%25A5%25E8%25AF%2586%25E5%258A%25A0%25E8%25BD%25BD%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fai%2fjava-agent-framework-%25E5%25AE%259E%25E6%2588%2598skills-%25E6%258A%2580%25E8%2583%25BD%25E7%25B3%25BB%25E7%25BB%259F%25E4%25B8%258E%25E6%258C%2589%25E9%259C%2580%25E7%259F%25A5%25E8%25AF%2586%25E5%258A%25A0%25E8%25BD%25BD%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/ai.png" />
+        
+
+        <h2 id="概述">概述</h2>
+<p>当 Agent 需要掌握越来越多的领域知识时，一个最直接、也最容易失控的做法，就是把所有规则、说明、操作手册都塞进系统提示词里。但这种方式的代价很明显：prompt 会越来越重，而且大多数知识在当前任务里根本用不上。</p>
+<p>Java Agent Framework 在 Skills 教程里提供了一套更工程化的解法：把知识组织成独立技能目录，通过 <code>SkillRegistry</code> 管理，再由 <code>SkillsAgentHook</code> 把技能摘要注入系统提示，真正需要时再通过 <code>read_skill(skill_name)</code> 按需读取完整内容。</p>
+<p>本文基于官方教程 <strong>Skills</strong> 页面内容，系统梳理 Java Agent Framework 的技能系统设计、目录规范、核心 API、Agent 集成方式和生产环境下的使用建议。</p>
+<h2 id="1为什么需要-skills">1、为什么需要 Skills</h2>
+<p>Skill 的核心目标，不是替代模型能力，而是让 Agent 能够在恰当的时候读取恰当的知识。</p>
+<p>教程里强调，Skills 本质上是一组可复用的指令与上下文集合。它适合解决下面这些问题：</p>
+<ul>
+<li>系统提示词过重</li>
+<li>不同任务依赖不同领域知识</li>
+<li>规则和操作手册需要独立维护</li>
+<li>想新增知识能力，但不想频繁改主 Agent 代码</li>
+</ul>
+<p>换句话说，Skills 解决的是“知识如何按需加载”，而不是“知识如何一次性塞满”。</p>
+<h2 id="2技能系统的核心机制先暴露目录再按需读取全文">2、技能系统的核心机制：先暴露目录，再按需读取全文</h2>
+<p>Skills 教程延续的其实是一种很典型的渐进式披露思路：</p>
+<ul>
+<li>第一步，只把技能清单和简短说明暴露给模型</li>
+<li>第二步，模型判断当前任务需要某项技能时，再调用 <code>read_skill(skill_name)</code> 读取完整 <code>SKILL.md</code></li>
+</ul>
+<p>这样做的好处非常明确：</p>
+<ul>
+<li>平时上下文更轻</li>
+<li>技能内容只在需要时进入上下文</li>
+<li>技能之间相互独立，维护成本更低</li>
+<li>新增技能只要加目录和文件，不需要大改主流程</li>
+</ul>
+<h3 id="skills-工作流程图">Skills 工作流程图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    A[Agent 启动] --&gt; B[SkillsAgentHook]
+    B --&gt; C[系统提示注入技能清单]
+    C --&gt; D[模型判断是否需要技能]
+    D --&gt; E[read_skill skill_name]
+    E --&gt; F[读取 SKILL.md]
+    F --&gt; G[完整技能内容进入上下文]
+    G --&gt; H[继续推理或调用工具]
+</code></pre><p>这个设计和直接把所有技能全文塞进系统提示相比，最大的区别就是：<strong>把知识加载从静态注入改成了按需注入。</strong></p>
+<h2 id="3skillregistry技能系统的统一入口">3、SkillRegistry：技能系统的统一入口</h2>
+<p>教程里，技能系统的核心抽象是 <code>SkillRegistry</code>。</p>
+<p>它的职责非常清楚：统一管理技能的发现、读取和元数据暴露。</p>
+<p>页面明确提到的接口方法包括：</p>
+<ul>
+<li><code>get</code></li>
+<li><code>listAll</code></li>
+<li><code>contains</code></li>
+<li><code>size</code></li>
+<li><code>readSkillContent</code></li>
+<li><code>getSkillLoadInstructions</code></li>
+<li><code>getRegistryType</code></li>
+<li><code>getSystemPromptTemplate</code></li>
+<li>可选 <code>reload()</code></li>
+</ul>
+<p>这里可以把它简单理解成“技能注册表”。上层 Hook 和 Advisor 不直接关心技能来自哪里，只关心能不能通过注册表拿到：</p>
+<ul>
+<li>技能清单</li>
+<li>技能元数据</li>
+<li>技能正文</li>
+<li>技能加载说明</li>
+</ul>
+<p>教程里还提到 <code>SkillMetadata</code>，其中包含：</p>
+<ul>
+<li><code>name</code></li>
+<li><code>description</code></li>
+<li><code>skillPath</code></li>
+<li>可选 <code>source</code></li>
+</ul>
+<p>这意味着技能本身不仅仅是一段说明文本，它还有明确的身份和来源信息。</p>
+<p>从职责划分上看，可以把这一层理解成：</p>
+<ul>
+<li>Registry 负责“存什么、去哪找、怎么读”</li>
+<li>Hook 负责“怎么让 Agent 知道这些技能”</li>
+<li>Tool 负责“在需要时把技能正文真正读进上下文”</li>
+</ul>
+<p>这个分层很重要，因为它避免了把扫描目录、构造提示词、读取技能正文三件事揉成一个难维护的大模块。</p>
+<h2 id="4技能目录怎么组织">4、技能目录怎么组织</h2>
+<p>Skills 页面给出了非常清晰的目录约定。</p>
+<p>每个技能对应一个独立目录，目录下至少要有：</p>
+<ul>
+<li><code>SKILL.md</code></li>
+</ul>
+<p>还可以带一些辅助资源：</p>
+<ul>
+<li><code>references/</code></li>
+<li><code>examples/</code></li>
+<li><code>scripts/</code></li>
+</ul>
+<h3 id="技能目录结构图">技能目录结构图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    S[skills 目录] --&gt; A[pdf]
+    S --&gt; B[code-review]
+    S --&gt; C[mcp-builder]
+    A --&gt; A1[SKILL.md]
+    A --&gt; A2[references]
+    A --&gt; A3[examples]
+    A --&gt; A4[scripts]
+    B --&gt; B1[SKILL.md]
+    C --&gt; C1[SKILL.md]
+</code></pre><p>这种设计的好处是非常直观的：技能本身就是一个完整包，说明文档、参考材料、示例代码、辅助脚本都可以收在同一目录下，不容易散落。</p>
+<h2 id="5skillmd-的规范">5、SKILL.md 的规范</h2>
+<p>教程里说明，<code>SKILL.md</code> 不只是普通 Markdown 文件，它需要 front matter。</p>
+<p>其中必填元数据包括：</p>
+<ul>
+<li><code>name</code></li>
+<li><code>description</code></li>
+</ul>
+<p>页面还给出了命名建议：</p>
+<ul>
+<li><code>name</code> 建议使用小写字母、数字和连字符</li>
+<li>最长 64 字符</li>
+<li><code>description</code> 过长会被截断</li>
+</ul>
+<p>正文部分则可以放：</p>
+<ul>
+<li>功能说明</li>
+<li>使用方式</li>
+<li>资源列表</li>
+<li>与该技能相关的额外约束和提示</li>
+</ul>
+<p>这里最重要的一点是：<code>SKILL.md</code> 要写成“模型能读懂并执行”的说明，而不是写成只给人看的流水账。因为它最终是会被注入模型上下文里的。</p>
+<h2 id="6filesystemskillregistry适合开发和本地维护">6、FileSystemSkillRegistry：适合开发和本地维护</h2>
+<p>如果技能是放在文件系统中维护的，教程推荐使用 <code>FileSystemSkillRegistry</code>。</p>
+<p>它的构建方式是：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>FileSystemSkillRegistry<span style="color:#f92672">.</span><span style="color:#a6e22e">builder</span><span style="color:#f92672">()</span>
+</span></span></code></pre></div><p>页面明确出现的配置项包括：</p>
+<ul>
+<li><code>userSkillsDirectory(String|Resource)</code></li>
+<li><code>projectSkillsDirectory(String|Resource)</code></li>
+<li><code>systemPromptTemplate(...)</code></li>
+</ul>
+<p>教程里还提到默认目录：</p>
+<ul>
+<li>用户级：<code>~/saa/skills</code></li>
+<li>项目级：<code>./skills</code></li>
+</ul>
+<p>并且同名冲突时：<strong>项目目录优先于用户目录</strong>。</p>
+<h3 id="filesystemskillregistry-结构图">FileSystemSkillRegistry 结构图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    U[用户级 skills] --&gt; R[FileSystemSkillRegistry]
+    P[项目级 skills] --&gt; R
+    R --&gt; M[合并后的技能注册表]
+    P --&gt; O[项目级同名优先]
+</code></pre><p>这套机制非常适合本地开发，因为它同时支持：</p>
+<ul>
+<li>用户维度的通用技能</li>
+<li>项目维度的专属技能</li>
+<li>项目覆盖用户默认技能</li>
+</ul>
+<p>从工程习惯上说，这种“全局默认 + 项目覆盖”的设计非常实用。</p>
+<h2 id="7classpathskillregistry适合跟应用一起打包">7、ClasspathSkillRegistry：适合跟应用一起打包</h2>
+<p>如果技能需要随着应用一起打包发布，教程给出的对应实现是 <code>ClasspathSkillRegistry</code>。</p>
+<p>它的构建方式是：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>ClasspathSkillRegistry<span style="color:#f92672">.</span><span style="color:#a6e22e">builder</span><span style="color:#f92672">()</span>
+</span></span></code></pre></div><p>明确出现的配置项包括：</p>
+<ul>
+<li><code>classpathPath(&quot;skills&quot;)</code></li>
+<li>可选 <code>basePath(&quot;/tmp&quot;)</code></li>
+</ul>
+<p>其中 <code>basePath</code> 用于设置 JAR 资源复制目录，页面说明默认是 <code>/tmp</code>。</p>
+<p>这类方式特别适合：</p>
+<ul>
+<li>技能和应用一同发布</li>
+<li>容器化部署</li>
+<li>不希望运行时依赖外部技能目录</li>
+</ul>
+<p>也就是说：</p>
+<ul>
+<li><code>FileSystemSkillRegistry</code> 更适合开发态和可运维场景</li>
+<li><code>ClasspathSkillRegistry</code> 更适合打包分发场景</li>
+</ul>
+<h2 id="8skillsagenthook把技能真正接入-agent">8、SkillsAgentHook：把技能真正接入 Agent</h2>
+<p>如果说 <code>SkillRegistry</code> 解决的是“技能怎么被管理”，那么 <code>SkillsAgentHook</code> 解决的就是“技能怎么进入 Agent 执行链路”。</p>
+<p>它的构建方式是：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>SkillsAgentHook<span style="color:#f92672">.</span><span style="color:#a6e22e">builder</span><span style="color:#f92672">()</span>
+</span></span></code></pre></div><p>页面明确出现的配置项包括：</p>
+<ul>
+<li><code>skillRegistry(registry)</code></li>
+<li><code>groupedTools(groupedTools)</code></li>
+<li><code>autoReload(true)</code></li>
+</ul>
+<p>教程里强调，<code>SkillsAgentHook</code> 做了两件核心事情：</p>
+<ul>
+<li>注册 <code>read_skill</code> 工具</li>
+<li>把技能清单注入系统提示</li>
+</ul>
+<p>也就是说，模型在一开始先知道“当前有哪些技能可用”，真正需要时再通过 <code>read_skill(skill_name)</code> 读取完整内容。</p>
+<h3 id="skillsagenthook-工作图">SkillsAgentHook 工作图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    R[SkillRegistry] --&gt; H[SkillsAgentHook]
+    H --&gt; P[系统提示注入技能列表]
+    H --&gt; T[注册 read_skill 工具]
+    P --&gt; M[模型推理]
+    T --&gt; M
+    M --&gt; C[按需加载技能正文]
+</code></pre><p>这个 Hook 才是 Skills 真正落地的关键，因为它把技能目录、系统提示和工具调用三件事串成了一条完整链路。</p>
+<p>页面还给了几个便捷 API：</p>
+<ul>
+<li><code>hook.listSkills()</code></li>
+<li><code>hook.hasSkill(name)</code></li>
+<li><code>hook.getSkillCount()</code></li>
+</ul>
+<p>这说明 <code>SkillsAgentHook</code> 不只是被动注入提示，它本身也提供了对技能状态的轻量查询能力，便于调试和运行期检查。</p>
+<h2 id="9read_skill-与-groupedtools先读技能再暴露工具">9、read_skill 与 groupedTools：先读技能，再暴露工具</h2>
+<p>教程里有一个很实用的设计点，就是 <code>groupedTools</code>。</p>
+<p>它的类型示例是：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>ToolCallback<span style="color:#f92672">&gt;&gt;</span>
+</span></span></code></pre></div><p>并且 key 需要与 <code>SKILL.md</code> 中的技能名一致。</p>
+<p>它带来的效果是：</p>
+<ul>
+<li>一开始不是所有工具都暴露给模型</li>
+<li>模型先读取相关技能</li>
+<li>某个技能被激活后，对应工具才加入本次请求</li>
+<li>激活后的工具还可以在后续轮次继续使用</li>
+</ul>
+<h3 id="技能与工具联动图">技能与工具联动图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    A[模型看到技能列表] --&gt; B[调用 read_skill]
+    B --&gt; C[加载技能正文]
+    C --&gt; D[激活 groupedTools 对应工具]
+    D --&gt; E[模型继续调用工具]
+</code></pre><p>这一步特别重要，因为它让 Skills 不只是“文本知识包”，而是能进一步和工具暴露策略绑定。这样一来，模型不会一开始就面对一大堆无关工具，工具选择也会更稳定。</p>
+<p>换句话说，<code>read_skill</code> 解决的是“把规则读进来”，<code>groupedTools</code> 解决的是“规则读进来之后，哪些能力可以被安全地开放出来”。这两个机制配合起来，才形成了完整的技能激活闭环。</p>
+<h2 id="10autoreload让技能修改更快生效">10、autoReload：让技能修改更快生效</h2>
+<p>页面里还给了 <code>autoReload(true)</code>。</p>
+<p>它的行为是：在一次 Agent 执行开始时、首次模型推理前，尝试执行 <code>registry.reload()</code>。</p>
+<p>如果当前注册表实现不支持 <code>reload()</code>，会抛 <code>UnsupportedOperationException</code>，而 Hook 会捕获它并仅记录 debug 日志。</p>
+<p>这意味着：</p>
+<ul>
+<li>开发时可以更快看到技能改动</li>
+<li>生产时则要根据具体注册表实现决定是否开启</li>
+</ul>
+<p>这个设计也很合理：能力允许时自动重载，不支持时也不会直接把主流程打崩。</p>
+<h2 id="11在-reactagent-中集成-skills">11、在 ReactAgent 中集成 Skills</h2>
+<p>教程里给出的典型接法，就是把 Skills 作为 Hook 挂到 <code>ReactAgent</code> 上。</p>
+<p>页面中明确出现的调用链包括：</p>
+<ul>
+<li><code>ReactAgent.builder()</code></li>
+<li><code>name(...)</code></li>
+<li><code>model(...)</code></li>
+<li><code>saver(new MemorySaver())</code></li>
+<li><code>hooks(...)</code></li>
+<li><code>tools(...)</code></li>
+<li><code>enableLogging(true)</code></li>
+<li><code>call(...)</code></li>
+</ul>
+<p>同时，完整集成示例里还出现了：</p>
+<ul>
+<li><code>ShellToolAgentHook</code></li>
+<li><code>ShellTool2.builder(workDir).build()</code></li>
+<li><code>PythonTool.createPythonToolCallback(PythonTool.DESCRIPTION)</code></li>
+</ul>
+<p>这说明 Skills 并不是孤立功能，而是可以和 Shell、Python、普通工具能力一起组装成完整 Agent。</p>
+<h2 id="12在-chatclient--graph-中使用-skills">12、在 ChatClient / Graph 中使用 Skills</h2>
+<p>教程还讲了另一个很实用的方向：即使你不直接用 <code>ReactAgent</code>，也可以在 <code>ChatClient</code> 或 Graph 链路里使用 Skills。</p>
+<p>这里用到的核心组件是：</p>
+<ul>
+<li><code>SkillPromptAugmentAdvisor.builder()</code></li>
+<li><code>projectSkillsDirectory(&quot;./skills&quot;)</code></li>
+<li><code>lazyLoad(false)</code></li>
+<li><code>skillRegistry(registry)</code></li>
+<li><code>ChatClient.builder(chatModel).defaultAdvisors(skillAdvisor).build()</code></li>
+</ul>
+<p>它的作用边界也说得很明确：</p>
+<ul>
+<li><code>SkillPromptAugmentAdvisor</code> 只负责把技能列表和加载说明写入系统提示</li>
+<li><strong>它不会注册 <code>read_skill</code></strong></li>
+</ul>
+<p>也就是说，如果你希望在 ChatClient 场景里也能读取完整技能内容，就还需要额外注册 <code>read_skill</code>，例如使用带 <code>SkillsAgentHook</code> 的 Agent 节点，或者额外提供 <code>ReadSkillTool</code>。</p>
+<h3 id="chatclient-集成图">ChatClient 集成图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    R[SkillRegistry] --&gt; A[SkillPromptAugmentAdvisor]
+    A --&gt; C[ChatClient]
+    C --&gt; P[系统提示增强]
+    P --&gt; M[模型响应]
+</code></pre><p>这一点很关键，因为很多人看到 Advisor 会误以为它已经包含完整技能读取能力，但教程明确把它们拆开了：一个负责提示增强，一个负责工具式读取。</p>
+<p>从使用边界上看，可以这样理解：</p>
+<ul>
+<li><code>SkillsAgentHook</code> 更偏 Agent 执行链路，既注入技能列表，也提供 <code>read_skill</code></li>
+<li><code>SkillPromptAugmentAdvisor</code> 更偏提示增强，只负责让模型“知道有这些技能”</li>
+</ul>
+<p>这个区别如果一开始没想清楚，后面很容易出现“模型知道技能存在，但为什么读不到技能正文”的疑惑。</p>
+<h2 id="13最佳实践把技能当成可维护资产而不是提示词碎片">13、最佳实践：把技能当成可维护资产，而不是提示词碎片</h2>
+<p>如果把 Skills 教程压缩成几条实用建议，我觉得最重要的是下面这些：</p>
+<ul>
+<li>技能边界要清晰，不要把多个不相关主题塞进同一个 <code>SKILL.md</code></li>
+<li><code>name</code> 要稳定，因为它会和 <code>read_skill</code>、<code>groupedTools</code>、状态约定直接关联</li>
+<li><code>description</code> 要短而准，因为模型会先根据它判断要不要读该技能</li>
+<li>文件系统注册表适合开发，classpath 注册表适合发布</li>
+<li>不是所有场景都要自动重载，生产环境要结合实现能力来开</li>
+<li>Skills 最适合和工具分组一起使用，形成“先读规则，再开放能力”的控制链路</li>
+</ul>
+<p>归根到底，Skills 最好的用法不是把它当“知识仓库”，而是当“Agent 的按需能力说明层”。</p>
+<p>从工程维护角度看，还可以再补三条：</p>
+<ul>
+<li>技能目录尽量保持自包含，说明、示例和脚本放在一起</li>
+<li>技能名称一旦对外使用，就尽量不要频繁改名</li>
+<li>如果某项知识总是被读取，应该反过来检查它是不是已经适合上升为默认系统规则，而不再只是一个可选技能</li>
+</ul>
+<h2 id="14总结">14、总结</h2>
+<p>官方教程 <strong>Skills</strong> 的价值，在于它把“知识如何进入 Agent”这件事做成了一套清晰、可维护、可扩展的机制：</p>
+<ul>
+<li>用 <code>SkillRegistry</code> 统一管理技能来源</li>
+<li>用 <code>FileSystemSkillRegistry</code> 和 <code>ClasspathSkillRegistry</code> 适配不同部署方式</li>
+<li>用 <code>SkillsAgentHook</code> 把技能目录和 <code>read_skill</code> 接进 Agent</li>
+<li>用 <code>groupedTools</code> 把技能激活和工具暴露联动起来</li>
+<li>用 <code>SkillPromptAugmentAdvisor</code> 在 ChatClient / Graph 场景下做提示增强</li>
+</ul>
+<p>对于 Java 开发者来说，这套设计最大的价值是把技能系统做成了标准化扩展点，而不是把规则文档硬编码在 prompt 字符串里。</p>
+<p>当你的 Agent 开始进入企业知识、领域规则、工具约束越来越复杂的场景时，Skills 这套模式会比“不断往系统提示里堆内容”稳定得多，也更容易维护。</p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2026 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/agent/" title="Agent">
+              Agent
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/ai/" title="AI">
+              AI
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/claude-code/" title="Claude Code">
+              Claude Code
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8/" title="数据安全">
+              数据安全
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/" title="认证授权">
+              认证授权
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<ul>
+<li><strong>🛠️ 技术阵地：</strong> 深耕 Java 开发 ，目前向 AI 应用领域探索与拓展。这里主要记录我从后端架构到 AI 赋能的进阶之路、技术思考以及日常的 debug 血泪史。始终致力于写出优雅且没有 bug 的代码（尽量）。</li>
+<li><strong>🌈 生活侧写：</strong> 偶尔脱下极客的外衣，我也会在这里分享生活中的灵光一现。不管是好用的效率工具，还是周末的一场骑行，都是构成我真实生活的一部分。</li>
+</ul>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background1.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  window.__dreamMermaid = mermaid;
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', async function () {
+    if (!window.__dreamMermaid) return
+
+    var blocks = document.querySelectorAll('pre code.language-mermaid, pre code.lang-mermaid')
+    if (!blocks.length) return
+
+    blocks.forEach(function (block, index) {
+      var pre = block.parentElement
+      if (!pre || !pre.parentElement) return
+
+      var wrapper = document.createElement('div')
+      wrapper.className = 'mermaid'
+      wrapper.textContent = block.textContent
+      wrapper.setAttribute('data-mermaid-id', 'mermaid-' + index)
+      pre.parentElement.replaceChild(wrapper, pre)
+    })
+
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var themeVariables = isDark === 'y'
+      ? {
+          primaryColor: '#1f3a33',
+          primaryTextColor: '#e9f7ef',
+          primaryBorderColor: '#5aa37a',
+          lineColor: '#86c59a',
+          secondaryColor: '#27463f',
+          tertiaryColor: '#1a2d29',
+          background: '#1a2a27',
+          mainBkg: '#1f3a33',
+          secondBkg: '#27463f',
+          tertiaryBkg: '#223a34',
+          nodeBorder: '#5aa37a',
+          clusterBkg: '#203631',
+          clusterBorder: '#5aa37a',
+          edgeLabelBackground: '#27463f',
+          fontFamily: 'Segoe UI, Microsoft YaHei, sans-serif',
+          fontSize: '15px'
+        }
+      : {
+          primaryColor: '#e8f5ee',
+          primaryTextColor: '#1d3b2f',
+          primaryBorderColor: '#4f9b6b',
+          lineColor: '#5d9f73',
+          secondaryColor: '#f3fbf6',
+          tertiaryColor: '#dff0e6',
+          background: '#ffffff',
+          mainBkg: '#e8f5ee',
+          secondBkg: '#f3fbf6',
+          tertiaryBkg: '#dff0e6',
+          nodeBorder: '#4f9b6b',
+          clusterBkg: '#f5fbf7',
+          clusterBorder: '#7caf8c',
+          edgeLabelBackground: '#ffffff',
+          fontFamily: 'Segoe UI, Microsoft YaHei, sans-serif',
+          fontSize: '15px'
+        }
+
+    window.__dreamMermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: themeVariables,
+      securityLevel: 'loose',
+      flowchart: { curve: 'basis', htmlLabels: true },
+      sequence: { useMaxWidth: true, wrap: true },
+      state: { useMaxWidth: true }
+    })
+
+    await window.__dreamMermaid.run({
+      querySelector: '.mermaid'
+    })
+  })
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>
