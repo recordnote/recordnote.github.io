@@ -7,7 +7,115 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;&lt;img alt=&#34;知识共享许可协议&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png&#34; /&gt;&lt;/a&gt;&lt;br /&gt;本作品采用&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议&lt;/a&gt;进行许可。&lt;br /&gt;&lt;br /&gt;背景使用了 &lt;a href=&#34;https://www.pexels.com/zh-cn/&#34; target=&#34;_blank&#34;&gt;Pexels&lt;/a&gt; 上 &lt;a href=&#34;https://www.pexels.com/zh-cn/Ungaro&#34; target=&#34;_blank&#34;&gt;Francesco Ungaro&lt;/a&gt; 拍摄的&lt;a href=&#34;https://www.pexels.com/zh-cn/photo/1454794/&#34; target=&#34;_blank&#34;&gt;图片&lt;/a&gt;。</copyright>
-    <lastBuildDate>Tue, 11 Nov 2025 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 24 Jan 2026 14:21:26 +0800</lastBuildDate><atom:link href="https://recordnote.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Agent 工作区隔离：Git Worktree 与任务绑定</title>
+      <link>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8412worktree-&#43;-%E4%BB%BB%E5%8A%A1%E9%9A%94%E7%A6%BB/</link>
+      <pubDate>Sat, 24 Jan 2026 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8412worktree-&#43;-%E4%BB%BB%E5%8A%A1%E9%9A%94%E7%A6%BB/</guid>
+      <description>1、问题 到 s11 为止，Agent 已经可以自主认领任务，但所有任务仍然共享同一个目录。 这会导致一个现实问题：两个 Agent 同时改不同任务时，如果都动到同一</description>
+    </item>
+    
+    <item>
+      <title>自主 Agent 设计：任务认领与自组织执行</title>
+      <link>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8411%E8%87%AA%E4%B8%BBagent/</link>
+      <pubDate>Wed, 14 Jan 2026 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8411%E8%87%AA%E4%B8%BBagent/</guid>
+      <description>1、问题 s09-s10 里的队友依然高度依赖领导调度。 如果任务板上有 10 个待办任务，领导必须一个个指定谁来做，这种模式很难扩展。 这一节的目标，是让队友自己扫</description>
+    </item>
+    
+    <item>
+      <title>多 Agent 协作协议：请求-响应与审批机制</title>
+      <link>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8410%E5%9B%A2%E9%98%9F%E5%8D%8F%E8%AE%AE/</link>
+      <pubDate>Mon, 05 Jan 2026 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8410%E5%9B%A2%E9%98%9F%E5%8D%8F%E8%AE%AE/</guid>
+      <description>1、问题 s09 已经有了队友和邮箱，但通信仍然比较原始。 比如两个典型场景： 领导请求某个队友优雅关机 队友提交高风险计划，等待领导审批 这两类交互都需要</description>
+    </item>
+    
+    <item>
+      <title>多 Agent 团队架构：队友生命周期与邮箱通信</title>
+      <link>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8409agent%E5%9B%A2%E9%98%9F/</link>
+      <pubDate>Fri, 26 Dec 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8409agent%E5%9B%A2%E9%98%9F/</guid>
+      <description>1、问题 前面的子 Agent 是一次性的：创建、工作、返回结果、销毁。 这种模式虽然适合局部子任务，但不适合真正的团队协作，因为它缺少： 持续存在的身份 生命</description>
+    </item>
+    
+    <item>
+      <title>Agent 后台执行机制：异步任务与结果回流</title>
+      <link>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8408%E5%90%8E%E5%8F%B0%E4%BB%BB%E5%8A%A1/</link>
+      <pubDate>Thu, 18 Dec 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8408%E5%90%8E%E5%8F%B0%E4%BB%BB%E5%8A%A1/</guid>
+      <description>1、问题 很多命令都是慢操作，例如： npm install pytest docker build 在阻塞式主循环里，模型只能干等，无法继续做别的事。这对复杂任务的执行效率影响很大。 2、解决思路 这</description>
+    </item>
+    
+    <item>
+      <title>Agent 任务系统设计：DAG 依赖与持久化状态</title>
+      <link>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8407%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F/</link>
+      <pubDate>Thu, 11 Dec 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8407%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F/</guid>
+      <description>1、问题 s03 的 TodoManager 只是一个内存里的扁平清单，它有几个明显不足： 没有依赖关系 没有顺序表达 状态粒度太粗 一旦上下文压缩，内存态就可能丢失 真实项目里的任</description>
+    </item>
+    
+    <item>
+      <title>Agent 长上下文治理：压缩、摘要与记忆延续</title>
+      <link>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8406%E4%B8%8A%E4%B8%8B%E6%96%87%E5%8E%8B%E7%BC%A9/</link>
+      <pubDate>Thu, 04 Dec 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8406%E4%B8%8A%E4%B8%8B%E6%96%87%E5%8E%8B%E7%BC%A9/</guid>
+      <description>1、问题 上下文窗口是有限的。 教程举的例子很直观：读一个 1000 行文件，可能就会吃掉几千 token；再读几十个文件、跑几十条命令，上下文很快就会被撑</description>
+    </item>
+    
+    <item>
+      <title>Agent 技能系统：按需加载领域知识</title>
+      <link>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8405%E6%8A%80%E8%83%BD/</link>
+      <pubDate>Fri, 28 Nov 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8405%E6%8A%80%E8%83%BD/</guid>
+      <description>1、问题 Agent 常常需要遵守很多额外知识，比如： Git 工作流 测试规范 代码审查清单 特定领域的操作手册 如果把这些内容全部塞进系统提示词，会让 prompt 非常臃肿，而</description>
+    </item>
+    
+    <item>
+      <title>子 Agent 架构实践：上下文隔离与任务拆解</title>
+      <link>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8404%E5%AD%90agent/</link>
+      <pubDate>Mon, 24 Nov 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8404%E5%AD%90agent/</guid>
+      <description>1、问题 随着 Agent 不断读文件、执行命令、查看日志，messages 会越来越大。 很多时候父 Agent 只需要一个很小的结论，比如“这个项目用的是 pytest</description>
+    </item>
+    
+    <item>
+      <title>Agent 任务规划机制：TodoWrite 与多步执行控制</title>
+      <link>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8403todowrite/</link>
+      <pubDate>Thu, 20 Nov 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8403todowrite/</guid>
+      <description>1、问题 多步任务里，模型很容易出现下面这些问题： 重复做已经做过的事 跳过中间步骤 随着上下文增长逐渐跑偏 教程对这个问题的概括很直接：没有计划的 A</description>
+    </item>
+    
+    <item>
+      <title>Agent 工具系统设计：从 Bash 到文件读写编辑</title>
+      <link>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8402%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Sun, 16 Nov 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8402%E5%B7%A5%E5%85%B7/</guid>
+      <description>1、为什么只有 bash 不够 上一节只有一个 bash 工具，所有动作都走 shell。 这种方式虽然灵活，但问题很明显： 读取文件时输出可能被截断 特殊字符和转义经常</description>
+    </item>
+    
+    <item>
+      <title>从零实现 Agent 核心循环：工具调用与执行闭环</title>
+      <link>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8401agent%E5%BE%AA%E7%8E%AF/</link>
+      <pubDate>Thu, 13 Nov 2025 14:21:26 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8401agent%E5%BE%AA%E7%8E%AF/</guid>
+      <description>1、问题 语言模型本身只能生成文本，它能“推理”应该去读文件、运行命令、查看报错，但它碰不到真实环境。 如果没有循环机制，每次工具执行都需要开发</description>
+    </item>
+    
     <item>
       <title>LangChain4j-AIServices使用教程</title>
       <link>https://recordnote.github.io/ai/langchain4j%E6%A1%86%E6%9E%B6ai-service%E4%BD%BF%E7%94%A8/</link>
