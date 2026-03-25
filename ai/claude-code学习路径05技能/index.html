@@ -25,14 +25,14 @@
 <meta property="og:title" content="Agent 技能系统：按需加载领域知识" />
 <meta property="og:description" content="1、问题 Agent 常常需要遵守很多额外知识，比如： Git 工作流 测试规范 代码审查清单 特定领域的操作手册 如果把这些内容全部塞进系统提示词，会让 prompt 非常臃肿，而" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8405%E6%8A%80%E8%83%BD/" /><meta property="og:image" content="https://recordnote.github.io/img/ai6.png" /><meta property="article:section" content="ai" />
+<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8405%E6%8A%80%E8%83%BD/" /><meta property="og:image" content="https://recordnote.github.io/me/background1.jpg"/><meta property="article:section" content="ai" />
 <meta property="article:published_time" content="2025-11-28T14:21:26+08:00" />
 <meta property="article:modified_time" content="2025-11-28T14:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/img/ai6.png"/>
+<meta name="twitter:image" content="https://recordnote.github.io/me/background1.jpg"/>
 
 <meta name="twitter:title" content="Agent 技能系统：按需加载领域知识"/>
 <meta name="twitter:description" content="1、问题 Agent 常常需要遵守很多额外知识，比如： Git 工作流 测试规范 代码审查清单 特定领域的操作手册 如果把这些内容全部塞进系统提示词，会让 prompt 非常臃肿，而"/>
@@ -143,7 +143,11 @@
     <div class="ui segment toc">
       <nav id="TableOfContents">
   <ul>
-    <li><a href="#1问题">1、问题</a></li>
+    <li><a href="#1问题">1、问题</a>
+      <ul>
+        <li><a href="#阅读前提">阅读前提</a></li>
+      </ul>
+    </li>
     <li><a href="#2两层注入">2、两层注入</a>
       <ul>
         <li><a href="#本节架构图">本节架构图</a></li>
@@ -159,7 +163,11 @@
         <li><a href="#本节完整-demo-目录结构">本节完整 demo 目录结构</a></li>
       </ul>
     </li>
-    <li><a href="#8补充说明">8、补充说明</a></li>
+    <li><a href="#8补充说明">8、补充说明</a>
+      <ul>
+        <li><a href="#与下一节的衔接">与下一节的衔接</a></li>
+      </ul>
+    </li>
     <li><a href="#9小结">9、小结</a></li>
   </ul>
 </nav>
@@ -215,8 +223,6 @@
 
       <article class="main">
         
-        <img class="cover" src="/img/ai6.png" />
-        
 
         <h2 id="1问题">1、问题</h2>
 <p>Agent 常常需要遵守很多额外知识，比如：</p>
@@ -227,6 +233,8 @@
 <li>特定领域的操作手册</li>
 </ul>
 <p>如果把这些内容全部塞进系统提示词，会让 prompt 非常臃肿，而且大部分知识和当前任务没有直接关系。</p>
+<h3 id="阅读前提">阅读前提</h3>
+<p>建议先理解前面几节里的两个核心概念：工具是按需调用的，子 Agent 是按需派发的。技能系统其实延续的是同一类思路，只不过这次按需加载的是“知识”而不是“执行”。</p>
 <h2 id="2两层注入">2、两层注入</h2>
 <p>这一节的解决方案是 SkillLoader + 两层知识注入。</p>
 <p>第一层放在系统提示词里，只保留技能名称和简要说明，成本很低。<br>
@@ -369,6 +377,8 @@
 <p>技能系统要真正落地，关键不是把知识塞进 <code>SKILL.md</code>，而是把技能边界划清楚。</p>
 <p>一个技能最好只解决一类明确问题。例如“代码审查”“MCP 服务开发”“PDF 提取”都可以是独立技能，但不要把多个领域知识混在一个技能里，否则模型加载以后仍然会被无关信息干扰。</p>
 <p>此外，技能文档最好同时包含三层内容：适用场景、执行步骤、失败时的处理办法。只有这样，模型在加载技能后才能既知道“什么时候用”，也知道“怎么用”，还知道“遇到问题怎么办”。</p>
+<h3 id="与下一节的衔接">与下一节的衔接</h3>
+<p>当技能越来越多、会话越来越长时，另一个问题就会暴露出来：上下文窗口会越来越紧张。下一节会从知识治理继续往前走，进入长上下文压缩。</p>
 <h2 id="9小结">9、小结</h2>
 <p>这一节把“额外知识”从固定 Prompt 中拆了出来，变成可动态加载的技能系统。</p>
 <p>从此之后，Agent 的知识不再是一次性灌进去的，而是可以按任务场景逐步加载。</p>

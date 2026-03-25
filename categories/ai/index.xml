@@ -50,7 +50,7 @@
       <pubDate>Thu, 18 Dec 2025 14:21:26 +0800</pubDate>
       
       <guid>https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8408%E5%90%8E%E5%8F%B0%E4%BB%BB%E5%8A%A1/</guid>
-      <description>1、问题 很多命令都是慢操作，例如： npm install pytest docker build 在阻塞式主循环里，模型只能干等，无法继续做别的事。这对复杂任务的执行效率影响很大。 2、解决思路 这</description>
+      <description>1、问题 很多命令都是慢操作，例如： npm install pytest docker build 在阻塞式主循环里，模型只能干等，无法继续做别的事。这对复杂任务的执行效率影响很大。 阅读前提 这一节</description>
     </item>
     
     <item>

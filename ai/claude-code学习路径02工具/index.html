@@ -25,14 +25,14 @@
 <meta property="og:title" content="Agent 工具系统设计：从 Bash 到文件读写编辑" />
 <meta property="og:description" content="1、为什么只有 bash 不够 上一节只有一个 bash 工具，所有动作都走 shell。 这种方式虽然灵活，但问题很明显： 读取文件时输出可能被截断 特殊字符和转义经常" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8402%E5%B7%A5%E5%85%B7/" /><meta property="og:image" content="https://recordnote.github.io/img/ai6.png" /><meta property="article:section" content="ai" />
+<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8402%E5%B7%A5%E5%85%B7/" /><meta property="og:image" content="https://recordnote.github.io/me/background1.jpg"/><meta property="article:section" content="ai" />
 <meta property="article:published_time" content="2025-11-16T14:21:26+08:00" />
 <meta property="article:modified_time" content="2025-11-16T14:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/img/ai6.png"/>
+<meta name="twitter:image" content="https://recordnote.github.io/me/background1.jpg"/>
 
 <meta name="twitter:title" content="Agent 工具系统设计：从 Bash 到文件读写编辑"/>
 <meta name="twitter:description" content="1、为什么只有 bash 不够 上一节只有一个 bash 工具，所有动作都走 shell。 这种方式虽然灵活，但问题很明显： 读取文件时输出可能被截断 特殊字符和转义经常"/>
@@ -143,7 +143,11 @@
     <div class="ui segment toc">
       <nav id="TableOfContents">
   <ul>
-    <li><a href="#1为什么只有-bash-不够">1、为什么只有 bash 不够</a></li>
+    <li><a href="#1为什么只有-bash-不够">1、为什么只有 bash 不够</a>
+      <ul>
+        <li><a href="#阅读前提">阅读前提</a></li>
+      </ul>
+    </li>
     <li><a href="#2核心思路循环不变工具可扩展">2、核心思路：循环不变，工具可扩展</a>
       <ul>
         <li><a href="#本节架构图">本节架构图</a></li>
@@ -159,7 +163,11 @@
         <li><a href="#本节完整-demo-目录结构">本节完整 demo 目录结构</a></li>
       </ul>
     </li>
-    <li><a href="#8补充说明">8、补充说明</a></li>
+    <li><a href="#8补充说明">8、补充说明</a>
+      <ul>
+        <li><a href="#与下一节的衔接">与下一节的衔接</a></li>
+      </ul>
+    </li>
     <li><a href="#9小结">9、小结</a></li>
   </ul>
 </nav>
@@ -185,7 +193,7 @@
                   <span data-format="luxon">2025-11-16T14:21:26&#43;08:00</span>
                 
 
-              | 3 分钟阅读
+              | 4 分钟阅读
 
               
               | 更新于
@@ -215,8 +223,6 @@
 
       <article class="main">
         
-        <img class="cover" src="/img/ai6.png" />
-        
 
         <h2 id="1为什么只有-bash-不够">1、为什么只有 bash 不够</h2>
 <p>上一节只有一个 <code>bash</code> 工具，所有动作都走 shell。</p>
@@ -227,6 +233,8 @@
 <li>读写编辑都混在 shell 里，安全边界不清晰</li>
 </ul>
 <p>所以这一节的目标，是把“一个万能工具”升级成“多个专用工具”。</p>
+<h3 id="阅读前提">阅读前提</h3>
+<p>建议先理解上一节的最小循环，至少要知道 <code>messages</code>、<code>tool_use</code> 和 <code>tool_result</code> 在主循环里是怎么工作的。否则这一节很容易只看到“多了几个工具”，却看不到“为什么循环本身不需要改”。</p>
 <h2 id="2核心思路循环不变工具可扩展">2、核心思路：循环不变，工具可扩展</h2>
 <p>这一节最重要的设计思想不是新增了多少工具，而是：</p>
 <blockquote>
@@ -367,6 +375,8 @@
 <p>从开发角度看，工具设计里最重要的不是“工具数量”，而是工具契约是否稳定。</p>
 <p>一个好用的工具通常要满足四点：输入参数清晰、输出结果稳定、异常语义明确、权限边界可控。比如 <code>read_file(path, limit)</code> 这种接口，模型更容易稳定调用；而把所有动作都压进一条 shell 命令里，虽然灵活，但可预测性会明显下降。</p>
 <p>另外，工具输出最好尽量结构化。像“文件不存在”“路径越界”“命令超时”这类错误，应该返回给模型可判断的文本，而不是直接抛空异常。Agent 是否稳定，很多时候不是看模型多强，而是看工具层是否足够规整。</p>
+<h3 id="与下一节的衔接">与下一节的衔接</h3>
+<p>当工具层稳定下来以后，Agent 已经能执行很多操作，但仍然容易在多步骤任务中跑偏。下一节要补的，就是任务规划和执行控制能力。</p>
 <h2 id="9小结">9、小结</h2>
 <p>这一节真正解决的是“工具如何被组织”。</p>
 <p>从单一 <code>bash</code> 到分发表 + 专用工具，意味着 Agent 开始具备更清晰的执行边界，也为后续能力扩展留出了稳定接口。</p>

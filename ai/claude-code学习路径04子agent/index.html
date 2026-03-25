@@ -25,14 +25,14 @@
 <meta property="og:title" content="子 Agent 架构实践：上下文隔离与任务拆解" />
 <meta property="og:description" content="1、问题 随着 Agent 不断读文件、执行命令、查看日志，messages 会越来越大。 很多时候父 Agent 只需要一个很小的结论，比如“这个项目用的是 pytest" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8404%E5%AD%90agent/" /><meta property="og:image" content="https://recordnote.github.io/img/ai6.png" /><meta property="article:section" content="ai" />
+<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8404%E5%AD%90agent/" /><meta property="og:image" content="https://recordnote.github.io/me/background1.jpg"/><meta property="article:section" content="ai" />
 <meta property="article:published_time" content="2025-11-24T14:21:26+08:00" />
 <meta property="article:modified_time" content="2025-11-24T14:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/img/ai6.png"/>
+<meta name="twitter:image" content="https://recordnote.github.io/me/background1.jpg"/>
 
 <meta name="twitter:title" content="子 Agent 架构实践：上下文隔离与任务拆解"/>
 <meta name="twitter:description" content="1、问题 随着 Agent 不断读文件、执行命令、查看日志，messages 会越来越大。 很多时候父 Agent 只需要一个很小的结论，比如“这个项目用的是 pytest"/>
@@ -143,7 +143,11 @@
     <div class="ui segment toc">
       <nav id="TableOfContents">
   <ul>
-    <li><a href="#1问题">1、问题</a></li>
+    <li><a href="#1问题">1、问题</a>
+      <ul>
+        <li><a href="#阅读前提">阅读前提</a></li>
+      </ul>
+    </li>
     <li><a href="#2核心思路">2、核心思路</a>
       <ul>
         <li><a href="#本节架构图">本节架构图</a></li>
@@ -158,7 +162,11 @@
         <li><a href="#本节完整-demo-目录结构">本节完整 demo 目录结构</a></li>
       </ul>
     </li>
-    <li><a href="#7补充说明">7、补充说明</a></li>
+    <li><a href="#7补充说明">7、补充说明</a>
+      <ul>
+        <li><a href="#与下一节的衔接">与下一节的衔接</a></li>
+      </ul>
+    </li>
     <li><a href="#8小结">8、小结</a></li>
   </ul>
 </nav>
@@ -214,12 +222,12 @@
 
       <article class="main">
         
-        <img class="cover" src="/img/ai6.png" />
-        
 
         <h2 id="1问题">1、问题</h2>
 <p>随着 Agent 不断读文件、执行命令、查看日志，<code>messages</code> 会越来越大。</p>
 <p>很多时候父 Agent 只需要一个很小的结论，比如“这个项目用的是 pytest”，但为了得到这个结论，可能要读 5 个文件、执行多次工具调用。如果把这些过程全部堆进主对话，上下文很快就会被污染。</p>
+<h3 id="阅读前提">阅读前提</h3>
+<p>建议你先掌握前两节的工具体系和 TodoWrite。因为子 Agent 并不是替代主循环，而是在主循环已经稳定的前提下，进一步把复杂度按任务边界拆开。</p>
 <h2 id="2核心思路">2、核心思路</h2>
 <p>这一节的解法是：把局部子任务交给一个全新的子 Agent 去做。</p>
 <p>结构如下：</p>
@@ -355,6 +363,8 @@
 <p>子 Agent 并不是所有任务都适合用。它最适合的场景有三类：边界清晰的信息搜集、局部实现、专项验证。</p>
 <p>如果一个问题本身需要持续和主流程来回互动，或者依赖大量全局上下文，那么拆给子 Agent 反而可能让沟通成本更高。一个实用原则是：父 Agent 只把“目标、约束、交付格式”发给子 Agent，而不是把所有背景都复制过去。</p>
 <p>另外，子 Agent 返回值最好是“摘要 + 关键结论 + 必要证据”，而不是大段流水账。否则虽然做了上下文隔离，最后又会因为返回内容过大把主上下文重新塞满。</p>
+<h3 id="与下一节的衔接">与下一节的衔接</h3>
+<p>子 Agent 解决的是“局部任务如何拆”，但还没有解决“领域知识如何按需注入”。下一节会把这部分补上，引入技能系统。</p>
 <h2 id="8小结">8、小结</h2>
 <p>子 Agent 的核心价值不是并发，而是局部隔离。</p>
 <p>把复杂问题拆成干净的子任务，并且只把结果摘要带回主流程，这一步会显著提升长期对话里的上下文质量。</p>

@@ -25,14 +25,14 @@
 <meta property="og:title" content="从零实现 Agent 核心循环：工具调用与执行闭环" />
 <meta property="og:description" content="1、问题 语言模型本身只能生成文本，它能“推理”应该去读文件、运行命令、查看报错，但它碰不到真实环境。 如果没有循环机制，每次工具执行都需要开发" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8401agent%E5%BE%AA%E7%8E%AF/" /><meta property="og:image" content="https://recordnote.github.io/img/ai6.png" /><meta property="article:section" content="ai" />
+<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8401agent%E5%BE%AA%E7%8E%AF/" /><meta property="og:image" content="https://recordnote.github.io/me/background1.jpg"/><meta property="article:section" content="ai" />
 <meta property="article:published_time" content="2025-11-13T14:21:26+08:00" />
 <meta property="article:modified_time" content="2025-11-13T14:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/img/ai6.png"/>
+<meta name="twitter:image" content="https://recordnote.github.io/me/background1.jpg"/>
 
 <meta name="twitter:title" content="从零实现 Agent 核心循环：工具调用与执行闭环"/>
 <meta name="twitter:description" content="1、问题 语言模型本身只能生成文本，它能“推理”应该去读文件、运行命令、查看报错，但它碰不到真实环境。 如果没有循环机制，每次工具执行都需要开发"/>
@@ -143,7 +143,11 @@
     <div class="ui segment toc">
       <nav id="TableOfContents">
   <ul>
-    <li><a href="#1问题">1、问题</a></li>
+    <li><a href="#1问题">1、问题</a>
+      <ul>
+        <li><a href="#阅读前提">阅读前提</a></li>
+      </ul>
+    </li>
     <li><a href="#2最小执行闭环">2、最小执行闭环</a>
       <ul>
         <li><a href="#本节架构图">本节架构图</a></li>
@@ -157,7 +161,11 @@
         <li><a href="#本节完整-demo-目录结构">本节完整 demo 目录结构</a></li>
       </ul>
     </li>
-    <li><a href="#6补充说明">6、补充说明</a></li>
+    <li><a href="#6补充说明">6、补充说明</a>
+      <ul>
+        <li><a href="#与下一节的衔接">与下一节的衔接</a></li>
+      </ul>
+    </li>
     <li><a href="#7小结">7、小结</a></li>
   </ul>
 </nav>
@@ -183,7 +191,7 @@
                   <span data-format="luxon">2025-11-13T14:21:26&#43;08:00</span>
                 
 
-              | 3 分钟阅读
+              | 4 分钟阅读
 
               
               | 更新于
@@ -213,8 +221,6 @@
 
       <article class="main">
         
-        <img class="cover" src="/img/ai6.png" />
-        
 
         <h2 id="1问题">1、问题</h2>
 <p>语言模型本身只能生成文本，它能“推理”应该去读文件、运行命令、查看报错，但它碰不到真实环境。</p>
@@ -223,6 +229,8 @@
 <blockquote>
 <p>一个最小可用的 Agent，本质上就是 while 循环加一个工具。</p>
 </blockquote>
+<h3 id="阅读前提">阅读前提</h3>
+<p>建议你至少具备三个基础：会写最基本的 Python 脚本、知道怎样通过环境变量配置 API Key、理解终端命令的基本执行方式。因为这一节虽然概念简单，但已经开始涉及模型调用、工具执行和消息状态维护。</p>
 <h2 id="2最小执行闭环">2、最小执行闭环</h2>
 <p>最简单的执行链路如下：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>用户输入 -&gt; LLM -&gt; 工具执行 -&gt; 工具结果回传 -&gt; LLM继续判断
@@ -372,6 +380,8 @@
 <p>第一，<code>messages</code> 不是简单聊天记录，而是 Agent 的运行时状态。用户输入、模型输出、工具调用、工具结果，全部都要进入这条状态流，否则模型下一轮就会“失忆”。</p>
 <p>第二，工具结果不能只返回“成功”或“失败”。越是复杂任务，越需要把 <code>stdout</code>、<code>stderr</code>、退出码、异常信息做结构化回传，否则模型只能猜。</p>
 <p>第三，主循环一定要有护栏。常见做法包括最大轮数、工具超时、单次输出截断和失败重试上限。最小 Agent 可以不优雅，但不能没有边界，不然很容易在真实项目里进入死循环。</p>
+<h3 id="与下一节的衔接">与下一节的衔接</h3>
+<p>这一节解决的是“Agent 怎么跑起来”。但只有一个 <code>bash</code> 工具还远远不够，下一节会继续把工具层拆开，进入真正可扩展、可约束的工具系统设计。</p>
 <h2 id="7小结">7、小结</h2>
 <p>这一节没有引入复杂概念，只做了一件事：把模型和工具通过一个循环连接起来。</p>
 <p>从代码量上看它非常小，但从架构上看，它是后续 11 节内容的统一起点。</p>

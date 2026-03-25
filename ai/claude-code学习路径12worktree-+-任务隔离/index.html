@@ -25,14 +25,14 @@
 <meta property="og:title" content="Agent 工作区隔离：Git Worktree 与任务绑定" />
 <meta property="og:description" content="1、问题 到 s11 为止，Agent 已经可以自主认领任务，但所有任务仍然共享同一个目录。 这会导致一个现实问题：两个 Agent 同时改不同任务时，如果都动到同一" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8412worktree-&#43;-%E4%BB%BB%E5%8A%A1%E9%9A%94%E7%A6%BB/" /><meta property="og:image" content="https://recordnote.github.io/img/ai6.png" /><meta property="article:section" content="ai" />
+<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8412worktree-&#43;-%E4%BB%BB%E5%8A%A1%E9%9A%94%E7%A6%BB/" /><meta property="og:image" content="https://recordnote.github.io/me/background1.jpg"/><meta property="article:section" content="ai" />
 <meta property="article:published_time" content="2026-01-24T14:21:26+08:00" />
 <meta property="article:modified_time" content="2026-01-24T14:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/img/ai6.png"/>
+<meta name="twitter:image" content="https://recordnote.github.io/me/background1.jpg"/>
 
 <meta name="twitter:title" content="Agent 工作区隔离：Git Worktree 与任务绑定"/>
 <meta name="twitter:description" content="1、问题 到 s11 为止，Agent 已经可以自主认领任务，但所有任务仍然共享同一个目录。 这会导致一个现实问题：两个 Agent 同时改不同任务时，如果都动到同一"/>
@@ -143,7 +143,11 @@
     <div class="ui segment toc">
       <nav id="TableOfContents">
   <ul>
-    <li><a href="#1问题">1、问题</a></li>
+    <li><a href="#1问题">1、问题</a>
+      <ul>
+        <li><a href="#阅读前提">阅读前提</a></li>
+      </ul>
+    </li>
     <li><a href="#2控制平面与执行平面">2、控制平面与执行平面</a>
       <ul>
         <li><a href="#本节架构图">本节架构图</a></li>
@@ -159,7 +163,11 @@
         <li><a href="#本节完整-demo-目录结构">本节完整 demo 目录结构</a></li>
       </ul>
     </li>
-    <li><a href="#8补充说明">8、补充说明</a></li>
+    <li><a href="#8补充说明">8、补充说明</a>
+      <ul>
+        <li><a href="#与下一节的衔接">与下一节的衔接</a></li>
+      </ul>
+    </li>
     <li><a href="#9小结">9、小结</a></li>
   </ul>
 </nav>
@@ -185,7 +193,7 @@
                   <span data-format="luxon">2026-01-24T14:21:26&#43;08:00</span>
                 
 
-              | 3 分钟阅读
+              | 4 分钟阅读
 
               
               | 更新于
@@ -215,13 +223,13 @@
 
       <article class="main">
         
-        <img class="cover" src="/img/ai6.png" />
-        
 
         <h2 id="1问题">1、问题</h2>
 <p>到 s11 为止，Agent 已经可以自主认领任务，但所有任务仍然共享同一个目录。</p>
 <p>这会导致一个现实问题：两个 Agent 同时改不同任务时，如果都动到同一批文件，未提交修改会互相污染，很难回滚，也很难明确某段改动属于哪个任务。</p>
 <p>所以任务板只能回答“做什么”，还回答不了“在哪做”。</p>
+<h3 id="阅读前提">阅读前提</h3>
+<p>这一节默认你已经理解任务系统、多 Agent 协作和 Git 的基本工作方式。因为 worktree 绑定既涉及状态治理，也涉及真实仓库目录和分支管理。</p>
 <h2 id="2控制平面与执行平面">2、控制平面与执行平面</h2>
 <p>这一节把系统拆成两层：</p>
 <ul>
@@ -374,6 +382,8 @@
 <p>Worktree 隔离真正解决的是“并行开发中的工作区污染”问题。</p>
 <p>如果只有任务板而没有独立目录，多个 Agent 最后还是会在同一份未提交改动上互相影响。把任务和 worktree 绑定以后，系统的控制平面和执行平面才真正对齐：任务知道自己归谁、在哪做、做到哪一步，目录也知道自己对应哪个任务。</p>
 <p>实际落地时，还建议把 worktree 生命周期和分支策略一起管理好，例如统一分支前缀、统一清理策略、统一保留规则。否则 worktree 虽然隔离了目录，但很快又会在 Git 管理层面重新变乱。</p>
+<h3 id="与下一节的衔接">与下一节的衔接</h3>
+<p>这一节已经是这组教程的收束章节。学到这里，你其实已经把 Agent 从最小循环一路搭到了多 Agent + 任务系统 + 工作区隔离的完整工程骨架。后续最值得继续深化的方向，一般是测试体系、权限治理和真实业务集成。</p>
 <h2 id="9小结">9、小结</h2>
 <p>这一节给多 Agent 系统补上了最后一个关键拼图：执行环境隔离。</p>
 <p>从任务状态到执行目录再到事件流，系统终于既知道“做什么”，也知道“在哪做”，还能知道“做到了什么阶段”。</p>

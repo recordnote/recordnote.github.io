@@ -25,14 +25,14 @@
 <meta property="og:title" content="多 Agent 协作协议：请求-响应与审批机制" />
 <meta property="og:description" content="1、问题 s09 已经有了队友和邮箱，但通信仍然比较原始。 比如两个典型场景： 领导请求某个队友优雅关机 队友提交高风险计划，等待领导审批 这两类交互都需要" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8410%E5%9B%A2%E9%98%9F%E5%8D%8F%E8%AE%AE/" /><meta property="og:image" content="https://recordnote.github.io/img/ai6.png" /><meta property="article:section" content="ai" />
+<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8410%E5%9B%A2%E9%98%9F%E5%8D%8F%E8%AE%AE/" /><meta property="og:image" content="https://recordnote.github.io/me/background1.jpg"/><meta property="article:section" content="ai" />
 <meta property="article:published_time" content="2026-01-05T14:21:26+08:00" />
 <meta property="article:modified_time" content="2026-01-05T14:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/img/ai6.png"/>
+<meta name="twitter:image" content="https://recordnote.github.io/me/background1.jpg"/>
 
 <meta name="twitter:title" content="多 Agent 协作协议：请求-响应与审批机制"/>
 <meta name="twitter:description" content="1、问题 s09 已经有了队友和邮箱，但通信仍然比较原始。 比如两个典型场景： 领导请求某个队友优雅关机 队友提交高风险计划，等待领导审批 这两类交互都需要"/>
@@ -143,7 +143,11 @@
     <div class="ui segment toc">
       <nav id="TableOfContents">
   <ul>
-    <li><a href="#1问题">1、问题</a></li>
+    <li><a href="#1问题">1、问题</a>
+      <ul>
+        <li><a href="#阅读前提">阅读前提</a></li>
+      </ul>
+    </li>
     <li><a href="#2统一的-request-response-模式">2、统一的 request-response 模式</a>
       <ul>
         <li><a href="#本节架构图">本节架构图</a></li>
@@ -159,7 +163,11 @@
         <li><a href="#本节完整-demo-目录结构">本节完整 demo 目录结构</a></li>
       </ul>
     </li>
-    <li><a href="#8补充说明">8、补充说明</a></li>
+    <li><a href="#8补充说明">8、补充说明</a>
+      <ul>
+        <li><a href="#与下一节的衔接">与下一节的衔接</a></li>
+      </ul>
+    </li>
     <li><a href="#9小结">9、小结</a></li>
   </ul>
 </nav>
@@ -215,8 +223,6 @@
 
       <article class="main">
         
-        <img class="cover" src="/img/ai6.png" />
-        
 
         <h2 id="1问题">1、问题</h2>
 <p>s09 已经有了队友和邮箱，但通信仍然比较原始。</p>
@@ -226,6 +232,8 @@
 <li>队友提交高风险计划，等待领导审批</li>
 </ul>
 <p>这两类交互都需要一个共同能力：能够把请求和响应准确关联起来。</p>
+<h3 id="阅读前提">阅读前提</h3>
+<p>这一节默认你已经有了持久化队友和邮箱通信的基础。因为协议并不是孤立能力，它是建立在已有团队通信机制之上的治理层补充。</p>
 <h2 id="2统一的-request-response-模式">2、统一的 request-response 模式</h2>
 <p>这一节用同一个模型来处理关机协议和计划审批协议：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>发送方 -&gt; request_id -&gt; 接收方
@@ -365,6 +373,8 @@
 <p>协议的价值在多人协作里会越来越明显，因为它解决的是“消息怎么被正确理解”。</p>
 <p>如果没有 <code>request_id</code>，系统很难判断某条回复是在回应哪一次关机请求、哪一次计划审批，尤其在多个请求同时存在时更容易串线。把消息做成“请求 + 响应 + 状态”三段式，本质上是在给 Agent 协作建立最小事务语义。</p>
 <p>此外，高风险动作最好都走协议而不是直接执行。比如关机、强制接管、危险代码修改这类动作，如果没有显式批准流程，系统在扩展后会非常脆弱。</p>
+<h3 id="与下一节的衔接">与下一节的衔接</h3>
+<p>协议层把团队协作变得可治理了，下一步自然就是让队友在规则下自己找活干。下一节会进入自主 Agent。</p>
 <h2 id="9小结">9、小结</h2>
 <p>这一节的核心不是增加了两个功能，而是让团队协作开始有“规矩”。</p>
 <p>从此之后，Agent 之间的关键协商不再是自由文本，而是可跟踪、可关联、可审批的协议流。</p>

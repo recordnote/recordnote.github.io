@@ -25,14 +25,14 @@
 <meta property="og:title" content="Agent 长上下文治理：压缩、摘要与记忆延续" />
 <meta property="og:description" content="1、问题 上下文窗口是有限的。 教程举的例子很直观：读一个 1000 行文件，可能就会吃掉几千 token；再读几十个文件、跑几十条命令，上下文很快就会被撑" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8406%E4%B8%8A%E4%B8%8B%E6%96%87%E5%8E%8B%E7%BC%A9/" /><meta property="og:image" content="https://recordnote.github.io/img/ai6.png" /><meta property="article:section" content="ai" />
+<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8406%E4%B8%8A%E4%B8%8B%E6%96%87%E5%8E%8B%E7%BC%A9/" /><meta property="og:image" content="https://recordnote.github.io/me/background1.jpg"/><meta property="article:section" content="ai" />
 <meta property="article:published_time" content="2025-12-04T14:21:26+08:00" />
 <meta property="article:modified_time" content="2025-12-04T14:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/img/ai6.png"/>
+<meta name="twitter:image" content="https://recordnote.github.io/me/background1.jpg"/>
 
 <meta name="twitter:title" content="Agent 长上下文治理：压缩、摘要与记忆延续"/>
 <meta name="twitter:description" content="1、问题 上下文窗口是有限的。 教程举的例子很直观：读一个 1000 行文件，可能就会吃掉几千 token；再读几十个文件、跑几十条命令，上下文很快就会被撑"/>
@@ -143,7 +143,11 @@
     <div class="ui segment toc">
       <nav id="TableOfContents">
   <ul>
-    <li><a href="#1问题">1、问题</a></li>
+    <li><a href="#1问题">1、问题</a>
+      <ul>
+        <li><a href="#阅读前提">阅读前提</a></li>
+      </ul>
+    </li>
     <li><a href="#2三层压缩策略">2、三层压缩策略</a>
       <ul>
         <li><a href="#本节架构图">本节架构图</a></li>
@@ -159,7 +163,11 @@
         <li><a href="#本节完整-demo-目录结构">本节完整 demo 目录结构</a></li>
       </ul>
     </li>
-    <li><a href="#8补充说明">8、补充说明</a></li>
+    <li><a href="#8补充说明">8、补充说明</a>
+      <ul>
+        <li><a href="#与下一节的衔接">与下一节的衔接</a></li>
+      </ul>
+    </li>
     <li><a href="#9小结">9、小结</a></li>
   </ul>
 </nav>
@@ -215,13 +223,13 @@
 
       <article class="main">
         
-        <img class="cover" src="/img/ai6.png" />
-        
 
         <h2 id="1问题">1、问题</h2>
 <p>上下文窗口是有限的。</p>
 <p>教程举的例子很直观：读一个 1000 行文件，可能就会吃掉几千 token；再读几十个文件、跑几十条命令，上下文很快就会被撑满。</p>
 <p>如果没有压缩机制，Agent 根本没法在大项目里持续工作。</p>
+<h3 id="阅读前提">阅读前提</h3>
+<p>读这一节前，建议你已经理解 <code>messages</code> 累积、工具结果回填和技能按需加载这三件事。因为上下文压缩处理的不是单个功能，而是整个会话历史的增长问题。</p>
 <h2 id="2三层压缩策略">2、三层压缩策略</h2>
 <p>这一节提出的是三层压缩方案，而且压缩力度逐步增强：</p>
 <ol>
@@ -375,6 +383,8 @@
 <p>上下文压缩最难的不是“压缩”，而是“压完以后还要能继续做事”。</p>
 <p>一个好的摘要至少要保留这些信息：当前总体目标、已经完成的步骤、未完成的问题、关键文件路径、失败原因、下一步建议。如果只保留概括性描述，比如“已经做了很多分析”，那对后续决策几乎没有帮助。</p>
 <p>此外，压缩策略最好和存档策略一起设计。因为摘要天然会丢细节，所以原始 transcript 必须能追溯；否则一旦模型后面需要重新核对某个错误日志，就只能重新执行一遍。</p>
+<h3 id="与下一节的衔接">与下一节的衔接</h3>
+<p>上下文压缩让会话能持续更久，但任务状态仍然主要活在会话里。下一节会把任务状态进一步持久化，进入真正的任务系统设计。</p>
 <h2 id="9小结">9、小结</h2>
 <p>这一节把“上下文会满”这个现实问题正式纳入架构设计。</p>
 <p>从这里开始，Agent 才真正具备了长会话持续工作的基础条件。</p>

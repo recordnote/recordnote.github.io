@@ -25,14 +25,14 @@
 <meta property="og:title" content="Agent 任务系统设计：DAG 依赖与持久化状态" />
 <meta property="og:description" content="1、问题 s03 的 TodoManager 只是一个内存里的扁平清单，它有几个明显不足： 没有依赖关系 没有顺序表达 状态粒度太粗 一旦上下文压缩，内存态就可能丢失 真实项目里的任" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8407%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F/" /><meta property="og:image" content="https://recordnote.github.io/img/ai6.png" /><meta property="article:section" content="ai" />
+<meta property="og:url" content="https://recordnote.github.io/ai/claude-code%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%8407%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F/" /><meta property="og:image" content="https://recordnote.github.io/me/background1.jpg"/><meta property="article:section" content="ai" />
 <meta property="article:published_time" content="2025-12-11T14:21:26+08:00" />
 <meta property="article:modified_time" content="2025-12-11T14:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/img/ai6.png"/>
+<meta name="twitter:image" content="https://recordnote.github.io/me/background1.jpg"/>
 
 <meta name="twitter:title" content="Agent 任务系统设计：DAG 依赖与持久化状态"/>
 <meta name="twitter:description" content="1、问题 s03 的 TodoManager 只是一个内存里的扁平清单，它有几个明显不足： 没有依赖关系 没有顺序表达 状态粒度太粗 一旦上下文压缩，内存态就可能丢失 真实项目里的任"/>
@@ -143,7 +143,11 @@
     <div class="ui segment toc">
       <nav id="TableOfContents">
   <ul>
-    <li><a href="#1问题">1、问题</a></li>
+    <li><a href="#1问题">1、问题</a>
+      <ul>
+        <li><a href="#阅读前提">阅读前提</a></li>
+      </ul>
+    </li>
     <li><a href="#2任务图">2、任务图</a>
       <ul>
         <li><a href="#本节架构图">本节架构图</a></li>
@@ -159,7 +163,11 @@
         <li><a href="#本节完整-demo-目录结构">本节完整 demo 目录结构</a></li>
       </ul>
     </li>
-    <li><a href="#8补充说明">8、补充说明</a></li>
+    <li><a href="#8补充说明">8、补充说明</a>
+      <ul>
+        <li><a href="#与下一节的衔接">与下一节的衔接</a></li>
+      </ul>
+    </li>
     <li><a href="#9小结">9、小结</a></li>
   </ul>
 </nav>
@@ -215,8 +223,6 @@
 
       <article class="main">
         
-        <img class="cover" src="/img/ai6.png" />
-        
 
         <h2 id="1问题">1、问题</h2>
 <p>s03 的 TodoManager 只是一个内存里的扁平清单，它有几个明显不足：</p>
@@ -227,6 +233,8 @@
 <li>一旦上下文压缩，内存态就可能丢失</li>
 </ul>
 <p>真实项目里的任务往往不是平铺的，而是有前后依赖和并行关系的。</p>
+<h3 id="阅读前提">阅读前提</h3>
+<p>建议先完成 TodoWrite 和上下文压缩两节的理解。因为任务系统本质上是在把“会话里的计划”升级成“磁盘上的状态机”，它是前面两节的工程化延伸。</p>
 <h2 id="2任务图">2、任务图</h2>
 <p>这一节把 Todo 升级成了基于文件持久化的任务图。</p>
 <p>每个任务对应一个 JSON 文件，主要字段包括：</p>
@@ -392,6 +400,8 @@
 <p>最关键的一点是，任务不再只是“记录工作项”，而是开始表达依赖关系和可执行条件。也就是说，系统要能判断一个任务当前是可做、阻塞、进行中还是已完成，而不是只在 UI 上列出来。</p>
 <p>实际实现里，建议把状态流转定义得更严格一些，例如 <code>pending -&gt; in_progress -&gt; completed/failed</code>。如果允许任务状态随意跳转，后续做自动认领、依赖解除和恢复现场时就会非常混乱。</p>
 <p>另一个很重要的字段是 <code>owner</code>。只要进入多 Agent 场景，任务归属就必须显式记录，不然系统很难判断某个任务是“没人做”还是“有人正在做”。</p>
+<h3 id="与下一节的衔接">与下一节的衔接</h3>
+<p>有了任务图以后，系统终于能表示依赖和可执行条件。下一节会继续向前，把长耗时任务从同步流程里拆出去，进入后台执行机制。</p>
 <h2 id="9小结">9、小结</h2>
 <p>这一节把“计划”从会话内的临时清单，升级成了可持久化、可表达依赖关系的任务图。</p>
 <p>这一步为后面的后台任务、多 Agent 团队和 worktree 隔离打下了协调基础。</p>
