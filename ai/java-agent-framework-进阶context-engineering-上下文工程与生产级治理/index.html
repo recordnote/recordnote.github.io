@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Java Agent Framework 进阶：Context Engineering 上下文工程与生产级治理 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.119.0">
+
+<link rel="canonical" href="https://recordnote.github.io/ai/java-agent-framework-%E8%BF%9B%E9%98%B6context-engineering-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%E4%B8%8E%E7%94%9F%E4%BA%A7%E7%BA%A7%E6%B2%BB%E7%90%86/" />
+
+
+<meta property="og:title" content="Java Agent Framework 进阶：Context Engineering 上下文工程与生产级治理" />
+<meta property="og:description" content="概述 很多人做 Agent 时，最先关注的往往是模型够不够强、工具够不够多、提示词写得够不够细。但真正到了生产场景，问题常常并不出在这些地方，而是出在上下" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/ai/java-agent-framework-%E8%BF%9B%E9%98%B6context-engineering-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%E4%B8%8E%E7%94%9F%E4%BA%A7%E7%BA%A7%E6%B2%BB%E7%90%86/" /><meta property="og:image" content="https://recordnote.github.io/img/ce.png" /><meta property="article:section" content="ai" />
+<meta property="article:published_time" content="2026-03-04T15:00:00+08:00" />
+<meta property="article:modified_time" content="2026-03-04T15:00:00+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/ce.png"/>
+
+<meta name="twitter:title" content="Java Agent Framework 进阶：Context Engineering 上下文工程与生产级治理"/>
+<meta name="twitter:description" content="概述 很多人做 Agent 时，最先关注的往往是模型够不够强、工具够不够多、提示词写得够不够细。但真正到了生产场景，问题常常并不出在这些地方，而是出在上下"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background1.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background1.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#概述">概述</a></li>
+    <li><a href="#1为什么-agent-经常不是模型不行而是上下文没喂对">1、为什么 Agent 经常不是“模型不行”，而是上下文没喂对</a></li>
+    <li><a href="#2什么是-context-engineering">2、什么是 Context Engineering</a>
+      <ul>
+        <li><a href="#agent-主循环图">Agent 主循环图</a></li>
+      </ul>
+    </li>
+    <li><a href="#3三类上下文modeltoollifecycle">3、三类上下文：Model、Tool、Lifecycle</a></li>
+    <li><a href="#31-model-context">3.1 Model Context</a>
+      <ul>
+        <li><a href="#model-context-示意图">Model Context 示意图</a></li>
+      </ul>
+    </li>
+    <li><a href="#32-tool-context">3.2 Tool Context</a>
+      <ul>
+        <li><a href="#tool-context-示意图">Tool Context 示意图</a></li>
+      </ul>
+    </li>
+    <li><a href="#33-lifecycle-context">3.3 Lifecycle Context</a>
+      <ul>
+        <li><a href="#lifecycle-context-示意图">Lifecycle Context 示意图</a></li>
+      </ul>
+    </li>
+    <li><a href="#4三类数据源runtimestatestore">4、三类数据源：Runtime、State、Store</a></li>
+    <li><a href="#41-runtime-context">4.1 Runtime Context</a></li>
+    <li><a href="#42-state">4.2 State</a></li>
+    <li><a href="#43-store">4.3 Store</a>
+      <ul>
+        <li><a href="#数据来源关系图">数据来源关系图</a></li>
+      </ul>
+    </li>
+    <li><a href="#5interceptor-和-hook一个改请求一个管生命周期">5、Interceptor 和 Hook：一个改请求，一个管生命周期</a></li>
+    <li><a href="#51-interceptor在单次调用前后改请求">5.1 Interceptor：在单次调用前后改请求</a></li>
+    <li><a href="#52-hook在阶段之间做治理动作">5.2 Hook：在阶段之间做治理动作</a>
+      <ul>
+        <li><a href="#hook--interceptor-分工图">Hook / Interceptor 分工图</a></li>
+      </ul>
+    </li>
+    <li><a href="#6动态系统提示让-prompt-不再是固定字符串">6、动态系统提示：让 Prompt 不再是固定字符串</a></li>
+    <li><a href="#7个性化上下文让不同用户拿到不同系统提示">7、个性化上下文：让不同用户拿到不同系统提示</a></li>
+    <li><a href="#8消息裁剪与摘要长对话治理的核心手段">8、消息裁剪与摘要：长对话治理的核心手段</a></li>
+    <li><a href="#81-截断先把噪音裁掉">8.1 截断：先把噪音裁掉</a></li>
+    <li><a href="#82-摘要把旧内容压缩成可延续的信息">8.2 摘要：把旧内容压缩成可延续的信息</a></li>
+    <li><a href="#9工具上下文工具不只是执行还要读状态写状态">9、工具上下文：工具不只是执行，还要读状态、写状态</a></li>
+    <li><a href="#10工具写状态让结果能被后续循环继续消费">10、工具写状态：让结果能被后续循环继续消费</a></li>
+    <li><a href="#11生命周期治理日志审计防护和摘要都应该有位置">11、生命周期治理：日志、审计、防护和摘要都应该有位置</a></li>
+    <li><a href="#12结构化输出与动态格式控制">12、结构化输出与动态格式控制</a></li>
+    <li><a href="#13什么时候用-interceptor什么时候用-hook">13、什么时候用 Interceptor，什么时候用 Hook</a>
+      <ul>
+        <li><a href="#优先用-interceptor-的情况">优先用 Interceptor 的情况</a></li>
+        <li><a href="#优先用-hook-的情况">优先用 Hook 的情况</a></li>
+        <li><a href="#选择建议图">选择建议图</a></li>
+      </ul>
+    </li>
+    <li><a href="#14给-java-开发者的几条落地建议">14、给 Java 开发者的几条落地建议</a>
+      <ul>
+        <li><a href="#141-先分清短期状态和长期存储">14.1 先分清短期状态和长期存储</a></li>
+        <li><a href="#142-长对话优先考虑摘要--最近窗口">14.2 长对话优先考虑“摘要 + 最近窗口”</a></li>
+        <li><a href="#143-工具不要只会执行还要能回写状态">14.3 工具不要只会执行，还要能回写状态</a></li>
+        <li><a href="#144-动态个性化依赖调用方传入-runtime-context">14.4 动态个性化依赖调用方传入 Runtime Context</a></li>
+        <li><a href="#145-不要把-hook-和-interceptor-混着用">14.5 不要把 Hook 和 Interceptor 混着用</a></li>
+      </ul>
+    </li>
+    <li><a href="#15总结">15、总结</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">Java Agent Framework 进阶：Context Engineering 上下文工程与生产级治理<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2026-03-04T15:00:00&#43;08:00</span>
+                
+
+              | 11 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2026-03-04T15:00:00&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=Java%20Agent%20Framework%20%e8%bf%9b%e9%98%b6%ef%bc%9aContext%20Engineering%20%e4%b8%8a%e4%b8%8b%e6%96%87%e5%b7%a5%e7%a8%8b%e4%b8%8e%e7%94%9f%e4%ba%a7%e7%ba%a7%e6%b2%bb%e7%90%86&url=https%3a%2f%2frecordnote.github.io%2fai%2fjava-agent-framework-%25E8%25BF%259B%25E9%2598%25B6context-engineering-%25E4%25B8%258A%25E4%25B8%258B%25E6%2596%2587%25E5%25B7%25A5%25E7%25A8%258B%25E4%25B8%258E%25E7%2594%259F%25E4%25BA%25A7%25E7%25BA%25A7%25E6%25B2%25BB%25E7%2590%2586%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fai%2fjava-agent-framework-%25E8%25BF%259B%25E9%2598%25B6context-engineering-%25E4%25B8%258A%25E4%25B8%258B%25E6%2596%2587%25E5%25B7%25A5%25E7%25A8%258B%25E4%25B8%258E%25E7%2594%259F%25E4%25BA%25A7%25E7%25BA%25A7%25E6%25B2%25BB%25E7%2590%2586%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/ce.png" />
+        
+
+        <h2 id="概述">概述</h2>
+<p>很多人做 Agent 时，最先关注的往往是模型够不够强、工具够不够多、提示词写得够不够细。但真正到了生产场景，问题常常并不出在这些地方，而是出在上下文组织得不对：该给模型的信息没给够，不该给的噪音给太多，工具看不到该看的状态，生命周期里的摘要、日志和治理动作也没有放在合适的位置。</p>
+<p>这就是 Context Engineering 想解决的问题。它关注的不是“再加一个能力点”，而是让 Agent 在每次模型调用、每次工具执行、每一轮状态更新里，都拿到合适的信息和合适的约束。</p>
+<p>本文围绕 Java Agent Framework 的 Context Engineering 能力展开，梳理它的核心思想、三类上下文、Hook / Interceptor 分工、状态与存储边界，以及在长对话、个性化、工具协作和生产治理里的典型做法。</p>
+<h2 id="1为什么-agent-经常不是模型不行而是上下文没喂对">1、为什么 Agent 经常不是“模型不行”，而是上下文没喂对</h2>
+<p>很多 Agent demo 看起来效果不错，但一旦进入更复杂的业务场景，就很容易开始漂移：</p>
+<ul>
+<li>回答越来越冗长</li>
+<li>长对话里忘记前文重点</li>
+<li>工具调用结果没有被后续流程有效利用</li>
+<li>不同用户拿到的回答风格和粒度不一致</li>
+<li>成本随着消息历史增长不断上升</li>
+</ul>
+<p>这些问题背后，往往不是模型能力突然下降，而是上下文管理失控了。</p>
+<p>更具体一点说，Agent 的不稳定通常来自下面几类原因：</p>
+<ul>
+<li>给模型的消息太多，噪音盖过了重点</li>
+<li>系统提示是静态的，不能反映当前会话阶段</li>
+<li>工具拿不到所需状态或用户上下文</li>
+<li>生命周期里缺少摘要、日志、防护和状态治理</li>
+<li>短期状态与长期记忆混在一起，边界不清</li>
+</ul>
+<p>所以 Context Engineering 的价值，不是让模型“更聪明”，而是让 Agent 在工程上更稳定、更省成本、更可控。</p>
+<h2 id="2什么是-context-engineering">2、什么是 Context Engineering</h2>
+<p>如果压缩成一句话，Context Engineering 可以理解为：</p>
+<blockquote>
+<p>在合适的时机，把合适的信息、合适的工具和合适的格式交给 LLM。</p>
+</blockquote>
+<p>这里有三个关键词：</p>
+<ul>
+<li>合适的信息</li>
+<li>合适的时机</li>
+<li>合适的边界</li>
+</ul>
+<p>因为 Agent 运行不是一次性 prompt，而是一条循环链路。每一轮里，模型看到什么、工具能访问什么、状态如何被更新，都会影响下一轮行为。</p>
+<h3 id="agent-主循环图">Agent 主循环图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    A[输入消息和提示] --&gt; B[模型调用]
+    B --&gt; C{是否需要工具}
+    C --&gt; D[直接输出结果]
+    C --&gt; E[执行工具]
+    E --&gt; F[工具结果写回上下文]
+    F --&gt; B
+</code></pre><p>所以从工程角度看，Context Engineering 本质上是在治理这条循环，而不是只改一段 prompt 文本。</p>
+<h2 id="3三类上下文modeltoollifecycle">3、三类上下文：Model、Tool、Lifecycle</h2>
+<p>这部分是整页里最关键的结构。页面把上下文拆成三类，而不是笼统地把所有内容都叫“上下文”。</p>
+<p>如果用更偏工程的方式去理解，可以把它们记成三个不同的问题：</p>
+<ul>
+<li>Model Context：这一轮到底喂给模型什么</li>
+<li>Tool Context：这一轮工具到底能读写什么</li>
+<li>Lifecycle Context：这一轮和下一轮之间要不要做额外治理</li>
+</ul>
+<p>把这三个问题拆开之后，很多原本混在一起的设计决策就会变得清楚。</p>
+<h2 id="31-model-context">3.1 Model Context</h2>
+<p>Model Context 关注的是：<strong>单次模型调用能看到什么。</strong></p>
+<p>它通常包括：</p>
+<ul>
+<li>系统提示</li>
+<li>消息历史</li>
+<li>工具列表</li>
+<li>当前使用的模型</li>
+<li>输出格式约束</li>
+</ul>
+<p>这部分是瞬态的，重点是控制“这一轮送给模型的内容”。</p>
+<h3 id="model-context-示意图">Model Context 示意图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    A[System Prompt] --&gt; M[Model Context]
+    B[消息历史] --&gt; M
+    C[工具列表] --&gt; M
+    D[模型选择] --&gt; M
+    E[输出格式] --&gt; M
+</code></pre><p>它最直接影响的是：</p>
+<ul>
+<li>当前回答质量</li>
+<li>当前 token 成本</li>
+<li>当前工具选择结果</li>
+<li>当前结构化输出是否稳定</li>
+</ul>
+<h2 id="32-tool-context">3.2 Tool Context</h2>
+<p>Tool Context 关注的是：<strong>工具在执行时可以读取和写入什么。</strong></p>
+<p>它通常涉及：</p>
+<ul>
+<li>工具读取 <code>OverAllState</code></li>
+<li>工具读取 <code>RunnableConfig</code></li>
+<li>工具把结果写回状态</li>
+</ul>
+<p>这部分更偏持久，因为工具执行结果往往不会只服务当前一行代码，而是会影响后续 Agent 循环。</p>
+<h3 id="tool-context-示意图">Tool Context 示意图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    A[OverAllState] --&gt; T[Tool Context]
+    B[RunnableConfig] --&gt; T
+    T --&gt; C[工具执行]
+    C --&gt; D[结果写回 State]
+</code></pre><p>如果 Tool Context 设计得不好，常见后果就是：</p>
+<ul>
+<li>工具做完事，后续流程却接不上</li>
+<li>工具拿不到用户身份、权限或环境信息</li>
+<li>中间结果无法在后续节点复用</li>
+</ul>
+<h2 id="33-lifecycle-context">3.3 Lifecycle Context</h2>
+<p>Lifecycle Context 关注的是：<strong>模型调用之间要发生什么。</strong></p>
+<p>这部分更适合放：</p>
+<ul>
+<li>摘要</li>
+<li>日志</li>
+<li>防护栏</li>
+<li>生命周期中的状态更新</li>
+</ul>
+<p>这一层和前两层最大的不同是，它不是只盯着“这一轮模型输入”，而是盯着 Agent 在整个运行过程中如何被治理。</p>
+<h3 id="lifecycle-context-示意图">Lifecycle Context 示意图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    A[Before Agent] --&gt; B[Before Model]
+    B --&gt; C[Model Call]
+    C --&gt; D[After Model]
+    D --&gt; E[After Agent]
+</code></pre><p>也正因为如此，Lifecycle Context 更适合承接那些“横切型”的逻辑，而不是把它们塞进主提示词里。</p>
+<h2 id="4三类数据源runtimestatestore">4、三类数据源：Runtime、State、Store</h2>
+<p>除了三类上下文本身，页面还把它们依赖的数据来源拆成三类。这一点非常工程化，因为很多问题都来自“数据从哪里来”没有想清楚。</p>
+<h2 id="41-runtime-context">4.1 Runtime Context</h2>
+<p>Runtime Context 更偏静态配置或会话级配置，比如：</p>
+<ul>
+<li>用户 ID</li>
+<li>API Key</li>
+<li>权限信息</li>
+<li>环境设置</li>
+<li>数据库连接</li>
+</ul>
+<p>这类信息往往通过 <code>RunnableConfig</code> 或 request context 进入调用链。</p>
+<h2 id="42-state">4.2 State</h2>
+<p>State 更偏短期记忆，主要服务当前会话或当前任务，比如：</p>
+<ul>
+<li>当前对话消息</li>
+<li>上传内容</li>
+<li>鉴权状态</li>
+<li>工具执行结果</li>
+</ul>
+<p>它解决的是“这一条任务链走到现在，系统已经知道了什么”。</p>
+<h2 id="43-store">4.3 Store</h2>
+<p>Store 更偏长期记忆，跨会话存在，例如：</p>
+<ul>
+<li>用户偏好</li>
+<li>历史洞察</li>
+<li>长期记忆数据</li>
+</ul>
+<p>这类信息不是每轮都要重新计算，而是应该被稳定存下来，再在需要时拿出来参与上下文构造。</p>
+<h3 id="数据来源关系图">数据来源关系图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    A[Runtime Context] --&gt; D[上下文构造]
+    B[State] --&gt; D
+    C[Store] --&gt; D
+    D --&gt; E[模型调用或工具执行]
+</code></pre><p>这一层的关键价值在于：它把“短期会话信息”和“长期用户记忆”清楚分开，避免所有东西都堆在 messages 里。</p>
+<p>再进一步说，三类数据源和三类上下文并不是一一对应的硬绑定关系，而更像一个组合表：</p>
+<ul>
+<li>Runtime Context 常常参与 Model Context 和 Tool Context 的构造</li>
+<li>State 同时服务模型输入、工具执行和生命周期更新</li>
+<li>Store 则更适合在需要时被取出，补充个性化或长期记忆信息</li>
+</ul>
+<p>理解这层关系之后，后面设计个性化、摘要和工具回写时，就不容易把短期状态与长期存储混在一起。</p>
+<h2 id="5interceptor-和-hook一个改请求一个管生命周期">5、Interceptor 和 Hook：一个改请求，一个管生命周期</h2>
+<p>这部分最容易混淆，但也是最值得掌握的。</p>
+<p>可以先记一个非常实用的判断：</p>
+<ul>
+<li><code>Interceptor</code> 更适合做单次请求级别的改写</li>
+<li><code>Hook</code> 更适合做生命周期阶段的操作</li>
+</ul>
+<h2 id="51-interceptor在单次调用前后改请求">5.1 Interceptor：在单次调用前后改请求</h2>
+<p>页面中出现的典型接口包括：</p>
+<ul>
+<li><code>ModelInterceptor</code></li>
+<li><code>ModelRequest</code></li>
+<li><code>ModelResponse</code></li>
+<li><code>ModelCallHandler</code></li>
+</ul>
+<p>最典型的方法是：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>interceptModel<span style="color:#f92672">(</span>ModelRequest request<span style="color:#f92672">,</span> ModelCallHandler handler<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>它特别适合处理：</p>
+<ul>
+<li>动态系统提示</li>
+<li>临时裁剪消息</li>
+<li>临时决定输出格式</li>
+<li>根据请求上下文补充个性化内容</li>
+</ul>
+<p>例如一个最小挂载方式：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>ReactAgent agent <span style="color:#f92672">=</span> ReactAgent<span style="color:#f92672">.</span><span style="color:#a6e22e">builder</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">name</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;context_aware_agent&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">model</span><span style="color:#f92672">(</span>chatModel<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">interceptors</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> StateAwarePromptInterceptor<span style="color:#f92672">())</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">build</span><span style="color:#f92672">();</span>
+</span></span></code></pre></div><p>这一层的重点是：它改的是<strong>当前这一次模型请求</strong>。</p>
+<h2 id="52-hook在阶段之间做治理动作">5.2 Hook：在阶段之间做治理动作</h2>
+<p>Hook 相关能力则更偏执行链路本身，例如：</p>
+<ul>
+<li><code>ModelHook</code></li>
+<li><code>MessagesModelHook</code></li>
+<li><code>HookPosition</code></li>
+<li><code>HookPositions</code></li>
+<li><code>AgentCommand</code></li>
+<li><code>UpdatePolicy</code></li>
+</ul>
+<p>挂载方式例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>ReactAgent agent <span style="color:#f92672">=</span> ReactAgent<span style="color:#f92672">.</span><span style="color:#a6e22e">builder</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">name</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;logged_agent&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">model</span><span style="color:#f92672">(</span>chatModel<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">hooks</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> LoggingHook<span style="color:#f92672">())</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">build</span><span style="color:#f92672">();</span>
+</span></span></code></pre></div><p>它更适合处理：</p>
+<ul>
+<li>调用前摘要</li>
+<li>调用前后日志记录</li>
+<li>消息列表替换</li>
+<li>生命周期中的状态更新</li>
+</ul>
+<h3 id="hook--interceptor-分工图">Hook / Interceptor 分工图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    A[Model Context] --&gt; D[模型输入治理]
+    B[Tool Context] --&gt; E[工具读写治理]
+    C[Lifecycle Context] --&gt; F[阶段治理]
+</code></pre><p>如果只想临时改一下这一轮模型的输入，优先 Interceptor；如果你想真正参与 Agent 生命周期，优先 Hook。</p>
+<p>还有一个很实用的判断标准是：如果你的修改在下一轮调用里应该继续生效，那通常就不该只停留在 Interceptor 里，而应该考虑通过 Hook 或状态更新把它真正落到 State 上。</p>
+<h2 id="6动态系统提示让-prompt-不再是固定字符串">6、动态系统提示：让 Prompt 不再是固定字符串</h2>
+<p>一个很典型的上下文工程实践，就是让系统提示根据当前状态动态变化。</p>
+<p>页面里给出的思路是：先读取当前消息数，再判断当前对话处于什么阶段，然后拼装出更适合当前轮次的 prompt。</p>
+<p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StateAwarePromptInterceptor</span> <span style="color:#66d9ef">extends</span> ModelInterceptor <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> ModelResponse <span style="color:#a6e22e">interceptModel</span><span style="color:#f92672">(</span>ModelRequest request<span style="color:#f92672">,</span> ModelCallHandler handler<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> messageCount <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span><span style="color:#a6e22e">getMessages</span><span style="color:#f92672">().</span><span style="color:#a6e22e">size</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    String prompt <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;基础助手提示&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>messageCount <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">10</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      prompt <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;长对话时保持精炼&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    SystemMessage newSystem <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span><span style="color:#a6e22e">getSystemMessage</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">?</span> <span style="color:#66d9ef">new</span> SystemMessage<span style="color:#f92672">(</span>prompt<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> SystemMessage<span style="color:#f92672">(</span>request<span style="color:#f92672">.</span><span style="color:#a6e22e">getSystemMessage</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getText</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> prompt<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ModelRequest enhanced <span style="color:#f92672">=</span> ModelRequest<span style="color:#f92672">.</span><span style="color:#a6e22e">builder</span><span style="color:#f92672">(</span>request<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">.</span><span style="color:#a6e22e">systemMessage</span><span style="color:#f92672">(</span>newSystem<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">.</span><span style="color:#a6e22e">build</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> handler<span style="color:#f92672">.</span><span style="color:#a6e22e">call</span><span style="color:#f92672">(</span>enhanced<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>这个思路很实用，因为它把提示词从“写死”变成了“按状态生成”。</p>
+<p>从工程上看，它适合处理：</p>
+<ul>
+<li>长对话要求简洁输出</li>
+<li>不同阶段切换回答风格</li>
+<li>任务进入后半程时提高收敛性</li>
+</ul>
+<h2 id="7个性化上下文让不同用户拿到不同系统提示">7、个性化上下文：让不同用户拿到不同系统提示</h2>
+<p>另一类非常常见的场景是个性化提示。</p>
+<p>这里的关键不是把所有用户都写进一个 prompt，而是：</p>
+<ul>
+<li>从运行时上下文拿到用户 ID</li>
+<li>从 Store 里查用户偏好</li>
+<li>再动态生成系统提示</li>
+</ul>
+<p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PersonalizedPromptInterceptor</span> <span style="color:#66d9ef">extends</span> ModelInterceptor <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> UserPreferenceStore store<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> ModelResponse <span style="color:#a6e22e">interceptModel</span><span style="color:#f92672">(</span>ModelRequest request<span style="color:#f92672">,</span> ModelCallHandler handler<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    String userId <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span><span style="color:#a6e22e">getContext</span><span style="color:#f92672">().</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;user-id&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    UserPreferences prefs <span style="color:#f92672">=</span> store<span style="color:#f92672">.</span><span style="color:#a6e22e">getPreferences</span><span style="color:#f92672">(</span>userId<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    String prompt <span style="color:#f92672">=</span> buildPersonalizedPrompt<span style="color:#f92672">(</span>prefs<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ModelRequest enhanced <span style="color:#f92672">=</span> ModelRequest<span style="color:#f92672">.</span><span style="color:#a6e22e">builder</span><span style="color:#f92672">(</span>request<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">.</span><span style="color:#a6e22e">systemMessage</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> SystemMessage<span style="color:#f92672">(</span>prompt<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">.</span><span style="color:#a6e22e">build</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> handler<span style="color:#f92672">.</span><span style="color:#a6e22e">call</span><span style="color:#f92672">(</span>enhanced<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>这背后的工程价值非常明确：</p>
+<ul>
+<li>用户身份来自 Runtime Context</li>
+<li>用户偏好来自 Store</li>
+<li>最终组合成当前轮的 Model Context</li>
+</ul>
+<p>也就是说，三类数据源在这里被真正串起来了。</p>
+<h2 id="8消息裁剪与摘要长对话治理的核心手段">8、消息裁剪与摘要：长对话治理的核心手段</h2>
+<p>长对话是 Context Engineering 最典型的应用场景之一。</p>
+<p>因为消息一旦不断累积，问题会非常直接：</p>
+<ul>
+<li>token 成本持续上涨</li>
+<li>模型开始被旧内容干扰</li>
+<li>当前关键信息在上下文里被冲淡</li>
+</ul>
+<p>页面里给了两种典型手段：</p>
+<ul>
+<li>截断</li>
+<li>摘要</li>
+</ul>
+<h2 id="81-截断先把噪音裁掉">8.1 截断：先把噪音裁掉</h2>
+<p>例如只保留最近若干条消息：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MessageFilterInterceptor</span> <span style="color:#66d9ef">extends</span> ModelInterceptor <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> maxMessages<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> ModelResponse <span style="color:#a6e22e">interceptModel</span><span style="color:#f92672">(</span>ModelRequest request<span style="color:#f92672">,</span> ModelCallHandler handler<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>Message<span style="color:#f92672">&gt;</span> messages <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span><span style="color:#a6e22e">getMessages</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>messages<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;</span> maxMessages<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      List<span style="color:#f92672">&lt;</span>Message<span style="color:#f92672">&gt;</span> filtered <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      messages<span style="color:#f92672">.</span><span style="color:#a6e22e">stream</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">.</span><span style="color:#a6e22e">filter</span><span style="color:#f92672">(</span>m <span style="color:#f92672">-&gt;</span> m <span style="color:#66d9ef">instanceof</span> SystemMessage<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">.</span><span style="color:#a6e22e">findFirst</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">.</span><span style="color:#a6e22e">ifPresent</span><span style="color:#f92672">(</span>filtered<span style="color:#f92672">::</span>add<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">int</span> start <span style="color:#f92672">=</span> Math<span style="color:#f92672">.</span><span style="color:#a6e22e">max</span><span style="color:#f92672">(</span><span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> messages<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">()</span> <span style="color:#f92672">-</span> maxMessages <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>      filtered<span style="color:#f92672">.</span><span style="color:#a6e22e">addAll</span><span style="color:#f92672">(</span>messages<span style="color:#f92672">.</span><span style="color:#a6e22e">subList</span><span style="color:#f92672">(</span>start<span style="color:#f92672">,</span> messages<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">()));</span>
+</span></span><span style="display:flex;"><span>      messages <span style="color:#f92672">=</span> filtered<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ModelRequest enhanced <span style="color:#f92672">=</span> ModelRequest<span style="color:#f92672">.</span><span style="color:#a6e22e">builder</span><span style="color:#f92672">(</span>request<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">.</span><span style="color:#a6e22e">messages</span><span style="color:#f92672">(</span>messages<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">.</span><span style="color:#a6e22e">build</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> handler<span style="color:#f92672">.</span><span style="color:#a6e22e">call</span><span style="color:#f92672">(</span>enhanced<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>这种方式简单直接，适合优先控成本。</p>
+<p>但要特别注意：这种 Interceptor 级改写只影响<strong>当前这一次请求</strong>，不会自动改写持久状态。</p>
+<h2 id="82-摘要把旧内容压缩成可延续的信息">8.2 摘要：把旧内容压缩成可延续的信息</h2>
+<p>如果你不想简单丢掉旧消息，而是想保留长期上下文，就更适合使用摘要 Hook。</p>
+<p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@HookPositions</span><span style="color:#f92672">({</span>HookPosition<span style="color:#f92672">.</span><span style="color:#a6e22e">BEFORE_MODEL</span><span style="color:#f92672">})</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SummarizationHook</span> <span style="color:#66d9ef">extends</span> MessagesModelHook <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> AgentCommand <span style="color:#a6e22e">beforeModel</span><span style="color:#f92672">(</span>List<span style="color:#f92672">&lt;</span>Message<span style="color:#f92672">&gt;</span> previousMessages<span style="color:#f92672">,</span> RunnableConfig config<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>previousMessages<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">()</span> <span style="color:#f92672">&lt;=</span> triggerLength<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> AgentCommand<span style="color:#f92672">(</span>previousMessages<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    String summary <span style="color:#f92672">=</span> generateSummary<span style="color:#f92672">(</span>previousMessages<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    SystemMessage system <span style="color:#f92672">=</span> findSystemMessage<span style="color:#f92672">(</span>previousMessages<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    UserMessage summaryMsg <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> UserMessage<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;上下文摘要：&#34;</span> <span style="color:#f92672">+</span> summary<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>Message<span style="color:#f92672">&gt;</span> recent <span style="color:#f92672">=</span> takeRecentMessages<span style="color:#f92672">(</span>previousMessages<span style="color:#f92672">,</span> <span style="color:#ae81ff">5</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>Message<span style="color:#f92672">&gt;</span> newMessages <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>system <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> newMessages<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>system<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    newMessages<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>summaryMsg<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    appendRecentExceptSystem<span style="color:#f92672">(</span>newMessages<span style="color:#f92672">,</span> recent<span style="color:#f92672">,</span> system<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> AgentCommand<span style="color:#f92672">(</span>newMessages<span style="color:#f92672">,</span> UpdatePolicy<span style="color:#f92672">.</span><span style="color:#a6e22e">REPLACE</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>这里最值得注意的，不只是“做摘要”本身，而是它背后的分层：</p>
+<ul>
+<li>角色规则继续由 <code>SystemMessage</code> 承担</li>
+<li>历史压缩结果变成一条摘要消息</li>
+<li>最近几轮上下文仍然保留原始形式</li>
+<li>最终通过 <code>UpdatePolicy.REPLACE</code> 替换当前消息集</li>
+</ul>
+<p>这说明在长对话治理里，最稳的做法通常不是“全删”或“全留”，而是把规则、摘要和最近上下文分开管理。</p>
+<h2 id="9工具上下文工具不只是执行还要读状态写状态">9、工具上下文：工具不只是执行，还要读状态、写状态</h2>
+<p>如果说前面几节主要在讲模型上下文，那么这一节关注的是工具上下文。</p>
+<p>页面给出的一个重要思路是：工具执行时也可以读取 Agent 当前状态和运行时配置。</p>
+<p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StatefulTool</span> <span style="color:#66d9ef">implements</span> Function<span style="color:#f92672">&lt;</span>Request<span style="color:#f92672">,</span> Response<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> Response <span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>Request request<span style="color:#f92672">,</span> ToolContext toolContext<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    OverAllState state <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>OverAllState<span style="color:#f92672">)</span> toolContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getContext</span><span style="color:#f92672">().</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;state&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    RunnableConfig config <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>RunnableConfig<span style="color:#f92672">)</span> toolContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getContext</span><span style="color:#f92672">().</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;config&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> messages <span style="color:#f92672">=</span> state<span style="color:#f92672">.</span><span style="color:#a6e22e">value</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;messages&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    Optional<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> userContext <span style="color:#f92672">=</span> config<span style="color:#f92672">.</span><span style="color:#a6e22e">metadata</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;user_context_key&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    String result <span style="color:#f92672">=</span> processWithContext<span style="color:#f92672">(</span>request<span style="color:#f92672">.</span><span style="color:#a6e22e">query</span><span style="color:#f92672">(),</span> messages<span style="color:#f92672">,</span> userContext<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Response<span style="color:#f92672">(</span>result<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>这意味着工具不再只是一个“纯输入、纯输出”的黑盒函数，而是能真正接触到当前会话上下文。</p>
+<p>从工程上看，这种设计特别适合：</p>
+<ul>
+<li>根据当前会话状态调整工具行为</li>
+<li>基于用户身份决定工具访问范围</li>
+<li>把工具执行变成 Agent 链路里真正有上下文感知的一环</li>
+</ul>
+<h2 id="10工具写状态让结果能被后续循环继续消费">10、工具写状态：让结果能被后续循环继续消费</h2>
+<p>除了读取状态，工具还可以把结果写回状态。</p>
+<p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StateModifyingTool</span> <span style="color:#66d9ef">implements</span> Function<span style="color:#f92672">&lt;</span>Request<span style="color:#f92672">,</span> Response<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> Response <span style="color:#a6e22e">apply</span><span style="color:#f92672">(</span>Request request<span style="color:#f92672">,</span> ToolContext toolContext<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> extraState <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">(</span>Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;)</span> toolContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getContext</span><span style="color:#f92672">().</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;extraState&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    String processed <span style="color:#f92672">=</span> process<span style="color:#f92672">(</span>request<span style="color:#f92672">.</span><span style="color:#a6e22e">data</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    extraState<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;processed_data&#34;</span><span style="color:#f92672">,</span> processed<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Response<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;done&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>这一层非常关键，因为它决定了工具输出是不是“做完就丢”。</p>
+<p><code>extraState</code> 的价值在于：</p>
+<ul>
+<li>工具结果可以被持久化进状态</li>
+<li>后续 loop 节点可以继续读取这些值</li>
+<li>中间结果不需要重新计算</li>
+</ul>
+<p>这特别适合：</p>
+<ul>
+<li>工具结果缓存</li>
+<li>工作流节点之间传值</li>
+<li>中间推理产物沉淀</li>
+</ul>
+<p>换句话说，Tool Context 真正成熟的标志，不只是工具能被调用，而是工具产物能进入后续推理链路。</p>
+<h2 id="11生命周期治理日志审计防护和摘要都应该有位置">11、生命周期治理：日志、审计、防护和摘要都应该有位置</h2>
+<p>Lifecycle Context 最直接的落地方式，就是 Hook。</p>
+<p>例如一个日志 Hook：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LoggingHook</span> <span style="color:#66d9ef">extends</span> ModelHook <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> HookPosition<span style="color:#f92672">[]</span> <span style="color:#a6e22e">getHookPositions</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> HookPosition<span style="color:#f92672">[]</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        HookPosition<span style="color:#f92672">.</span><span style="color:#a6e22e">BEFORE_MODEL</span><span style="color:#f92672">,</span>
+</span></span><span style="display:flex;"><span>        HookPosition<span style="color:#f92672">.</span><span style="color:#a6e22e">AFTER_MODEL</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> CompletableFuture<span style="color:#f92672">&lt;</span>Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">beforeModel</span><span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>      OverAllState state<span style="color:#f92672">,</span> RunnableConfig config<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> CompletableFuture<span style="color:#f92672">.</span><span style="color:#a6e22e">completedFuture</span><span style="color:#f92672">(</span>Map<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> CompletableFuture<span style="color:#f92672">&lt;</span>Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">afterModel</span><span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>      OverAllState state<span style="color:#f92672">,</span> RunnableConfig config<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> CompletableFuture<span style="color:#f92672">.</span><span style="color:#a6e22e">completedFuture</span><span style="color:#f92672">(</span>Map<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>它看起来简单，但工程意义很大，因为很多生产能力都适合放在这里，例如：</p>
+<ul>
+<li>调用前后日志</li>
+<li>输入输出审计</li>
+<li>防护栏检查</li>
+<li>生命周期状态更新</li>
+</ul>
+<p>把这些逻辑放在 Hook 层，而不是散落在主业务代码里，最大的好处就是职责边界清楚。</p>
+<h2 id="12结构化输出与动态格式控制">12、结构化输出与动态格式控制</h2>
+<p>Context Engineering 关注的并不只是“给模型什么上下文”，也包括“要求模型按什么格式输出”。</p>
+<p>页面里提到了两种常见入口：</p>
+<ul>
+<li>创建 Agent 时通过 <code>.outputType(...)</code></li>
+<li>创建 Agent 时通过 <code>.outputSchema(...)</code></li>
+</ul>
+<p>例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>ReactAgent agent <span style="color:#f92672">=</span> ReactAgent<span style="color:#f92672">.</span><span style="color:#a6e22e">builder</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">name</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;structured_agent&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">model</span><span style="color:#f92672">(</span>chatModel<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">outputType</span><span style="color:#f92672">(</span>MyResponseClass<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">build</span><span style="color:#f92672">();</span>
+</span></span></code></pre></div><p>也可以用 schema：</p>
+<ul>
+<li><code>.outputSchema(jsonSchema)</code></li>
+</ul>
+<p>从选型上说，可以简单记成：</p>
+<ul>
+<li>固定结构，优先 <code>outputType(...)</code></li>
+<li>更灵活的格式约束，再考虑 <code>outputSchema(...)</code></li>
+</ul>
+<p>而如果某些请求才需要特殊格式，则可以把格式控制放到 Interceptor 里动态注入。</p>
+<p>这也说明一个问题：输出格式本身也是上下文工程的一部分，而不只是最终结果的“包装层”。</p>
+<h2 id="13什么时候用-interceptor什么时候用-hook">13、什么时候用 Interceptor，什么时候用 Hook</h2>
+<p>如果把整页内容压缩成一条非常实用的判断标准，我会建议这样记：</p>
+<h3 id="优先用-interceptor-的情况">优先用 Interceptor 的情况</h3>
+<ul>
+<li>只想影响当前这次模型请求</li>
+<li>想动态改系统提示</li>
+<li>想临时裁剪消息</li>
+<li>想按请求补个性化内容</li>
+<li>想临时切换输出格式</li>
+</ul>
+<h3 id="优先用-hook-的情况">优先用 Hook 的情况</h3>
+<ul>
+<li>想在生命周期阶段做动作</li>
+<li>想摘要长对话并更新消息集</li>
+<li>想做调用前后日志和审计</li>
+<li>想把状态治理纳入执行流程</li>
+<li>想做更偏“长期运行”的控制逻辑</li>
+</ul>
+<h3 id="选择建议图">选择建议图</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart TB
+    A[要增强上下文] --&gt; B[先判断影响范围]
+    B --&gt; C[只影响当前请求]
+    B --&gt; D[影响后续轮次]
+    C --&gt; E[优先用 Interceptor]
+    D --&gt; F[优先用 Hook]
+</code></pre><p>这个边界一旦想清楚，后面很多设计选择都会简单很多。</p>
+<h2 id="14给-java-开发者的几条落地建议">14、给 Java 开发者的几条落地建议</h2>
+<p>如果把这些能力落到实际项目里，我觉得最值得记住的是下面几条。</p>
+<h3 id="141-先分清短期状态和长期存储">14.1 先分清短期状态和长期存储</h3>
+<p>不要把所有内容都塞进 messages。短期会话信息放 State，跨会话偏好放 Store。</p>
+<h3 id="142-长对话优先考虑摘要--最近窗口">14.2 长对话优先考虑“摘要 + 最近窗口”</h3>
+<p>单纯保留全部历史，很快就会把成本和噪音一起拉满。</p>
+<h3 id="143-工具不要只会执行还要能回写状态">14.3 工具不要只会执行，还要能回写状态</h3>
+<p>只有这样，工具产物才能真正参与后续推理。</p>
+<h3 id="144-动态个性化依赖调用方传入-runtime-context">14.4 动态个性化依赖调用方传入 Runtime Context</h3>
+<p>如果调用时不把用户 ID、权限、租户等信息传进来，后面很多个性化逻辑都无从谈起。</p>
+<h3 id="145-不要把-hook-和-interceptor-混着用">14.5 不要把 Hook 和 Interceptor 混着用</h3>
+<p>它们都能增强上下文，但关注点不一样。边界越清楚，系统越容易维护。</p>
+<h2 id="15总结">15、总结</h2>
+<p>Context Engineering 这部分能力最有价值的地方，不是多了几个新扩展点，而是它把 Agent 运行中真正影响效果的那条链路拆清楚了：</p>
+<ul>
+<li><code>Model Context</code> 决定模型每次调用看到什么</li>
+<li><code>Tool Context</code> 决定工具能读取和写入什么</li>
+<li><code>Lifecycle Context</code> 决定不同阶段之间如何治理</li>
+<li><code>Runtime Context</code>、<code>State</code>、<code>Store</code> 决定这些上下文的数据来源</li>
+<li><code>Interceptor</code> 和 <code>Hook</code> 则把这些控制点落成了可实现的工程机制</li>
+</ul>
+<p>对于 Java 开发者来说，这套设计最大的意义在于：它把 Agent 的稳定性问题，从“调 prompt 的玄学”逐步变成“可拆分、可定位、可治理的工程问题”。</p>
+<p>当你的 Agent 开始进入长对话、个性化、复杂工具协作和生产治理场景时，Context Engineering 往往比“再换一个模型”更值得优先做好。</p>
+
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2026 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">Lin 的博客<span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <article class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+    </article>
+
+    
+    
+    
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+
+    
+
+    
+    
+    
+          <div class="dream-tags">
+          
+          
+          
+            <a class="ui label" href="/tags/agent/" title="Agent">
+              Agent
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/ai/" title="AI">
+              AI
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/claude-code/" title="Claude Code">
+              Claude Code
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/java/" title="Java">
+              Java
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/spring/" title="spring">
+              spring
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+              前端
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" title="微服务">
+              微服务
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%84%9F%E6%82%9F/" title="感悟">
+              感悟
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8/" title="数据安全">
+              数据安全
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" title="数据库">
+              数据库
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9D%82%E8%B0%88/" title="杂谈">
+              杂谈
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" title="架构设计">
+              架构设计
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" title="消息队列">
+              消息队列
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB/" title="生活">
+              生活
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="算法与数据结构">
+              算法与数据结构
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83/" title="认证授权">
+              认证授权
+            </a>
+          
+          
+          
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/" title="运维">
+              运维
+            </a>
+          
+          </div>
+    
+
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<ul>
+<li><strong>🛠️ 技术阵地：</strong> 深耕 Java 开发 ，目前向 AI 应用领域探索与拓展。这里主要记录我从后端架构到 AI 赋能的进阶之路、技术思考以及日常的 debug 血泪史。始终致力于写出优雅且没有 bug 的代码（尽量）。</li>
+<li><strong>🌈 生活侧写：</strong> 偶尔脱下极客的外衣，我也会在这里分享生活中的灵光一现。不管是好用的效率工具，还是周末的一场骑行，都是构成我真实生活的一部分。</li>
+</ul>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background1.jpg"
+  window.darkNav =  null 
+  window.maxTags =  null 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  window.__dreamMermaid = mermaid;
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', async function () {
+    if (!window.__dreamMermaid) return
+
+    var blocks = document.querySelectorAll('pre code.language-mermaid, pre code.lang-mermaid')
+    if (!blocks.length) return
+
+    blocks.forEach(function (block, index) {
+      var pre = block.parentElement
+      if (!pre || !pre.parentElement) return
+
+      var wrapper = document.createElement('div')
+      wrapper.className = 'mermaid'
+      wrapper.textContent = block.textContent
+      wrapper.setAttribute('data-mermaid-id', 'mermaid-' + index)
+      pre.parentElement.replaceChild(wrapper, pre)
+    })
+
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var themeVariables = isDark === 'y'
+      ? {
+          primaryColor: '#1f3a33',
+          primaryTextColor: '#e9f7ef',
+          primaryBorderColor: '#5aa37a',
+          lineColor: '#86c59a',
+          secondaryColor: '#27463f',
+          tertiaryColor: '#1a2d29',
+          background: '#1a2a27',
+          mainBkg: '#1f3a33',
+          secondBkg: '#27463f',
+          tertiaryBkg: '#223a34',
+          nodeBorder: '#5aa37a',
+          clusterBkg: '#203631',
+          clusterBorder: '#5aa37a',
+          edgeLabelBackground: '#27463f',
+          fontFamily: 'Segoe UI, Microsoft YaHei, sans-serif',
+          fontSize: '15px'
+        }
+      : {
+          primaryColor: '#e8f5ee',
+          primaryTextColor: '#1d3b2f',
+          primaryBorderColor: '#4f9b6b',
+          lineColor: '#5d9f73',
+          secondaryColor: '#f3fbf6',
+          tertiaryColor: '#dff0e6',
+          background: '#ffffff',
+          mainBkg: '#e8f5ee',
+          secondBkg: '#f3fbf6',
+          tertiaryBkg: '#dff0e6',
+          nodeBorder: '#4f9b6b',
+          clusterBkg: '#f5fbf7',
+          clusterBorder: '#7caf8c',
+          edgeLabelBackground: '#ffffff',
+          fontFamily: 'Segoe UI, Microsoft YaHei, sans-serif',
+          fontSize: '15px'
+        }
+
+    window.__dreamMermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: themeVariables,
+      securityLevel: 'loose',
+      flowchart: { curve: 'basis', htmlLabels: true },
+      sequence: { useMaxWidth: true, wrap: true },
+      state: { useMaxWidth: true }
+    })
+
+    await window.__dreamMermaid.run({
+      querySelector: '.mermaid'
+    })
+  })
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>
