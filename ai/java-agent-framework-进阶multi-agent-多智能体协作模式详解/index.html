@@ -262,7 +262,7 @@
         <h2 id="概述">概述</h2>
 <p>当一个 Agent 既要理解复杂需求，又要处理大量工具、跨步骤状态和不同专业角色时，单智能体模式很快就会碰到上限。这个时候，问题往往不再是“模型够不够强”，而是“任务该怎么拆、上下文该怎么分、谁来决定下一步做什么”。</p>
 <p>Java Agent Framework 在进阶部分给出的答案，就是 <strong>Multi-Agent</strong>。它不是简单地多起几个 Agent，而是提供了一套明确的协作模式：顺序执行、并行执行、智能路由、监督者编排，以及可自定义的 FlowAgent 工作流。</p>
-<p>本文基于官方教程 <strong>Multi-agent</strong> 页面内容，系统梳理 Java Agent Framework 的多智能体设计思路、核心 API、上下文传递方式和典型协作模式，帮助你从“一个 Agent 干所有活”走向“多个 Agent 分工协作”。</p>
+<p>本文系统梳理 Java Agent Framework 的多智能体设计思路、核心 API、上下文传递方式和典型协作模式，帮助你从“一个 Agent 干所有活”走向“多个 Agent 分工协作”。</p>
 <h2 id="1为什么需要-multi-agent">1、为什么需要 Multi-Agent</h2>
 <p>单 Agent 最大的问题不是不能做事，而是容易把所有问题都堆进一个上下文里：</p>
 <ul>
@@ -654,7 +654,7 @@
 </ul>
 <p>这几条看起来朴素，但往往决定了多 Agent 系统后面是越做越稳，还是越做越乱。</p>
 <h2 id="12总结">12、总结</h2>
-<p>官方教程 <strong>Multi-agent</strong> 的价值，不只是列出了几个类名，而是把多智能体设计背后的几件关键事情讲清楚了：</p>
+<p>Multi-Agent 这部分内容的价值，不只是列出了几个类名，而是把多智能体设计背后的几件关键事情讲清楚了：</p>
 <ul>
 <li>多 Agent 不是数量问题，而是任务拆分与上下文治理问题</li>
 <li><code>Tool Calling</code> 和 <code>Handoffs</code> 是两种不同的控制哲学</li>
