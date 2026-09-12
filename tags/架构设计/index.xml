@@ -18,6 +18,15 @@
     </item>
     
     <item>
+      <title>Agent 故障演练设计：重复执行、越权检索与预算失控</title>
+      <link>https://recordnote.github.io/agent-engineering/agent-failure-drills/</link>
+      <pubDate>Wed, 26 Aug 2026 10:00:00 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/agent-engineering/agent-failure-drills/</guid>
+      <description>&lt;p&gt;围绕三个高风险故障定义注入点、预期终态和恢复证据，检验治理链路是否有效。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>多 Agent 协作的工程取舍：何时拆分，如何收敛</title>
       <link>https://recordnote.github.io/agent-engineering/multi-agent-coordination/</link>
       <pubDate>Wed, 05 Aug 2026 10:00:00 +0800</pubDate>
@@ -27,12 +36,48 @@
     </item>
     
     <item>
+      <title>AI 服务容量规划：长尾延迟、排队与压测模型</title>
+      <link>https://recordnote.github.io/agent-engineering/ai-capacity-load-test/</link>
+      <pubDate>Wed, 22 Jul 2026 10:00:00 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/agent-engineering/ai-capacity-load-test/</guid>
+      <description>&lt;p&gt;用到达率、服务时间和资源池解释吞吐上限，设计能暴露排队问题的负载实验。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>企业模型网关设计：能力路由、配额与降级</title>
       <link>https://recordnote.github.io/agent-engineering/model-gateway-routing/</link>
       <pubDate>Wed, 01 Jul 2026 10:00:00 +0800</pubDate>
       
       <guid>https://recordnote.github.io/agent-engineering/model-gateway-routing/</guid>
       <description>&lt;p&gt;在统一入口执行能力检查和预算控制，用明确语义约束模型切换与故障降级。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Agent 异步任务的事务消息：Outbox 与幂等消费</title>
+      <link>https://recordnote.github.io/agent-engineering/transactional-outbox-agent/</link>
+      <pubDate>Wed, 10 Jun 2026 10:00:00 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/agent-engineering/transactional-outbox-agent/</guid>
+      <description>&lt;p&gt;用事务内事件和消费去重衔接数据库与消息系统，明确至少一次投递下的责任边界。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>长任务 Agent 状态机：检查点、租约与故障恢复</title>
+      <link>https://recordnote.github.io/agent-engineering/durable-agent-state/</link>
+      <pubDate>Wed, 03 Jun 2026 10:00:00 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/agent-engineering/durable-agent-state/</guid>
+      <description>&lt;p&gt;将任务事实持久化，用租约和版本校验处理进程重启与重复调度。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>人工审批与幂等执行：让 Agent 安全创建工单</title>
+      <link>https://recordnote.github.io/agent-engineering/approval-idempotency/</link>
+      <pubDate>Wed, 27 May 2026 10:00:00 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/agent-engineering/approval-idempotency/</guid>
+      <description>&lt;p&gt;把审批绑定到具体命令，用业务幂等和结果对账处理超时后的不确定执行状态。&lt;/p&gt;</description>
     </item>
     
     <item>

@@ -44,5 +44,14 @@
       <description>&lt;p&gt;从来源版本到索引发布，设计能够更新、删除和回滚的知识入库流水线。&lt;/p&gt;</description>
     </item>
     
+    <item>
+      <title>Java Agent Framework 进阶：混合 RAG 架构与质量增强实践</title>
+      <link>https://recordnote.github.io/ai/java-agent-framework-%E8%BF%9B%E9%98%B6%E6%B7%B7%E5%90%88-rag-%E6%9E%B6%E6%9E%84%E4%B8%8E%E8%B4%A8%E9%87%8F%E5%A2%9E%E5%BC%BA%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Wed, 25 Feb 2026 15:00:00 +0800</pubDate>
+      
+      <guid>https://recordnote.github.io/ai/java-agent-framework-%E8%BF%9B%E9%98%B6%E6%B7%B7%E5%90%88-rag-%E6%9E%B6%E6%9E%84%E4%B8%8E%E8%B4%A8%E9%87%8F%E5%A2%9E%E5%BC%BA%E5%AE%9E%E8%B7%B5/</guid>
+      <description>概述 大语言模型在真实业务里有两个非常典型的短板：一是上下文窗口有限，不可能把所有知识都直接塞进去；二是模型知识不是实时更新的，面对企业内部文</description>
+    </item>
+    
   </channel>
 </rss>
