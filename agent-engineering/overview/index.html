@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Java Agent 工程化：从知识库问答到可靠业务执行 | Lin 的博客</title>
+    <title> | Lin 的博客</title>
 
     
 <link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
@@ -22,20 +22,20 @@
 <link rel="canonical" href="https://recordnote.github.io/agent-engineering/overview/" />
 
 
-<meta property="og:title" content="Java Agent 工程化：从知识库问答到可靠业务执行" />
-<meta property="og:description" content="以企业知识库与工单助手为例，梳理 RAG、工具治理、可靠执行、评测和 Java 平台架构。" />
+<meta property="og:title" content="" />
+<meta property="og:description" content="" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://recordnote.github.io/agent-engineering/overview/" /><meta property="og:image" content="https://recordnote.github.io/img/agent.png" /><meta property="article:section" content="agent-engineering" />
-<meta property="article:published_time" content="2026-09-12T10:00:00+08:00" />
-<meta property="article:modified_time" content="2026-09-12T10:00:00+08:00" />
+<meta property="og:url" content="https://recordnote.github.io/agent-engineering/overview/" /><meta property="og:image" content="https://recordnote.github.io/me/background1.jpg"/><meta property="article:section" content="agent-engineering" />
+
+
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/img/agent.png"/>
+<meta name="twitter:image" content="https://recordnote.github.io/me/background1.jpg"/>
 
-<meta name="twitter:title" content="Java Agent 工程化：从知识库问答到可靠业务执行"/>
-<meta name="twitter:description" content="以企业知识库与工单助手为例，梳理 RAG、工具治理、可靠执行、评测和 Java 平台架构。"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content=""/>
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
@@ -138,51 +138,26 @@
   
 
   
-  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
-    
-    <div class="ui segment toc">
-      <nav id="TableOfContents">
-  <ul>
-    <li><a href="#适合怎样阅读">适合怎样阅读</a></li>
-    <li><a href="#归档说明">归档说明</a></li>
-    <li><a href="#3-月从模型调用转向业务工程">3 月：从模型调用转向业务工程</a></li>
-    <li><a href="#4-月rag-质量与数据治理">4 月：RAG 质量与数据治理</a></li>
-    <li><a href="#5-月工具与权限治理">5 月：工具与权限治理</a></li>
-    <li><a href="#6-月java-可靠执行">6 月：Java 可靠执行</a></li>
-    <li><a href="#7-月平台运维与容量">7 月：平台运维与容量</a></li>
-    <li><a href="#8-月复杂-agent-与质量保证">8 月：复杂 Agent 与质量保证</a></li>
-    <li><a href="#9-月架构表达与作品集">9 月：架构表达与作品集</a></li>
-    <li><a href="#可以继续验证的三个问题">可以继续验证的三个问题</a></li>
-  </ul>
-</nav>
-    </div>
-    
-
-    
-  </aside>
-  
   <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
     <section class="ui top attached segment">
       <header>
-        <h1 class="ui large header">Java Agent 工程化：从知识库问答到可靠业务执行<span class="sub header">
+        <h1 class="ui large header"><span class="sub header">
             <span class="left">
               @
               
-                
-                  Lin
-                
+                Lin
               
 
               | 
-                  <span data-format="luxon">2026-09-12T10:00:00&#43;08:00</span>
+                  <span data-format="luxon">0001-01-01T00:00:00Z</span>
                 
 
-              | 3 分钟阅读
+              | 0 分钟阅读
 
               
               | 更新于
                 
-                  <span data-format="luxon">2026-09-12T10:00:00&#43;08:00</span>
+                  <span data-format="luxon">0001-01-01T00:00:00Z</span>
                 
               
             </span>
@@ -192,7 +167,7 @@
   <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
     <i class="save icon"></i>
   </a>
-  <a href="https://twitter.com/intent/tweet?text=Java%20Agent%20%e5%b7%a5%e7%a8%8b%e5%8c%96%ef%bc%9a%e4%bb%8e%e7%9f%a5%e8%af%86%e5%ba%93%e9%97%ae%e7%ad%94%e5%88%b0%e5%8f%af%e9%9d%a0%e4%b8%9a%e5%8a%a1%e6%89%a7%e8%a1%8c&url=https%3a%2f%2frecordnote.github.io%2fagent-engineering%2foverview%2f" title="Twitter">
+  <a href="https://twitter.com/intent/tweet?text=&url=https%3a%2f%2frecordnote.github.io%2fagent-engineering%2foverview%2f" title="Twitter">
     <i class="twitter icon"></i>
   </a>
   <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fagent-engineering%2foverview%2f" title="Facebook">
@@ -207,78 +182,8 @@
 
       <article class="main">
         
-        <img class="cover" src="/img/agent.png" />
-        
 
-        <p>这组文章围绕一个企业知识库与工单助手展开：查到可访问的证据、解释问题、生成提案，经确认后执行，并在故障后核实业务结果。重点是把大模型能力接入可靠的 Java 系统。</p>
-<h2 id="适合怎样阅读">适合怎样阅读</h2>
-<p>如果关注 Agent 开发，先看输出契约、工具设计、状态机和 SSE；如果关注 Agent 架构，先看平台蓝图、ADR、模型网关和发布流程；如果关注大模型应用，沿着四月的 RAG 专题阅读；如果关注 Java 架构，从事务消息、幂等、虚拟线程与容量规划进入。</p>
-<p>文章中的系统为贯穿系列的设计案例，尚不代表本仓库包含对应业务实现。参数、容量算例和故障场景用于说明方法；实际效果需要通过文中实验验证。示例的官方资料链接放在相关论述附近，框架能力以接入时锁定版本为准。</p>
-<h2 id="归档说明">归档说明</h2>
-<p>本系列在 2026-09-12 集中补充整理，按 3—9 月的专题节奏归档；文章日期用于归档排序，更新时间记录实际整理日期。3 月 4 日已有的<a href="/ai/java-agent-framework-%E8%BF%9B%E9%98%B6context-engineering-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%E4%B8%8E%E7%94%9F%E4%BA%A7%E7%BA%A7%E6%B2%BB%E7%90%86/">上下文工程文章</a>作为衔接。新增 25 篇截至当前归档的正文，另准备 2 篇九月下半月草稿，本导读不计入每月四篇。</p>
-<h2 id="3-月从模型调用转向业务工程">3 月：从模型调用转向业务工程</h2>
-<p>补齐输出契约、任务验收与架构边界；承接已有上下文工程文章。</p>
-<ul>
-<li>03-04 · 已有：<a href="/ai/java-agent-framework-%E8%BF%9B%E9%98%B6context-engineering-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%E4%B8%8E%E7%94%9F%E4%BA%A7%E7%BA%A7%E6%B2%BB%E7%90%86/">Context Engineering 上下文工程与生产级治理</a></li>
-<li>03-11 · <a href="/agent-engineering/workflow-or-agent/">从业务流程到 Agent：企业知识库与工单助手的架构边界</a></li>
-<li>03-18 · <a href="/agent-engineering/structured-output-contract/">Java 大模型应用的输出契约：从 JSON 到可执行业务命令</a></li>
-<li>03-25 · <a href="/agent-engineering/agent-evaluation-baseline/">Agent 评测基线：把演示效果变成可重复的验收条件</a></li>
-</ul>
-<h2 id="4-月rag-质量与数据治理">4 月：RAG 质量与数据治理</h2>
-<p>建立可更新、可隔离、可评测的知识链路。</p>
-<ul>
-<li>04-01 · <a href="/agent-engineering/rag-ingestion-versioning/">RAG 文档入库设计：切分、版本与增量更新</a></li>
-<li>04-08 · <a href="/agent-engineering/rag-hybrid-retrieval/">混合检索调优：用失败样本决定召回与重排策略</a></li>
-<li>04-15 · <a href="/agent-engineering/rag-permission-citations/">企业 RAG 的权限与引用：检索结果如何成为可信证据</a></li>
-<li>04-22 · <a href="/agent-engineering/rag-postgres-pgvector/">PostgreSQL 与 pgvector：知识库索引选型和容量估算</a></li>
-</ul>
-<h2 id="5-月工具与权限治理">5 月：工具与权限治理</h2>
-<p>把协议连通推进到可授权、可审批、可核对的业务动作。</p>
-<ul>
-<li>05-06 · <a href="/agent-engineering/tool-contract-design/">Agent 工具契约设计：参数、错误与业务边界</a></li>
-<li>05-13 · <a href="/agent-engineering/mcp-identity-authorization/">MCP 接入企业系统：身份传播与最小权限设计</a></li>
-<li>05-20 · <a href="/agent-engineering/prompt-injection-defense/">Agent 提示词注入防护：把外部内容留在数据边界内</a></li>
-<li>05-27 · <a href="/agent-engineering/approval-idempotency/">人工审批与幂等执行：让 Agent 安全创建工单</a></li>
-</ul>
-<h2 id="6-月java-可靠执行">6 月：Java 可靠执行</h2>
-<p>展示状态恢复、事务消息、并发隔离和流式接口能力。</p>
-<ul>
-<li>06-03 · <a href="/agent-engineering/durable-agent-state/">长任务 Agent 状态机：检查点、租约与故障恢复</a></li>
-<li>06-10 · <a href="/agent-engineering/transactional-outbox-agent/">Agent 异步任务的事务消息：Outbox 与幂等消费</a></li>
-<li>06-17 · <a href="/agent-engineering/java-virtual-thread-bulkhead/">Java 21 虚拟线程接入大模型：并发隔离与容量边界</a></li>
-<li>06-24 · <a href="/agent-engineering/sse-streaming-cancellation/">Java 流式 AI 接口：SSE、取消传播与慢客户端治理</a></li>
-</ul>
-<h2 id="7-月平台运维与容量">7 月：平台运维与容量</h2>
-<p>讨论模型路由、观测、成本和压测，形成工程闭环。</p>
-<ul>
-<li>07-01 · <a href="/agent-engineering/model-gateway-routing/">企业模型网关设计：能力路由、配额与降级</a></li>
-<li>07-08 · <a href="/agent-engineering/agent-observability/">Agent 可观测性设计：从一次请求追踪到业务终态</a></li>
-<li>07-15 · <a href="/agent-engineering/llm-cost-cache-budget/">大模型应用成本治理：Token 预算、缓存与质量约束</a></li>
-<li>07-22 · <a href="/agent-engineering/ai-capacity-load-test/">AI 服务容量规划：长尾延迟、排队与压测模型</a></li>
-</ul>
-<h2 id="8-月复杂-agent-与质量保证">8 月：复杂 Agent 与质量保证</h2>
-<p>克制地引入协作和记忆，用发布评测与演练验证边界。</p>
-<ul>
-<li>08-05 · <a href="/agent-engineering/multi-agent-coordination/">多 Agent 协作的工程取舍：何时拆分，如何收敛</a></li>
-<li>08-12 · <a href="/agent-engineering/agent-memory-governance/">Agent 长期记忆治理：写入条件、过期与删除</a></li>
-<li>08-19 · <a href="/agent-engineering/agent-release-evaluation/">Agent 版本发布：离线评测、影子流量与灰度回滚</a></li>
-<li>08-26 · <a href="/agent-engineering/agent-failure-drills/">Agent 故障演练设计：重复执行、越权检索与预算失控</a></li>
-</ul>
-<h2 id="9-月架构表达与作品集">9 月：架构表达与作品集</h2>
-<p>汇总平台蓝图和 ADR，准备证据链与渐进迁移文章。</p>
-<ul>
-<li>09-02 · <a href="/agent-engineering/java-agent-platform-blueprint/">Java 企业 Agent 平台蓝图：从模块边界到部署拓扑</a></li>
-<li>09-09 · <a href="/agent-engineering/agent-architecture-decisions/">Agent 架构决策记录：用 ADR 解释五个关键取舍</a></li>
-<li>09-16 · 计划草稿：Agent 项目展示设计：把架构文章连接到可验证证据</li>
-<li>09-23 · 计划草稿：存量 Java 系统接入 Agent：渐进迁移与演进路线</li>
-</ul>
-<h2 id="可以继续验证的三个问题">可以继续验证的三个问题</h2>
-<ol>
-<li>同一工单创建请求遇到超时和重启后，是否仍能获得唯一且可信的业务结果？</li>
-<li>文档更新或权限撤销后，检索、缓存和最终回答是否共同遵守新状态？</li>
-<li>一次架构变化是否在固定样本和相同预算下改善了业务成功率？</li>
-</ol>
-<p>后续可以为这三个问题补上独立示例仓库、原始评测结果与故障演练记录，再把链接接入对应文章。</p>
+        
       </article>
     </section>
 

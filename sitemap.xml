@@ -2,9 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://recordnote.github.io/agent-engineering/overview/</loc>
-    <lastmod>2026-09-12T10:00:00+08:00</lastmod>
-  </url><url>
     <loc>https://recordnote.github.io/agent-engineering/agent-architecture-decisions/</loc>
     <lastmod>2026-09-12T10:00:00+08:00</lastmod>
   </url><url>
@@ -410,13 +407,7 @@
     <loc>https://recordnote.github.io/agent-engineering/</loc>
     <lastmod>2026-09-12T10:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://recordnote.github.io/categories/ai/</loc>
-    <lastmod>2026-09-12T10:00:00+08:00</lastmod>
-  </url><url>
     <loc>https://recordnote.github.io/categories/</loc>
-    <lastmod>2026-09-12T10:00:00+08:00</lastmod>
-  </url><url>
-    <loc>https://recordnote.github.io/tags/java/</loc>
     <lastmod>2026-09-12T10:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/</loc>
@@ -425,19 +416,22 @@
     <loc>https://recordnote.github.io/tags/</loc>
     <lastmod>2026-09-12T10:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://recordnote.github.io/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8/</loc>
+    <loc>https://recordnote.github.io/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
     <lastmod>2026-09-12T10:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
     <lastmod>2026-09-12T10:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://recordnote.github.io/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
-    <lastmod>2026-09-12T10:00:00+08:00</lastmod>
-  </url><url>
     <loc>https://recordnote.github.io/tags/agent%E6%9E%B6%E6%9E%84/</loc>
     <lastmod>2026-09-12T10:00:00+08:00</lastmod>
   </url><url>
+    <loc>https://recordnote.github.io/tags/java/</loc>
+    <lastmod>2026-09-12T10:00:00+08:00</lastmod>
+  </url><url>
     <loc>https://recordnote.github.io/tags/%E5%8F%AF%E9%9D%A0%E6%80%A7/</loc>
+    <lastmod>2026-09-12T10:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/categories/ai/</loc>
     <lastmod>2026-09-12T10:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/tags/%E8%AF%84%E6%B5%8B/</loc>
@@ -453,6 +447,9 @@
     <lastmod>2026-09-12T10:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/tags/%E6%88%90%E6%9C%AC%E6%B2%BB%E7%90%86/</loc>
+    <lastmod>2026-09-12T10:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8/</loc>
     <lastmod>2026-09-12T10:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/tags/%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7/</loc>
@@ -634,6 +631,8 @@
   </url><url>
     <loc>https://recordnote.github.io/mq/why-mq/</loc>
     <lastmod>2022-01-23T14:21:26+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/agent-engineering/overview/</loc>
   </url><url>
     <loc>https://recordnote.github.io/spring-cloud-alibaba/nacos/</loc>
   </url><url>
