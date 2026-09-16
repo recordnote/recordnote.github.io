@@ -27,7 +27,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/agent-engineering/agent-evaluation-baseline/" /><meta property="og:image" content="https://recordnote.github.io/img/xncs.png" /><meta property="article:section" content="agent-engineering" />
 <meta property="article:published_time" content="2026-03-25T10:00:00+08:00" />
-<meta property="article:modified_time" content="2026-09-12T10:00:00+08:00" />
+<meta property="article:modified_time" content="2026-09-16T08:00:00+08:00" />
 
 
 
@@ -177,7 +177,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2026-09-12T10:00:00&#43;08:00</span>
+                  <span data-format="luxon">2026-09-16T08:00:00&#43;08:00</span>
                 
               
             </span>
@@ -206,9 +206,6 @@
         
 
         <p>为知识问答和工单创建建立固定样本、终态断言与失败分类，避免凭感觉调提示词。</p>
-<blockquote>
-<p>本文于 2026-09-12 补充整理，按 2026-03 专题归档。示例为方案设计，参数用于说明方法，不代表已上线项目或实测成果。</p>
-</blockquote>
 <h2 id="先定义评测对象">先定义评测对象</h2>
 <p>一个工单助手至少有两种任务：回答知识问题，以及在授权后创建工单。前者要检查结论和引用，后者还要检查外部系统状态。把两者都交给另一个模型打一个“满意度分数”，会掩盖重复创建和越权操作。</p>
 <p><a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic 的 Agent 评测文章</a>讨论了任务、运行轨迹和不同评判器。本文据此区分观察对象，具体样本和门槛则是这个示例系统的自定义设计。</p>
@@ -227,7 +224,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;forbiddenActions&#34;</span>: [<span style="color:#e6db74">&#34;cross_tenant_read&#34;</span>]
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>字段名称是本系列自己的数据契约。运行前由测试环境装载身份和数据，不从用户文本中读取租户身份。</p>
+</span></span></code></pre></div><p>评测记录采用独立的数据契约。运行前由测试环境装载身份和数据，不从用户文本中读取租户身份。</p>
 <h2 id="优先检查可以确定的事实">优先检查可以确定的事实</h2>
 <p>工具参数是否合法、是否访问其他租户、是否重复写入，可以通过代码和模拟服务断言。回答是否遗漏重要限定条件，可以使用人工评分或经过校准的模型评判器。</p>
 <p>模型评判器需要固定评分标准、版本和样本顺序处理方式，并用人工标注样本观察一致性。它自己的判断也会波动，不能用一个模型的“正确”替代业务终态。</p>
@@ -270,8 +267,6 @@
 <p>冻结模型标识、提示词版本、工具契约和知识快照；只改变待评估的一项，例如是否启用重排。对同一批样本进行配对比较，保留每个失败案例，而不只比较均值。</p>
 <p>关键案例需要重复运行，以发现偶发错误。小样本中一次也没出现越权，不等于越权概率为零。结果报告应写明样本量、重复次数、失败分布以及是否使用模拟工具。</p>
 <p>开始时宁可接受一张带失败详情的简单表，也不要只有华丽看板。后续每篇架构改进都应能回答：它修复了哪一类失败，又新增了什么成本。</p>
-<hr>
-<p><a href="/agent-engineering/overview/">查看系列导读与阅读路线</a></p>
       </article>
     </section>
 

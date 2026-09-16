@@ -27,7 +27,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/agent-engineering/model-gateway-routing/" /><meta property="og:image" content="https://recordnote.github.io/img/scg.png" /><meta property="article:section" content="agent-engineering" />
 <meta property="article:published_time" content="2026-07-01T10:00:00+08:00" />
-<meta property="article:modified_time" content="2026-09-12T10:00:00+08:00" />
+<meta property="article:modified_time" content="2026-09-16T08:00:00+08:00" />
 
 
 
@@ -178,7 +178,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2026-09-12T10:00:00&#43;08:00</span>
+                  <span data-format="luxon">2026-09-16T08:00:00&#43;08:00</span>
                 
               
             </span>
@@ -207,9 +207,6 @@
         
 
         <p>在统一入口执行能力检查和预算控制，用明确语义约束模型切换与故障降级。</p>
-<blockquote>
-<p>本文于 2026-09-12 补充整理，按 2026-07 专题归档。示例为方案设计，参数用于说明方法，不代表已上线项目或实测成果。</p>
-</blockquote>
 <h2 id="网关先统一约束再统一调用格式">网关先统一约束，再统一调用格式</h2>
 <p>企业同时接入多个模型时，统一 endpoint 只是表层需求。更重要的是在进入模型前检查身份、数据范围、能力要求和预算，并在失败时给调用方可解释的结果。</p>
 <p>一次请求可能要求工具调用、结构化输出、长上下文或特定数据处理范围。这些是路由硬约束；价格和延迟可以作为候选模型之间的优化条件。</p>
@@ -270,8 +267,6 @@
 <p>模拟一个供应商返回限流、一个不支持必需工具 schema、一个响应缓慢。检查路由不会突破数据范围，不会把能力不足的模型当作正常替代，并能在截止时间内停止。</p>
 <p>观测上记录路由决策、实际模型标识、尝试次数和拒绝原因。框架层可参考 <a href="https://docs.spring.io/spring-ai/reference/observability/index.html">Spring AI 可观测性文档</a>，但租户配额、业务路由和降级语义仍需要应用实现。</p>
 <p>网关评审中最值得讨论的是失败时的业务行为，而不是支持多少个模型名称。</p>
-<hr>
-<p><a href="/agent-engineering/overview/">查看系列导读与阅读路线</a></p>
       </article>
     </section>
 

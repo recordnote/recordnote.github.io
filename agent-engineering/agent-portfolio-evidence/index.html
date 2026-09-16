@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Agent 工具契约设计：参数、错误与业务边界 | Lin 的博客</title>
+    <title>Agent 项目验收设计：从任务闭环到故障恢复证据 | Lin 的博客</title>
 
     
 <link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
@@ -19,23 +19,23 @@
 
 <meta name="generator" content="Hugo 0.119.0">
 
-<link rel="canonical" href="https://recordnote.github.io/agent-engineering/tool-contract-design/" />
+<link rel="canonical" href="https://recordnote.github.io/agent-engineering/agent-portfolio-evidence/" />
 
 
-<meta property="og:title" content="Agent 工具契约设计：参数、错误与业务边界" />
-<meta property="og:description" content="把粗粒度存量接口拆成语义明确、可校验且可审计的 Agent 工具。" />
+<meta property="og:title" content="Agent 项目验收设计：从任务闭环到故障恢复证据" />
+<meta property="og:description" content="围绕任务终态、幂等写入、租户隔离和故障恢复，设计可重复执行的 Agent 验收流程。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://recordnote.github.io/agent-engineering/tool-contract-design/" /><meta property="og:image" content="https://recordnote.github.io/img/mcp.png" /><meta property="article:section" content="agent-engineering" />
-<meta property="article:published_time" content="2026-05-06T10:00:00+08:00" />
+<meta property="og:url" content="https://recordnote.github.io/agent-engineering/agent-portfolio-evidence/" /><meta property="og:image" content="https://recordnote.github.io/img/agent.png" /><meta property="article:section" content="agent-engineering" />
+<meta property="article:published_time" content="2026-09-16T08:00:00+08:00" />
 <meta property="article:modified_time" content="2026-09-16T08:00:00+08:00" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/img/mcp.png"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/agent.png"/>
 
-<meta name="twitter:title" content="Agent 工具契约设计：参数、错误与业务边界"/>
-<meta name="twitter:description" content="把粗粒度存量接口拆成语义明确、可校验且可审计的 Agent 工具。"/>
+<meta name="twitter:title" content="Agent 项目验收设计：从任务闭环到故障恢复证据"/>
+<meta name="twitter:description" content="围绕任务终态、幂等写入、租户隔离和故障恢复，设计可重复执行的 Agent 验收流程。"/>
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
@@ -143,11 +143,12 @@
     <div class="ui segment toc">
       <nav id="TableOfContents">
   <ul>
-    <li><a href="#工具数量不等于工具能力">工具数量不等于工具能力</a></li>
-    <li><a href="#参数应贴近任务语义">参数应贴近任务语义</a></li>
-    <li><a href="#返回值要帮助下一步决策">返回值要帮助下一步决策</a></li>
-    <li><a href="#读写边界要在执行器落实">读写边界要在执行器落实</a></li>
-    <li><a href="#如何衡量工具是否好用">如何衡量工具是否好用</a></li>
+    <li><a href="#验收从业务终态开始">验收从业务终态开始</a></li>
+    <li><a href="#为正常路径和异常路径定义断言">为正常路径和异常路径定义断言</a></li>
+    <li><a href="#将外部依赖变成可控制的测试条件">将外部依赖变成可控制的测试条件</a></li>
+    <li><a href="#一次恢复测试的执行顺序">一次恢复测试的执行顺序</a></li>
+    <li><a href="#保存能够复查的验收产物">保存能够复查的验收产物</a></li>
+    <li><a href="#从验收结果形成发布门槛">从验收结果形成发布门槛</a></li>
   </ul>
 </nav>
     </div>
@@ -159,7 +160,7 @@
   <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
     <section class="ui top attached segment">
       <header>
-        <h1 class="ui large header">Agent 工具契约设计：参数、错误与业务边界<span class="sub header">
+        <h1 class="ui large header">Agent 项目验收设计：从任务闭环到故障恢复证据<span class="sub header">
             <span class="left">
               @
               
@@ -169,7 +170,7 @@
               
 
               | 
-                  <span data-format="luxon">2026-05-06T10:00:00&#43;08:00</span>
+                  <span data-format="luxon">2026-09-16T08:00:00&#43;08:00</span>
                 
 
               | 3 分钟阅读
@@ -187,10 +188,10 @@
   <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
     <i class="save icon"></i>
   </a>
-  <a href="https://twitter.com/intent/tweet?text=Agent%20%e5%b7%a5%e5%85%b7%e5%a5%91%e7%ba%a6%e8%ae%be%e8%ae%a1%ef%bc%9a%e5%8f%82%e6%95%b0%e3%80%81%e9%94%99%e8%af%af%e4%b8%8e%e4%b8%9a%e5%8a%a1%e8%be%b9%e7%95%8c&url=https%3a%2f%2frecordnote.github.io%2fagent-engineering%2ftool-contract-design%2f" title="Twitter">
+  <a href="https://twitter.com/intent/tweet?text=Agent%20%e9%a1%b9%e7%9b%ae%e9%aa%8c%e6%94%b6%e8%ae%be%e8%ae%a1%ef%bc%9a%e4%bb%8e%e4%bb%bb%e5%8a%a1%e9%97%ad%e7%8e%af%e5%88%b0%e6%95%85%e9%9a%9c%e6%81%a2%e5%a4%8d%e8%af%81%e6%8d%ae&url=https%3a%2f%2frecordnote.github.io%2fagent-engineering%2fagent-portfolio-evidence%2f" title="Twitter">
     <i class="twitter icon"></i>
   </a>
-  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fagent-engineering%2ftool-contract-design%2f" title="Facebook">
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fagent-engineering%2fagent-portfolio-evidence%2f" title="Facebook">
     <i class="facebook icon"></i>
   </a>
 </span>
@@ -202,72 +203,77 @@
 
       <article class="main">
         
-        <img class="cover" src="/img/mcp.png" />
+        <img class="cover" src="/img/agent.png" />
         
 
-        <p>把粗粒度存量接口拆成语义明确、可校验且可审计的 Agent 工具。</p>
-<h2 id="工具数量不等于工具能力">工具数量不等于工具能力</h2>
-<p>把几十个内部 API 全部交给模型，并不一定让助手更能干。接口名称含糊、参数意义重复、返回值过大，都会增加选择错误。工具设计需要回答三个问题：什么时候使用、输入代表什么、结果允许下一步做什么。</p>
-<p>以工单系统为例，<code>executeOperation(action, payload)</code> 看似通用，却把权限和业务语义藏进字符串。拆成 <code>searchTickets</code>、<code>getTicket</code>、<code>prepareTicket</code>、<code>createApprovedTicket</code>，通常更容易分别约束读写能力。</p>
-<h2 id="参数应贴近任务语义">参数应贴近任务语义</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;searchTickets&#34;</span>,
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;在当前用户可访问的项目内查询工单，不创建或修改工单&#34;</span>,
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;inputSchema&#34;</span>: {
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;object&#34;</span>,
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;properties&#34;</span>: {
-</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;query&#34;</span>: {<span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>, <span style="color:#f92672">&#34;maxLength&#34;</span>: <span style="color:#ae81ff">200</span>},
-</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;status&#34;</span>: {<span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>, <span style="color:#f92672">&#34;enum&#34;</span>: [<span style="color:#e6db74">&#34;OPEN&#34;</span>, <span style="color:#e6db74">&#34;CLOSED&#34;</span>]},
-</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;limit&#34;</span>: {<span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;integer&#34;</span>, <span style="color:#f92672">&#34;minimum&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#f92672">&#34;maximum&#34;</span>: <span style="color:#ae81ff">20</span>}
-</span></span><span style="display:flex;"><span>    },
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;required&#34;</span>: [<span style="color:#e6db74">&#34;query&#34;</span>],
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;additionalProperties&#34;</span>: <span style="color:#66d9ef">false</span>
-</span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>这是工具描述示例，省略协议封装。租户和操作人不出现在模型可写参数中，由执行上下文注入。查询范围若由项目决定，服务端还要验证项目权限，不能仅相信模型选择了某个候选项目。</p>
-<p>工具描述应说明分页、空结果和时间范围。涉及时间时明确时区；涉及金额时明确单位。避免一个接口返回“100”，调用者却不知道它是分、元还是百分比。</p>
-<h2 id="返回值要帮助下一步决策">返回值要帮助下一步决策</h2>
-<p>工具返回可以包含 <code>status</code>、<code>items</code>、<code>nextCursor</code> 和 <code>truncated</code>。明确标记截断比悄悄裁掉尾部更好；否则模型可能把“只看到了前 20 条”误认为“系统只有 20 条”。</p>
-<p>错误分类建议区分：</p>
+        <p>围绕任务终态、幂等写入、租户隔离和故障恢复，设计可重复执行的 Agent 验收流程。</p>
+<h2 id="验收从业务终态开始">验收从业务终态开始</h2>
+<p>企业知识库与工单助手的成功条件不只是返回一段回答。一次任务需要完成授权检索、引用校验、工单提案、用户确认和创建结果核实。验收应覆盖整个闭环，并将业务结果与任务状态关联起来。</p>
+<p>例如，任务标记为成功时，下游应存在与原操作 ID 对应的唯一工单；任务等待确认时，下游不应发生写入；创建响应丢失时，系统应进入结果核实流程，避免立即生成新操作再次提交。</p>
+<h2 id="为正常路径和异常路径定义断言">为正常路径和异常路径定义断言</h2>
 <table>
 <thead>
 <tr>
-<th>错误</th>
-<th>模型或编排器的下一步</th>
+<th>验收场景</th>
+<th>关键断言</th>
+<th>检查依据</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>INVALID_ARGUMENT</td>
-<td>根据字段错误修正参数</td>
+<td>确认后创建工单</td>
+<td>提交内容与用户确认的提案版本一致</td>
+<td>提案摘要、确认记录、下游工单</td>
 </tr>
 <tr>
-<td>NOT_FOUND</td>
-<td>说明未找到，必要时换查询条件</td>
+<td>重复提交同一操作</td>
+<td>只产生一条业务记录，返回同一结果</td>
+<td>操作 ID、唯一约束、请求日志</td>
 </tr>
 <tr>
-<td>FORBIDDEN</td>
-<td>停止该操作，不换身份继续尝试</td>
+<td>检索跨租户文档</td>
+<td>未授权内容不进入模型上下文</td>
+<td>两租户测试数据、检索结果、权限日志</td>
 </tr>
 <tr>
-<td>RATE_LIMITED</td>
-<td>在总预算内延后，遵守服务端建议</td>
+<td>Worker 在写入后退出</td>
+<td>恢复后先核实结果，避免重复创建</td>
+<td>任务事件、工具调用记录、下游状态</td>
 </tr>
 <tr>
-<td>OUTCOME_UNKNOWN</td>
-<td>查询操作结果，禁止盲目重放写入</td>
+<td>权限在任务执行中撤销</td>
+<td>后续检索、引用访问和写入重新校验权限</td>
+<td>策略版本、拒绝记录、访问结果</td>
 </tr>
 </tbody>
 </table>
-<p>这些是应用层错误语义，不代表 MCP 或某个 SDK 自动提供同名枚举。</p>
-<h2 id="读写边界要在执行器落实">读写边界要在执行器落实</h2>
-<p>工具描述中的“只读”是说明，最终限制应由只读接口、权限令牌和服务端逻辑落实。模型看到的工具集合可以按角色缩减，但执行时仍应鉴权，防止旧会话继续使用已经撤销的能力。</p>
-<p><a href="https://modelcontextprotocol.io/specification/2025-06-18">MCP 规范</a>也将工具描述和注解放在需要评估信任的范围内。不能因为远端服务器给工具标了低风险，就自动赋予写权限。</p>
-<p>对于创建工单，不应让模型重新生成已获审批的全部参数。让它引用服务端保存的提案编号，由执行器读取不可变提案，会更容易验证执行内容与审批内容一致。</p>
-<h2 id="如何衡量工具是否好用">如何衡量工具是否好用</h2>
-<p>准备“查状态”“查相似问题”“准备新工单”三类输入，比较粗粒度工具与拆分工具的选择正确率、参数修复次数和总调用数。评测中应加入相近名称、空结果和超长结果。</p>
-<p>单次调用少不一定更好。一个巨型工具可能减少次数，却扩大权限和错误范围。更值得观察的是：失败后能否根据明确错误恢复，以及执行器能否独立判定操作合法性。</p>
-<p>最终的工具目录应该是一组业务能力契约，而不是内部 HTTP 路由表的直接复制。</p>
+<p>权限撤销无法收回已经展示给用户的信息，因此断言应聚焦撤销后的访问与操作。对仍在执行的任务，需要明确在哪个边界重新检查权限，以及发现权限变化后如何终止或转入人工处理。</p>
+<h2 id="将外部依赖变成可控制的测试条件">将外部依赖变成可控制的测试条件</h2>
+<p>模型回答具有随机性，外部工具也可能超时。状态机验收可以使用固定模型输出和模拟工具，让同一输入稳定触发相同分支。回答质量评测则使用真实模型，单独记录模型版本、提示词版本和采样参数。</p>
+<p>测试工具应支持几种明确的行为：返回成功、写入前失败、写入成功后丢失响应、延迟返回和重复回调。模拟行为必须对应真实接口可能出现的故障窗口，否则测试只是在验证理想流程。</p>
+<p>测试数据采用合成文档、租户和账号，保留稳定标识。每次运行使用独立的任务与操作命名空间，避免上次运行遗留的数据干扰判断。</p>
+<h2 id="一次恢复测试的执行顺序">一次恢复测试的执行顺序</h2>
+<ol>
+<li>创建任务，生成工单提案并记录用户确认的版本。</li>
+<li>调用创建工具，让下游完成写入，但阻断成功响应。</li>
+<li>在任务确认结果前停止 Worker，保留已持久化的任务和操作记录。</li>
+<li>等待原租约失效，再启动新的 Worker 接管任务。</li>
+<li>通过原操作 ID 查询下游结果，恢复本地状态并结束任务。</li>
+<li>核对下游记录数量、任务终态和事件时间线。</li>
+</ol>
+<p>验收不能只检查任务最后是否成功，还应检查恢复过程中是否生成了新的写入操作、是否绕过确认，以及旧 Worker 恢复后是否仍能提交过期结果。可通过租约版本或 fencing token 拒绝过期执行者的状态更新。</p>
+<h2 id="保存能够复查的验收产物">保存能够复查的验收产物</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>fixtures/     合成知识、租户和账号数据
+</span></span><span style="display:flex;"><span>evals/        固定样本、终态断言和质量评判
+</span></span><span style="display:flex;"><span>experiments/  故障注入、检索对照和负载脚本
+</span></span><span style="display:flex;"><span>results/      原始结果、事件时间线和报告摘要
+</span></span></code></pre></div><p>每次运行应关联代码提交、配置版本、模型与工具契约版本，并保存测试输入和失败原因。日志中的任务 ID、操作 ID 和 trace ID 用于连接编排记录、工具请求和下游结果；敏感字段在保存前脱敏。</p>
+<p>报告将确定性断言与回答质量分别统计。幂等、授权和任务恢复属于明确的通过或失败条件；回答质量则需要固定样本、评分规则与必要的人工复核。平均分不能掩盖越权或重复写入这类关键失败。</p>
+<h2 id="从验收结果形成发布门槛">从验收结果形成发布门槛</h2>
+<p>发布前先运行状态机与工具契约测试，再执行检索和回答质量回归，最后验证容量与故障恢复。关键安全断言失败时阻止发布，质量指标的容忍范围则应按业务目标预先确定。</p>
+<p>报告应同时保留失败样本、样本量、重复次数和运行环境。修复后使用同一组样本复测，并补充覆盖新故障的案例，使一次问题排查转化为可持续执行的回归检查。</p>
+<hr>
+<p><a href="/agent-engineering/java-agent-platform-blueprint/">延伸阅读：Java 企业 Agent 平台蓝图</a></p>
       </article>
     </section>
 

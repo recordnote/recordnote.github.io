@@ -27,7 +27,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/agent-engineering/rag-ingestion-versioning/" /><meta property="og:image" content="https://recordnote.github.io/img/rag.png" /><meta property="article:section" content="agent-engineering" />
 <meta property="article:published_time" content="2026-04-01T10:00:00+08:00" />
-<meta property="article:modified_time" content="2026-09-12T10:00:00+08:00" />
+<meta property="article:modified_time" content="2026-09-16T08:00:00+08:00" />
 
 
 
@@ -178,7 +178,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2026-09-12T10:00:00&#43;08:00</span>
+                  <span data-format="luxon">2026-09-16T08:00:00&#43;08:00</span>
                 
               
             </span>
@@ -207,9 +207,6 @@
         
 
         <p>从来源版本到索引发布，设计能够更新、删除和回滚的知识入库流水线。</p>
-<blockquote>
-<p>本文于 2026-09-12 补充整理，按 2026-04 专题归档。示例为方案设计，参数用于说明方法，不代表已上线项目或实测成果。</p>
-</blockquote>
 <h2 id="入库是一条发布流水线">入库是一条发布流水线</h2>
 <p>知识库最容易被低估的部分是更新。文档第一次进入向量库后，标题可能更名、权限可能收紧、正文可能删除。如果只支持“新增文本并向量化”，半年后就会出现旧规范持续被引用的问题。</p>
 <p>这里设计一个支持重建的入库模型：来源文件保留原始版本；解析结果保留结构；切片属于一个确定的文档版本；索引通过发布指针切换。模型只检索已发布版本，不直接读取正在构建的数据。</p>
@@ -242,8 +239,6 @@
 <p>准备一份包含环境限定和表格的规范，发布 v1；修改一个段落生成 v2；在向量化阶段注入失败。应仍然检索到完整 v1，而不是混合答案。重试成功后，引用必须指向 v2 的正确段落。</p>
 <p>随后撤销用户权限，重复之前的查询。验收要求缓存和引用都不再返回该文档。整个实验要记录解析器、切分规则、向量模型和发布清单，确保下一次可以重建相同输入。</p>
 <p>关于向量存储的基础能力，可查阅 <a href="https://github.com/pgvector/pgvector">pgvector 官方仓库</a>。本篇的版本发布和删除流程属于应用层设计，并非向量扩展自动提供的功能。</p>
-<hr>
-<p><a href="/agent-engineering/overview/">查看系列导读与阅读路线</a></p>
       </article>
     </section>
 

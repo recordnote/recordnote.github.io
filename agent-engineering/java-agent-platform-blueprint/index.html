@@ -27,7 +27,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/agent-engineering/java-agent-platform-blueprint/" /><meta property="og:image" content="https://recordnote.github.io/img/xtsj.png" /><meta property="article:section" content="agent-engineering" />
 <meta property="article:published_time" content="2026-09-02T10:00:00+08:00" />
-<meta property="article:modified_time" content="2026-09-12T10:00:00+08:00" />
+<meta property="article:modified_time" content="2026-09-16T08:00:00+08:00" />
 
 
 
@@ -178,7 +178,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2026-09-12T10:00:00&#43;08:00</span>
+                  <span data-format="luxon">2026-09-16T08:00:00&#43;08:00</span>
                 
               
             </span>
@@ -207,12 +207,9 @@
         
 
         <p>串起身份、编排、知识、工具和模型网关，给出可以分阶段实现的平台设计。</p>
-<blockquote>
-<p>本文于 2026-09-12 补充整理，按 2026-09 专题归档。示例为方案设计，参数用于说明方法，不代表已上线项目或实测成果。</p>
-</blockquote>
 <h2 id="从一个业务闭环确定平台边界">从一个业务闭环确定平台边界</h2>
-<p>这个系列的示例目标是：员工提出问题，系统查找授权范围内的知识，按需查询工单历史，准备明确提案，确认后创建工单，并能在故障后核实结果。</p>
-<p>平台蓝图应服务于这个闭环。先把模块职责和数据所有权写清楚，再讨论微服务数量、集群规模或多 Agent。本文是设计蓝图，不代表这些模块已经在本仓库实现。</p>
+<p>以企业知识库与工单助手为例：员工提出问题，系统查找授权范围内的知识，按需查询工单历史，准备明确提案，确认后创建工单，并能在故障后核实结果。</p>
+<p>平台蓝图应服务于这个闭环。先把模块职责和数据所有权写清楚，再讨论微服务数量、集群规模或多 Agent。</p>
 <h2 id="六个模块如何协作">六个模块如何协作</h2>
 <table>
 <thead>
@@ -280,8 +277,6 @@
 <p>最小可验证版本应包括：可重复装载的合成知识集、两个租户、只读问答、一个审批写工具、任务查询接口、异常恢复案例和固定评测集。</p>
 <p>后续再加入成本看板、多模型路由和长期记忆。没有一个可恢复的写操作闭环，先建设复杂的 Agent 市场或可视化编排器，很难证明平台解决了核心问题。</p>
 <p>面向架构评审，可以沿着“一个请求从哪里来、状态存在哪里、故障后谁负责恢复”讲解全图。每条连线都有数据和责任，图才具有工程意义。</p>
-<hr>
-<p><a href="/agent-engineering/overview/">查看系列导读与阅读路线</a></p>
       </article>
     </section>
 

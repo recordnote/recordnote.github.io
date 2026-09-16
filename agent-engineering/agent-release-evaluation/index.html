@@ -27,7 +27,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/agent-engineering/agent-release-evaluation/" /><meta property="og:image" content="https://recordnote.github.io/img/ha.png" /><meta property="article:section" content="agent-engineering" />
 <meta property="article:published_time" content="2026-08-19T10:00:00+08:00" />
-<meta property="article:modified_time" content="2026-09-12T10:00:00+08:00" />
+<meta property="article:modified_time" content="2026-09-16T08:00:00+08:00" />
 
 
 
@@ -178,7 +178,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2026-09-12T10:00:00&#43;08:00</span>
+                  <span data-format="luxon">2026-09-16T08:00:00&#43;08:00</span>
                 
               
             </span>
@@ -207,9 +207,6 @@
         
 
         <p>把提示词、模型、工具和索引组成发布版本，在无副作用回放中筛查回归问题。</p>
-<blockquote>
-<p>本文于 2026-09-12 补充整理，按 2026-08 专题归档。示例为方案设计，参数用于说明方法，不代表已上线项目或实测成果。</p>
-</blockquote>
 <h2 id="发布单位不只是应用镜像">发布单位不只是应用镜像</h2>
 <p>同一份 Java 代码，换了提示词、模型或知识索引，行为都可能改变。只记录 Git commit，无法解释为什么昨天能正确引用规范，今天却频繁拒答。</p>
 <p>建议维护一份不可变发布清单：</p>
@@ -221,7 +218,7 @@
 </span></span><span style="display:flex;"><span><span style="color:#f92672">knowledgeRelease</span>: <span style="color:#ae81ff">kb-v7</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">evaluationDataset</span>: <span style="color:#ae81ff">eval-v2</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">policyVersion</span>: <span style="color:#ae81ff">policy-v5</span>
-</span></span></code></pre></div><p>这是合成示例，字段值不对应已存在项目。任务创建时绑定清单，恢复时按兼容规则加载。不能让长任务前半段使用旧工具契约、后半段无声切换新语义。</p>
+</span></span></code></pre></div><p>清单中的版本标识为示例值。任务创建时绑定清单，恢复时按兼容规则加载。不能让长任务前半段使用旧工具契约、后半段无声切换新语义。</p>
 <h2 id="离线评测是第一道门">离线评测是第一道门</h2>
 <p>先跑输出结构、权限、幂等和状态转换等确定性检查，再跑回答质量评测。安全边界失败应阻止发布，不能靠平均回答分数补偿。</p>
 <p>对模型评判器，需要固定标准并保留人工校准样本。<a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic 的评测文章</a>讨论了不同评判方式的适用范围。对于这个助手，工单实际创建数量和越权次数仍应由程序断言。</p>
@@ -241,8 +238,6 @@
 <h2 id="验收一次有意失败的发布">验收一次有意失败的发布</h2>
 <p>让候选版本故意遗漏引用或多发一次工具调用。离线评测应发现问题；如果在影子阶段才发现，也应能定位到具体版本和样本；灰度期间触发回滚后，旧任务不应重复写入。</p>
 <p>完成这些验证后，发布记录才真正连接了“改了什么”“为什么允许上线”和“出问题怎么退回”。</p>
-<hr>
-<p><a href="/agent-engineering/overview/">查看系列导读与阅读路线</a></p>
       </article>
     </section>
 

@@ -27,7 +27,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/agent-engineering/rag-hybrid-retrieval/" /><meta property="og:image" content="https://recordnote.github.io/img/rag.png" /><meta property="article:section" content="agent-engineering" />
 <meta property="article:published_time" content="2026-04-08T10:00:00+08:00" />
-<meta property="article:modified_time" content="2026-09-12T10:00:00+08:00" />
+<meta property="article:modified_time" content="2026-09-16T08:00:00+08:00" />
 
 
 
@@ -177,7 +177,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2026-09-12T10:00:00&#43;08:00</span>
+                  <span data-format="luxon">2026-09-16T08:00:00&#43;08:00</span>
                 
               
             </span>
@@ -206,9 +206,6 @@
         
 
         <p>区分召回失败和排序失败，用对照实验判断关键词、向量和重排分别带来什么。</p>
-<blockquote>
-<p>本文于 2026-09-12 补充整理，按 2026-04 专题归档。示例为方案设计，参数用于说明方法，不代表已上线项目或实测成果。</p>
-</blockquote>
 <h2 id="先找出答案在哪里丢失">先找出答案在哪里丢失</h2>
 <p>用户询问“发布时出现 E1042 怎么处理”，关键词检索可能擅长定位错误码；用户换成“镜像拉取失败且凭据过期”，语义检索可能更容易找到相关段落。两者互补的前提是知道各自解决了哪些失败。</p>
 <p>先把失败划为三类：正确文档根本没召回；文档已召回但排序太靠后；证据进入上下文后答案仍然错误。第三类不是增加 Top-K 就能解决的。</p>
@@ -253,9 +250,7 @@
 <h2 id="不要忽略权限过滤的影响">不要忽略权限过滤的影响</h2>
 <p>权限约束应在候选产生和进入模型前保持有效，不能先全库召回再把越权内容发给外部重排服务。近似向量索引下，过滤还可能影响可返回结果数量；具体行为需要结合所用引擎和执行计划确认。<a href="https://github.com/pgvector/pgvector#filtering">pgvector 的过滤说明</a>可作为其中一种实现的参考。</p>
 <p>检索效果应分别观察大租户、小租户、权限很窄的用户。全库 Recall 很高，而小权限集下几乎找不到结果，仍然是系统失败。</p>
-<p>最终值得写进复盘的是“某类查询在固定实验条件下如何变化”，而不是未经实验就宣称混合检索提升了百分之多少。</p>
-<hr>
-<p><a href="/agent-engineering/overview/">查看系列导读与阅读路线</a></p>
+<p>检索效果应按查询类型分析，并关联固定的样本、索引版本和实验条件，才能判断收益来自哪项策略。</p>
       </article>
     </section>
 

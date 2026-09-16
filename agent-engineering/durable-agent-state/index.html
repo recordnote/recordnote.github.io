@@ -27,7 +27,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/agent-engineering/durable-agent-state/" /><meta property="og:image" content="https://recordnote.github.io/img/agent.png" /><meta property="article:section" content="agent-engineering" />
 <meta property="article:published_time" content="2026-06-03T10:00:00+08:00" />
-<meta property="article:modified_time" content="2026-09-12T10:00:00+08:00" />
+<meta property="article:modified_time" content="2026-09-16T08:00:00+08:00" />
 
 
 
@@ -178,7 +178,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2026-09-12T10:00:00&#43;08:00</span>
+                  <span data-format="luxon">2026-09-16T08:00:00&#43;08:00</span>
                 
               
             </span>
@@ -207,9 +207,6 @@
         
 
         <p>将任务事实持久化，用租约和版本校验处理进程重启与重复调度。</p>
-<blockquote>
-<p>本文于 2026-09-12 补充整理，按 2026-06 专题归档。示例为方案设计，参数用于说明方法，不代表已上线项目或实测成果。</p>
-</blockquote>
 <h2 id="一次长任务包含多个短事务">一次长任务包含多个短事务</h2>
 <p>排障 Agent 可能检索文档、查询工单、等待用户确认，然后继续执行。把这些步骤放在一个内存循环里，进程重启后就失去上下文；把整个过程包在数据库事务里，又会长时间占用连接和锁。</p>
 <p>合理的持久化单位是一次确定的状态推进。外部调用发生在短事务之外，结果通过另一笔短事务写入；中间的不确定性由操作账本和恢复流程处理。</p>
@@ -241,8 +238,6 @@
 <p>第一个窗口是外部请求前崩溃，恢复后可以重新调度；第二个是读请求返回后、检查点前崩溃，通常可在预算内重新读取；第三个是写请求成功后、检查点前崩溃，必须查询结果或依赖幂等。</p>
 <p>记录每个窗口的任务终态、执行次数和恢复耗时。验收目标不是“永远不重试”，而是恢复路径清楚，且重试不会破坏业务约束。</p>
 <p>相关的数据库与事件衔接可参考 <a href="https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html">AWS 对事务 Outbox 的说明</a>。任务状态机与租约是本例需要额外实现的编排能力。</p>
-<hr>
-<p><a href="/agent-engineering/overview/">查看系列导读与阅读路线</a></p>
       </article>
     </section>
 

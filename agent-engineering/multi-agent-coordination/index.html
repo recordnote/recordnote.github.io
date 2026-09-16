@@ -27,7 +27,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://recordnote.github.io/agent-engineering/multi-agent-coordination/" /><meta property="og:image" content="https://recordnote.github.io/img/agent.png" /><meta property="article:section" content="agent-engineering" />
 <meta property="article:published_time" content="2026-08-05T10:00:00+08:00" />
-<meta property="article:modified_time" content="2026-09-12T10:00:00+08:00" />
+<meta property="article:modified_time" content="2026-09-16T08:00:00+08:00" />
 
 
 
@@ -178,7 +178,7 @@
               
               | 更新于
                 
-                  <span data-format="luxon">2026-09-12T10:00:00&#43;08:00</span>
+                  <span data-format="luxon">2026-09-16T08:00:00&#43;08:00</span>
                 
               
             </span>
@@ -207,9 +207,6 @@
         
 
         <p>用独立信息域和验收条件判断拆分价值，控制协作带来的成本与状态冲突。</p>
-<blockquote>
-<p>本文于 2026-09-12 补充整理，按 2026-08 专题归档。示例为方案设计，参数用于说明方法，不代表已上线项目或实测成果。</p>
-</blockquote>
 <h2 id="拆分应来自独立工作而不是角色名称">拆分应来自独立工作，而不是角色名称</h2>
 <p>给系统安排“专家”“经理”“审核员”三个角色，不会自动得到更可靠的架构。如果它们读取同一份上下文、调用相同工具，只是在重复生成意见，成本可能增加，错误却高度相关。</p>
 <p>适合拆分的例子是：一个子任务查询知识库规范，另一个读取工单历史，两者各自有明确输入、权限和输出。协调者负责对齐证据，不让两个工作者随意修改共同业务状态。</p>
@@ -239,8 +236,6 @@
 <h2 id="用单-agent-作为对照组">用单 Agent 作为对照组</h2>
 <p>相同样本、相同工具集合和相近总预算下，比较单 Agent 与多 Agent。观察任务成功率、证据覆盖、冲突率、总成本和端到端耗时。</p>
 <p>如果收益只来自给多 Agent 更多 token，而不是任务划分本身，结论就应如实表达。拆分应该解决可解释的问题，而不是成为架构复杂度的默认方向。</p>
-<hr>
-<p><a href="/agent-engineering/overview/">查看系列导读与阅读路线</a></p>
       </article>
     </section>
 
