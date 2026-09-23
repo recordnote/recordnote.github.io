@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>首页 | Lin 的博客</title>
+    <title>存量 Java 系统接入 Agent：渐进迁移与演进路线 | Lin 的博客</title>
 
     
 <link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
@@ -19,21 +19,23 @@
 
 <meta name="generator" content="Hugo 0.119.0">
 
-<link rel="canonical" href="https://recordnote.github.io/" />
+<link rel="canonical" href="https://recordnote.github.io/agent-engineering/java-agent-migration/" />
 
 
-<meta property="og:title" content="Lin 的博客" />
-<meta property="og:description" content="Lin 的生活记录～" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://recordnote.github.io/" /><meta property="og:image" content="https://recordnote.github.io/me/background1.jpg"/>
+<meta property="og:title" content="存量 Java 系统接入 Agent：渐进迁移与演进路线" />
+<meta property="og:description" content="从只读辅助开始逐步开放写操作，用明确的进入条件和退出机制约束迁移风险。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/agent-engineering/java-agent-migration/" /><meta property="og:image" content="https://recordnote.github.io/img/springcloud.jfif" /><meta property="article:section" content="agent-engineering" />
+<meta property="article:published_time" content="2026-09-23T08:00:00+08:00" />
+<meta property="article:modified_time" content="2026-09-16T08:00:00+08:00" />
 
 
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://recordnote.github.io/me/background1.jpg"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/springcloud.jfif"/>
 
-<meta name="twitter:title" content="Lin 的博客"/>
-<meta name="twitter:description" content="Lin 的生活记录～"/>
+<meta name="twitter:title" content="存量 Java 系统接入 Agent：渐进迁移与演进路线"/>
+<meta name="twitter:description" content="从只读辅助开始逐步开放写操作，用明确的进入条件和退出机制约束迁移风险。"/>
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
@@ -85,7 +87,17 @@
 </style>
 
 
-     
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
 
     
     <link rel="stylesheet" href="/css/custom.css" />
@@ -119,511 +131,134 @@
         <section class="front">
           <div class="dream-max-width">
             
-
-<header class="ui basic very padded segment dream-header">
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
   
-  <div class="ui small circular image">
-    <img src="/me/yy.jpg" alt="avatar" />
-  </div>
+  
+  
   
 
-  <div class="content">
-    <h1 class="ui medium header">
-      Lin 的博客
-      <span class="sub header">A merry heart goes all the way.</span>
-    </h1>
-
-    <nav class="ui horizontal list" aria-label="博客导航">
-      
-      <a class="item" href="/posts" aria-label="归档">
-        <i class="archive icon" aria-hidden="true"></i>
-      </a>
-      
-      <a class="item" href="/categories" aria-label="所有分类">
-        <i class="th list icon" aria-hidden="true"></i>
-      </a>
-      <a class="item" href="/tags" aria-label="所有标签">
-        <i class="tags icon" aria-hidden="true"></i>
-      </a>
-    </nav>
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#从现有服务能力开始">从现有服务能力开始</a></li>
+    <li><a href="#第一阶段只读辅助">第一阶段：只读辅助</a></li>
+    <li><a href="#第二阶段生成待确认提案">第二阶段：生成待确认提案</a></li>
+    <li><a href="#第三阶段受控写入">第三阶段：受控写入</a></li>
+    <li><a href="#第四阶段异步任务与有限自主">第四阶段：异步任务与有限自主</a></li>
+    <li><a href="#每一阶段都需要退出机制">每一阶段都需要退出机制</a></li>
+    <li><a href="#用变化触发架构演进">用变化触发架构演进</a></li>
+  </ul>
+</nav>
+    </div>
+    
 
     
-      
-      
-      
-      
-        
-        
-          
-            
-            
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-      
-        
-        
-          
-        
-          
-            
-            
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-      
-        
-        
-          
-        
-          
-        
-          
-            
-            
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-      
-        
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-            
-            
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-      
-        
-        
-          
-        
-          
-        
-          
-        
-          
-            
-            
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-      
-        
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-            
-            
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-      
-      
-        
-      
-        
-      
-        
-      
-        
-          
-        
-      
-        
-          
-        
-      
-        
-          
-        
-      
-        
-      
-        
-      
-        
-      
-        
-          
-        
-      
-        
-          
-        
-      
-        
-          
-        
-      
-        
-          
-        
-      
-      
-      <nav class="dream-topic-nav" aria-label="文章主题">
-        <div class="dream-tags dream-tags-primary">
-          
-          <a class="ui label" href="/tags/agent/">Agent</a>
-          
-          <a class="ui label" href="/tags/ai%E5%BA%94%E7%94%A8/">AI应用</a>
-          
-          <a class="ui label" href="/tags/java/">Java</a>
-          
-          <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">架构设计</a>
-          
-          <a class="ui label" href="/tags/rag/">RAG</a>
-          
-          <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a>
-          
-        </div>
-        
-        <details class="dream-tags-more">
-          <summary>更多主题 <span>（7）</span></summary>
-          <div class="dream-tags dream-tags-secondary">
-            
-            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a>
-            
-            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
-            
-            <a class="ui label" href="/tags/%E5%AE%89%E5%85%A8/">安全</a>
-            
-            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94/">生活随笔</a>
-            
-            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a>
-            
-            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>
-            
-            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/">运维</a>
-            
-          </div>
-        </details>
-        
-      </nav>
-    
-  </div>
-</header>
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">存量 Java 系统接入 Agent：渐进迁移与演进路线<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
 
+              | 
+                  <span data-format="luxon">2026-09-23T08:00:00&#43;08:00</span>
+                
 
-<div class="ui relaxed grid dream-grid">
-  
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  
-  <a class="image" href="https://recordnote.github.io/spring-cloud-alibaba/nacos/">
-    
-    <img src="/img/default3.jpg" alt="" />
-    
+              | 3 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2026-09-16T08:00:00&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
   </a>
-  
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/spring-cloud-alibaba/nacos/"></a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">0001-01-01T00:00:00Z</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      元数据
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author">@&nbsp;Lin</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>1 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  
-  <a class="image" href="https://recordnote.github.io/spring-cloud-alibaba/%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0/">
-    
-    <img src="/img/default3.jpg" alt="" />
-    
+  <a href="https://twitter.com/intent/tweet?text=%e5%ad%98%e9%87%8f%20Java%20%e7%b3%bb%e7%bb%9f%e6%8e%a5%e5%85%a5%20Agent%ef%bc%9a%e6%b8%90%e8%bf%9b%e8%bf%81%e7%a7%bb%e4%b8%8e%e6%bc%94%e8%bf%9b%e8%b7%af%e7%ba%bf&url=https%3a%2f%2frecordnote.github.io%2fagent-engineering%2fjava-agent-migration%2f" title="Twitter">
+    <i class="twitter icon"></i>
   </a>
-  
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/spring-cloud-alibaba/%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0/"></a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">0001-01-01T00:00:00Z</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author">@&nbsp;Lin</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>0 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  
-  <a class="image" href="https://recordnote.github.io/spring-cloud-alibaba/%E9%97%AE%E9%A2%98/">
-    
-    <img src="/img/default3.jpg" alt="" />
-    
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fagent-engineering%2fjava-agent-migration%2f" title="Facebook">
+    <i class="facebook icon"></i>
   </a>
-  
+</span>
 
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/spring-cloud-alibaba/%E9%97%AE%E9%A2%98/"></a>
-    </h2>
-    <div class="meta">
-      <p class="date">
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
         
-          <span data-format="luxon">0001-01-01T00:00:00Z</span>
+        <img class="cover" src="/img/springcloud.jfif" />
         
-      </p>
-    </div>
-    <div class="description">
-      https://www.imooc.com/article/287865 RestTemplate 有空整理一下servlet相关问题 DDD领域模型 入门 jdk1.8 的新特性 lambda 表达式 Functional Interfaces Optionals Stream 流 Parallel-Streams 并行流 Spring： PostProcesser spring对象的生命周期 java 反射
-    </div>
-  </div>
 
-  <div class="extra content">
-    <div class="author">@&nbsp;Lin</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>1 分钟阅读</div>
-  </div>
-</article>
+        <p>从只读辅助开始逐步开放写操作，用明确的进入条件和退出机制约束迁移风险。</p>
+<h2 id="从现有服务能力开始">从现有服务能力开始</h2>
+<p>存量 Java 系统通常已经具备用户、权限、事务、审计和稳定 API。接入 Agent 时，应该让这些能力继续作为业务权威来源。模型负责理解和建议，业务系统负责决定动作是否允许和实际是否完成。</p>
+<p>迁移目标不是把全部业务逻辑改写成提示词，而是找到适合自然语言入口的任务，并在可控范围逐步扩大能力。</p>
+<h2 id="第一阶段只读辅助">第一阶段：只读辅助</h2>
+<p>选择规范查询、工单摘要和状态解释等只读场景。接入已有身份体系，限制知识范围，返回证据引用。即使只读，也需要控制敏感数据和外部模型使用范围。</p>
+<p>进入下一阶段的条件是：固定样本覆盖主要任务；引用能够校验；权限测试通过；失败能够解释。若缺少这些条件，先修复基础链路，不急于增加自主执行。</p>
+<p>可以把模型结果作为现有页面中的辅助内容，让用户保留原来的操作路径。这有利于观察价值，也使服务异常时可以退回已有界面。</p>
+<h2 id="第二阶段生成待确认提案">第二阶段：生成待确认提案</h2>
+<p>模型整理工单标题、环境和现象，但不立即写入。服务端把建议转成可审阅提案，明确展示目标项目与影响。</p>
+<p>提案需要契约版本和有效期，用户修改参数后重新校验。缺少必要信息时，停在补充输入，而不是用默认生产环境或默认负责人填满字段。</p>
+<p>这一阶段可以观察提案采纳率和修改内容。采纳率需要明确分母，并区分用户未处理和明确拒绝；不能把所有未点击都算作模型失败。</p>
+<h2 id="第三阶段受控写入">第三阶段：受控写入</h2>
+<p>启用一个边界清楚的写操作，例如创建工单。采用具体提案审批、执行时重新鉴权、稳定操作 ID 和结果对账。只有完整验证响应丢失和重复请求后，才扩大写入范围。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>提案生成 → 业务校验 → 用户确认
+</span></span><span style="display:flex;"><span>                     ↓
+</span></span><span style="display:flex;"><span>              审批与参数绑定
+</span></span><span style="display:flex;"><span>                     ↓
+</span></span><span style="display:flex;"><span>              幂等执行 → 对账 → 终态
+</span></span></code></pre></div><p>不适合一开始开放任意数据库写入或任意命令执行。工具应使用现有领域服务，让原来的事务规则和审计继续生效。</p>
+<p>若通过 MCP 对外开放能力，依据 <a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization">MCP 授权规范</a>处理协议接入，同时保留业务资源权限检查。</p>
+<h2 id="第四阶段异步任务与有限自主">第四阶段：异步任务与有限自主</h2>
+<p>当确实存在多步骤、长等待和中途恢复需求时，引入持久化编排。先让固定工作流可靠执行，再对路径不确定的局部步骤增加 Agent 循环。</p>
+<p>自主范围可以从“选择检索条件”开始，逐步扩大到“根据证据建议下一步”。高影响写操作是否自动执行，必须由业务风险和授权模型决定，不能因为模型升级就默认开放。</p>
+<p>多个服务协作时，通过事件和稳定业务标识连接，避免长事务跨越模型调用。</p>
+<h2 id="每一阶段都需要退出机制">每一阶段都需要退出机制</h2>
+<p>模型网关异常时，只读功能可以退回原页面和普通搜索；提案生成异常时允许人工填写；写入结果不明时暂停新增动作并对账；编排升级出现回归时，将新任务切回旧版本，处理中的任务按状态迁移。</p>
+<p>回退不是只把前端按钮隐藏。已经创建的任务、待审批提案和进行中的操作都要有去向。</p>
+<h2 id="用变化触发架构演进">用变化触发架构演进</h2>
+<p>当单实例内存、连接池或模型配额成为瓶颈，先测量再选择扩容方式。只有模块资源争用、独立发布或隔离需求明确时，才考虑进一步拆服务。</p>
+<p>这条路线让 Java 系统的事务和治理能力自然延伸到 AI 应用。每一步都有可展示的成果和清楚的停止条件，也便于判断下一轮工作应该增强模型能力，还是补齐工程基础。</p>
+<hr>
+<p><a href="/agent-engineering/java-agent-platform-blueprint/">延伸阅读：Java 企业 Agent 平台蓝图</a></p>
+      </article>
+    </section>
 
-  </div>
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  
-  <a class="image" href="https://recordnote.github.io/uml/uml/">
     
-    <img src="/img/default4.jpg" alt="" />
+
     
-  </a>
-  
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/uml/uml/"></a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">0001-01-01T00:00:00Z</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      uml 用例图 活动图 序列图
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author">@&nbsp;Lin</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>1 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    <article class="ui attached segment card dream-card">
-  
-  <a class="image" href="https://recordnote.github.io/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%9E%B6%E6%9E%84/">
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
     
-    <img src="/img/default1.jpg" alt="" />
+
     
-  </a>
-  
-
-  <div class="content">
-    <h2 class="ui medium header">
-      <a href="/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%9E%B6%E6%9E%84/"></a>
-    </h2>
-    <div class="meta">
-      <p class="date">
-        
-          <span data-format="luxon">0001-01-01T00:00:00Z</span>
-        
-      </p>
-    </div>
-    <div class="description">
-      
-    </div>
-  </div>
-
-  <div class="extra content">
-    <div class="author">@&nbsp;Lin</div>
-    <div class="reading-time">
-      <i class="clock icon"></i>0 分钟阅读</div>
-  </div>
-</article>
-
-  </div>
-  
-
-  <div class="sixteen wide mobile eight wide tablet eight wide computer four wide large screen four wide widescreen column dream-column">
-    
-<article class="ui center aligned attached segment card dream-card">
-  <div class="content">
-    <div class="ui medium header">
-      <a href="/page/14/" title="上一页">
-        上一页
-      </a>
-    </div>
-  </div>
-</article>
-
-
-
-
   </div>
 </div>
 
@@ -1146,9 +781,41 @@
 
 
 
-<script src="https://cdn.jsdelivr.net/npm/imagesloaded@4.1.4/imagesloaded.pkgd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
-<script src="/js/grid.js"></script>
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
 
 
     
