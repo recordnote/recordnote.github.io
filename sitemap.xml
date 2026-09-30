@@ -2,6 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://recordnote.github.io/agent-engineering/text-to-sql-governance/</loc>
+    <lastmod>2026-09-16T08:00:00+08:00</lastmod>
+  </url><url>
     <loc>https://recordnote.github.io/agent-engineering/java-agent-migration/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
@@ -410,16 +413,25 @@
     <loc>https://recordnote.github.io/agent-engineering/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://recordnote.github.io/categories/</loc>
+    <loc>https://recordnote.github.io/categories/ai/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://recordnote.github.io/tags/java/</loc>
+    <loc>https://recordnote.github.io/tags/ai%E5%BA%94%E7%94%A8/</loc>
+    <lastmod>2026-09-16T08:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/categories/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/tags/</loc>
+    <lastmod>2026-09-16T08:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+    <lastmod>2026-09-16T08:00:00+08:00</lastmod>
+  </url><url>
+    <loc>https://recordnote.github.io/tags/java/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
@@ -429,12 +441,6 @@
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/tags/agent/</loc>
-    <lastmod>2026-09-16T08:00:00+08:00</lastmod>
-  </url><url>
-    <loc>https://recordnote.github.io/categories/ai/</loc>
-    <lastmod>2026-09-16T08:00:00+08:00</lastmod>
-  </url><url>
-    <loc>https://recordnote.github.io/tags/ai%E5%BA%94%E7%94%A8/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/tags/%E8%BF%90%E7%BB%B4/</loc>
@@ -447,9 +453,6 @@
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/tags/rag/</loc>
-    <lastmod>2026-09-16T08:00:00+08:00</lastmod>
-  </url><url>
-    <loc>https://recordnote.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/ai/</loc>
