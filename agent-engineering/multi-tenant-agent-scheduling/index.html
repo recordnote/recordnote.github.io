@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>多租户 Agent 调度设计：公平队列、预算预留与过载保护 | Lin 的博客</title>
+
+    
+<link href="/favicon.png" rel="shortcut icon" type="image/x-icon" />
+
+
+
+
+<meta name="author" content="Lin" />
+<meta name="description" content="Lin 的生活记录～" />
+
+
+
+<meta name="generator" content="Hugo 0.119.0">
+
+<link rel="canonical" href="https://recordnote.github.io/agent-engineering/multi-tenant-agent-scheduling/" />
+
+
+<meta property="og:title" content="多租户 Agent 调度设计：公平队列、预算预留与过载保护" />
+<meta property="og:description" content="在共享模型配额下区分准入、排队和执行，避免一个租户的长任务耗尽其他用户的服务能力。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://recordnote.github.io/agent-engineering/multi-tenant-agent-scheduling/" /><meta property="og:image" content="https://recordnote.github.io/img/balance.png" /><meta property="article:section" content="agent-engineering" />
+<meta property="article:published_time" content="2026-10-21T08:00:00+08:00" />
+<meta property="article:modified_time" content="2026-09-16T08:00:00+08:00" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://recordnote.github.io/img/balance.png"/>
+
+<meta name="twitter:title" content="多租户 Agent 调度设计：公平队列、预算预留与过载保护"/>
+<meta name="twitter:description" content="在共享模型配额下区分准入、排队和执行，避免一个租户的长任务耗尽其他用户的服务能力。"/>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<link rel="stylesheet" href="/css/icomoon.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/css/OverlayScrollbars.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css">
+<link rel="stylesheet" href="/css/site.css" />
+
+<style>
+  .ui.header a:not(.ui.button):hover {
+    text-decoration: underline;
+  }
+
+  
+  a:not(.ui.button) {
+    color: seagreen !important;
+  }
+  
+
+  
+  .inverted a:not(.ui.button) {
+     color: darkseagreen !important;
+  }
+  
+
+  
+  body.default {
+    
+    background-color: #fff;
+    
+
+    
+    background-image: url(/me/background1.jpg);
+    
+  }
+  
+
+  
+  body.dark {
+    
+    background-color: #333;
+    
+
+    
+    background-image: url(/me/background1.jpg);
+    
+  }
+  
+</style>
+
+
+    
+
+
+
+<link rel="stylesheet" data-highlight href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/tomorrow.min.css" />
+
+
+
+
+
+
+
+    
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+  </head>
+
+  <body class="default">
+    
+<nav class="ui secondary menu dream-menu dream-nav">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/recordnote.github.io'"></i>
+  </div>
+  
+  <div class="item">
+    <i class="large link icon theme-switch" onclick="themeSwitch()"></i>
+  </div>
+  
+  
+  <div class="item">
+    <i class="large link search icon" onclick="toggleSearch()"></i>
+  </div>
+  
+</nav>
+
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          <div class="dream-max-width">
+            
+<div class="ui relaxed centered grid dream-grid dream-grid-single">
+  
+  
+  
+  
+
+  
+  <aside class="sixteen wide mobile sixteen wide tablet three wide computer column dream-single-aside">
+    
+    <div class="ui segment toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#有全局限流仍可能没有租户公平性">有全局限流，仍可能没有租户公平性</a></li>
+    <li><a href="#准入先限制积压再谈优先级">准入先限制积压，再谈优先级</a></li>
+    <li><a href="#用成本单位而不是任务个数分配机会">用成本单位而不是任务个数分配机会</a></li>
+    <li><a href="#预算预留需要跨实例一致">预算预留需要跨实例一致</a></li>
+    <li><a href="#模型长调用无法轻易抢占">模型长调用无法轻易抢占</a></li>
+    <li><a href="#公平和利用率之间需要明确取舍">公平和利用率之间需要明确取舍</a></li>
+    <li><a href="#实验应该观察每个租户">实验应该观察每个租户</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    
+  </aside>
+  
+  <div class="sixteen wide mobile sixteen wide tablet ten wide computer column markdown-body dream-single" id="dream-save-post-as-img">
+    <section class="ui top attached segment">
+      <header>
+        <h1 class="ui large header">多租户 Agent 调度设计：公平队列、预算预留与过载保护<span class="sub header">
+            <span class="left">
+              @
+              
+                
+                  Lin
+                
+              
+
+              | 
+                  <span data-format="luxon">2026-10-21T08:00:00&#43;08:00</span>
+                
+
+              | 4 分钟阅读
+
+              
+              | 更新于
+                
+                  <span data-format="luxon">2026-09-16T08:00:00&#43;08:00</span>
+                
+              
+            </span>
+
+            
+            <span class="dream-share">
+  <a href="#" class="save-as-image" title="保存为图片" onclick="savePostAsImg()">
+    <i class="save icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=%e5%a4%9a%e7%a7%9f%e6%88%b7%20Agent%20%e8%b0%83%e5%ba%a6%e8%ae%be%e8%ae%a1%ef%bc%9a%e5%85%ac%e5%b9%b3%e9%98%9f%e5%88%97%e3%80%81%e9%a2%84%e7%ae%97%e9%a2%84%e7%95%99%e4%b8%8e%e8%bf%87%e8%bd%bd%e4%bf%9d%e6%8a%a4&url=https%3a%2f%2frecordnote.github.io%2fagent-engineering%2fmulti-tenant-agent-scheduling%2f" title="Twitter">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frecordnote.github.io%2fagent-engineering%2fmulti-tenant-agent-scheduling%2f" title="Facebook">
+    <i class="facebook icon"></i>
+  </a>
+</span>
+
+            
+          </span>
+        </h1>
+      </header>
+
+      <article class="main">
+        
+        <img class="cover" src="/img/balance.png" />
+        
+
+        <p>在共享模型配额下区分准入、排队和执行，避免一个租户的长任务耗尽其他用户的服务能力。</p>
+<h2 id="有全局限流仍可能没有租户公平性">有全局限流，仍可能没有租户公平性</h2>
+<p>模型网关同时服务三个团队：A 持续提交文档分析长任务，B 偶尔查一个工单状态，C 批量整理历史工单。即使总并发严格限制在供应商配额内，A 仍可能长期占满许可，让 B 的轻量请求一直等待。</p>
+<p>全局限流保护下游，公平调度决定谁先得到有限资源。两者是不同层次的问题。只给每个租户设置相同请求次数，也无法处理单次任务从几百到几万 token 的成本差异。</p>
+<p>可以把链路拆成准入、排队、资源预留和执行四个阶段，分别定义失败与恢复语义。</p>
+<h2 id="准入先限制积压再谈优先级">准入先限制积压，再谈优先级</h2>
+<p>请求进入系统时，先检查身份、任务类型、输入大小和租户未完成任务数。不符合约束的请求在入口明确拒绝，或者转为用户知晓的离线任务，不能无限堆进消息队列。</p>
+<p>建议区分交互问答和批处理队列。交互任务设置较短的最大排队时间，批任务允许更长等待但不无限延续；等待人工审批的任务暂时释放模型执行许可。</p>
+<p>租户优先级来自服务配置和业务策略，不能从模型生成的“紧急”标签直接决定。用户输入“最高优先级”也不应自动获得管理员级资源份额。</p>
+<h2 id="用成本单位而不是任务个数分配机会">用成本单位而不是任务个数分配机会</h2>
+<p>一种候选方法是按租户维护调度积分，每轮按权重补充额度，并用估计成本扣减。下面是调度逻辑示意，不是可直接使用的完整算法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>每个调度轮次：
+</span></span><span style="display:flex;"><span>  对有积压的租户补充 quantum × weight
+</span></span><span style="display:flex;"><span>  对当前候选任务估算资源成本
+</span></span><span style="display:flex;"><span>  若租户积分足够且全局许可可用：
+</span></span><span style="display:flex;"><span>    原子预留许可和预算
+</span></span><span style="display:flex;"><span>    扣减积分并开始执行
+</span></span><span style="display:flex;"><span>  否则保留任务，继续考虑其他租户
+</span></span></code></pre></div><p>成本可以用归一化 token 或其他业务定义单位，但必须在同一队列中可比较。输入 token 可提前估计，输出和工具步骤则需要设置上界，并在结束后结算。</p>
+<p>假设 A、B 每轮各获得 100 单位，A 队首任务估计需要 300，B 的任务只需 50。A 在积分积累期间，B 可以继续处理；A 获得足够积分后也应有机会执行。这是机制示例，不代表某个固定公平率。</p>
+<p>积分上限要允许最大合法任务最终获得资格，否则大任务会永久饥饿。也可以为超大任务设置独立队列或拆分执行，避免它占住租户队首。</p>
+<h2 id="预算预留需要跨实例一致">预算预留需要跨实例一致</h2>
+<p>如果两个 Worker 同时看到“剩余预算 100”，各自启动一项成本 80 的任务，最终会突破预算。检查和扣减必须在同一原子操作中完成，可以使用数据库条件更新或经过验证的配额服务。</p>
+<p>预留记录至少包含 taskId、租户、额度、状态和租约。模型调用尚未开始便失败时可以释放；已经开始但未拿到完整 usage 时，不能直接按零消耗回收，应采用保守估计或等待对账。</p>
+<p>子 Agent 继承父任务的预算范围，不能各自向全局重新申请一份不受父任务限制的额度。否则主任务表面上只有一次请求，实际支出却随分支数量增长。</p>
+<p>Java 的 <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Semaphore.html">Semaphore</a>适合控制单进程内同时占用的许可；即便启用公平模式，也不等于实现跨实例的租户加权公平，更不自动处理 token 预算。</p>
+<h2 id="模型长调用无法轻易抢占">模型长调用无法轻易抢占</h2>
+<p>任务开始后，通常不能像 CPU 时间片一样随意暂停并恢复远端生成。公平性主要发生在新步骤获得执行资格时，而不是每秒强行切走正在生成的请求。</p>
+<p>因此长任务需要限制单步输出、设置截止时间，并在步骤之间重新排队。对可以分块的文档分析，分块既提供恢复检查点，也提供其他租户获得执行机会的边界。</p>
+<p>取消请求应沿执行链传播，但只有确认资源不再使用或进入明确结算规则后，才回收相应许可。过早释放会造成实际并发超限；永久不释放则会让系统逐渐失去容量。</p>
+<h2 id="公平和利用率之间需要明确取舍">公平和利用率之间需要明确取舍</h2>
+<p>为每个租户永久保留独占槽位可以降低干扰，却可能在租户空闲时浪费资源。共享剩余额度能提高利用率，但借用需要在后续步骤可回收，不能承诺已开始的不可抢占调用立刻让出容量。</p>
+<p>还需要处理低优先级任务的等待上限。可以采用等待时间加权或定期保障份额，但要避免用户反复取消、重建任务来刷新排序优势。</p>
+<p>如果供应商突然降低配额，应减少新步骤启动速度，并对超出排队时限的任务给出明确结果。继续按旧吞吐率接收请求，只会把压力积累到未来。</p>
+<h2 id="实验应该观察每个租户">实验应该观察每个租户</h2>
+<p>在同一总配额下设置三组负载：一个租户持续高流量、一个租户偶发短任务、一个租户只提交大任务。记录各租户吞吐、最长等待、完成率、实际成本和全局利用率。</p>
+<p>再让 Worker 在预算预留后崩溃，确认额度会在合理条件下恢复；模拟迟到的结算事件，确保不会重复退款或重复扣费。用操作 ID 去重，预算账本和任务状态保持可追溯关系。</p>
+<p>可以延续此前的<a href="/agent-engineering/ai-capacity-load-test/">容量规划方法</a>与<a href="/agent-engineering/llm-cost-cache-budget/">成本预算设计</a>。公平调度的结论应说明哪些租户得到保障、代价是什么，而不是只展示全站平均延迟下降。</p>
+      </article>
+    </section>
+
+    
+
+    
+    <article class="ui segment utterances-comments" data-html2canvas-ignore>
+      <script
+        src="https://utteranc.es/client.js"
+        repo="recordnote/recordnote.github.io"
+        issue-term="og:title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </article>
+    
+
+    
+  </div>
+</div>
+
+
+            <footer class="ui basic center aligned segment" style="background-color: transparent;">
+              
+              <p>© 2019 - 2026 Lin 的博客</p>
+              
+
+              <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+
+              
+            </footer>
+          </div>
+        </section>
+        <section class="back">
+          <div class="dream-max-width">
+            <header class="ui basic very padded segment dream-header">
+  
+  <div class="ui small circular image">
+    <img src="/me/yy.jpg" alt="avatar" />
+  </div>
+  
+
+  <div class="content">
+    <h1 class="ui medium header">
+      Lin 的博客
+      <span class="sub header">A merry heart goes all the way.</span>
+    </h1>
+
+    <nav class="ui horizontal list" aria-label="博客导航">
+      
+      <a class="item" href="/posts" aria-label="归档">
+        <i class="archive icon" aria-hidden="true"></i>
+      </a>
+      
+      <a class="item" href="/categories" aria-label="所有分类">
+        <i class="th list icon" aria-hidden="true"></i>
+      </a>
+      <a class="item" href="/tags" aria-label="所有标签">
+        <i class="tags icon" aria-hidden="true"></i>
+      </a>
+    </nav>
+
+    
+      
+      
+      
+      
+        
+        
+          
+            
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+        
+        
+          
+        
+          
+            
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+        
+        
+          
+        
+          
+        
+          
+            
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+            
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+            
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+          
+        
+      
+      
+      <nav class="dream-topic-nav" aria-label="文章主题">
+        <div class="dream-tags dream-tags-primary">
+          
+          <a class="ui label" href="/tags/agent/">Agent</a>
+          
+          <a class="ui label" href="/tags/ai%E5%BA%94%E7%94%A8/">AI应用</a>
+          
+          <a class="ui label" href="/tags/java/">Java</a>
+          
+          <a class="ui label" href="/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">架构设计</a>
+          
+          <a class="ui label" href="/tags/rag/">RAG</a>
+          
+          <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a>
+          
+        </div>
+        
+        <details class="dream-tags-more">
+          <summary>更多主题 <span>（7）</span></summary>
+          <div class="dream-tags dream-tags-secondary">
+            
+            <a class="ui label" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+            
+            <a class="ui label" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a>
+            
+            <a class="ui label" href="/tags/%E5%AE%89%E5%85%A8/">安全</a>
+            
+            <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94/">生活随笔</a>
+            
+            <a class="ui label" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a>
+            
+            <a class="ui label" href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>
+            
+            <a class="ui label" href="/tags/%E8%BF%90%E7%BB%B4/">运维</a>
+            
+          </div>
+        </details>
+        
+      </nav>
+    
+  </div>
+</header>
+
+
+<div class="ui relaxed grid dream-grid dream-back">
+  
+  
+  
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment markdown-body">
+      <div class="ui medium header">关于我</div>
+      <p>Lin 的 ❤️ 博客</p>
+<p>技术专题：<a href="/agent-engineering/overview/">Java Agent 工程化：从知识库问答到可靠业务执行</a>。围绕 RAG、工具治理、任务恢复与 Java 平台架构整理设计思路和验证方法。</p>
+<p>记录一些 🌈 生活上，技术上的事</p>
+<ul>
+<li><strong>🛠️ 技术阵地：</strong> 深耕 Java 开发 ，目前向 AI 应用领域探索与拓展。这里主要记录我从后端架构到 AI 赋能的进阶之路、技术思考以及日常的 debug 血泪史。始终致力于写出优雅且没有 bug 的代码（尽量）。</li>
+<li><strong>🌈 生活侧写：</strong> 偶尔脱下极客的外衣，我也会在这里分享生活中的灵光一现。不管是好用的效率工具，还是周末的一场骑行，都是构成我真实生活的一部分。</li>
+</ul>
+
+    </article>
+  </div>
+  
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article class="ui segment">
+      <div class="ui medium header">社交链接</div>
+      <nav class="ui secondary menu dream-menu dream-socials">
+  
+  <div class="item">
+    <a href="/index.xml">
+      <i class="large rss square icon" title="RSS"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="mailto:zhjlynn@foxmail.com">
+      <i class="large mail icon" title="Email"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://twitter.com/Lin" target="_blank">
+      <i class="large twitter icon" title="Twitter"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://facebook.com/Lin" target="_blank">
+      <i class="large facebook icon" title="Facebook"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://instagram.com/Lin" target="_blank">
+      <i class="large instagram icon" title="Instagram"></i>
+    </a>
+  </div>
+  
+
+  
+
+  
+  <div class="item">
+    <a href="https://www.linkedin.com/in/Lin" target="_blank">
+      <i class="large linkedin icon" title="Linkedin"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://github.com/Lin" target="_blank">
+      <i class="large github icon" title="GitHub"></i>
+    </a>
+  </div>
+  
+
+  
+  <div class="item">
+    <a href="https://www.stackoverflow.com/users/Lin" target="_blank">
+      <i class="large stack overflow icon" title="StackOverflow"></i>
+    </a>
+  </div>
+  
+
+  
+</nav>
+
+    </article>
+  </div>
+
+  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+    <article class="ui segment">
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。<br /><br />背景使用了 <a href="https://www.pexels.com/zh-cn/" target="_blank">Pexels</a> 上 <a href="https://www.pexels.com/zh-cn/Ungaro" target="_blank">Francesco Ungaro</a> 拍摄的<a href="https://www.pexels.com/zh-cn/photo/1454794/" target="_blank">图片</a>。
+    </article>
+    
+  </div>
+
+  
+</div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+    
+    <div class="ui segment" id="dream-search">
+  <div class="ui search">
+    <div class="ui transparent input">
+      <input class="prompt" type="text" placeholder="搜索" />
+    </div>
+    <div class="results"></div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $.getJSON('https:\/\/recordnote.github.io/index.json', function (data) {
+      $('.ui.search').search({
+        source: data,
+        searchFields: ['title'],
+        showNoResults: false,
+      })
+    })
+  })
+</script>
+<script src="/js/search.js"></script>
+
+    
+
+    
+
+    <script>
+  window.background = "#fff"
+  window.defaultDark =  null 
+  window.backgroundDark = "#333"
+  window.backgroundImageDark = "/me/background1.jpg"
+  window.darkNav =  null 
+  window.maxTags =  6 
+  window.hasTwitterEmbed =  null 
+  window.fixedNav =  true 
+
+  if (window.hasTwitterEmbed) {
+    
+    window.twttr = (function (d, s, id) {
+      var js,
+        fjs = d.getElementsByTagName(s)[0],
+        t = window.twttr || {}
+      if (d.getElementById(id)) return t
+      js = d.createElement(s)
+      js.id = id
+      js.src = 'https://platform.twitter.com/widgets.js'
+      fjs.parentNode.insertBefore(js, fjs)
+
+      t._e = []
+      t.ready = function (f) {
+        t._e.push(f)
+      }
+
+      return t
+    })(document, 'script', 'twitter-wjs')
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@1.13.1/js/jquery.overlayScrollbars.min.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0"></script>
+
+<script>
+  format()
+
+  function format() {
+    $('span[data-format="luxon"]').each(function () {
+      var date = $(this).text()
+
+      $(this).text(luxon.DateTime.fromISO(date, { locale: "zh" }).toFormat("yyyy年MM月dd日"))
+    })
+  }
+</script>
+
+
+
+<script src="/js/scrollToTop.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/clojure.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/ocaml.min.js"></script>
+
+
+
+<script>
+  hljs.highlightAll()
+  setHighlightTheme()
+
+  function setHighlightTheme() {
+    var isDark = localStore.getItem('hugo-theme-dream-is-dark')
+    isDark = isDark ? isDark : window.defaultDark ? 'y' : isDark
+
+    var lightTheme = "tomorrow"
+    var darkTheme = "tomorrow-night"
+    var theme = isDark === 'y' ? darkTheme : lightTheme
+
+    $('link[data-highlight]').attr('href', 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/' + theme + '.min.css')
+    $('pre').css('background', isDark === 'y' ? '#333' : '')
+  }
+</script>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.1"></script>
+<script src="/js/post.js" defer></script>
+
+
+    
+
+    
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-98295641-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    
+  </body>
+</html>
