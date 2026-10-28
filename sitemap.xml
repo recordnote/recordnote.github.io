@@ -2,6 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://recordnote.github.io/agent-engineering/agent-tool-contract-evolution/</loc>
+    <lastmod>2026-09-16T08:00:00+08:00</lastmod>
+  </url><url>
     <loc>https://recordnote.github.io/agent-engineering/multi-tenant-agent-scheduling/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
@@ -425,6 +428,9 @@
     <loc>https://recordnote.github.io/agent-engineering/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
+    <loc>https://recordnote.github.io/categories/ai/</loc>
+    <lastmod>2026-09-16T08:00:00+08:00</lastmod>
+  </url><url>
     <loc>https://recordnote.github.io/categories/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
@@ -434,16 +440,13 @@
     <loc>https://recordnote.github.io/tags/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://recordnote.github.io/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
-    <lastmod>2026-09-16T08:00:00+08:00</lastmod>
-  </url><url>
     <loc>https://recordnote.github.io/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://recordnote.github.io/tags/java/</loc>
+    <loc>https://recordnote.github.io/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://recordnote.github.io/categories/ai/</loc>
+    <loc>https://recordnote.github.io/tags/java/</loc>
     <lastmod>2026-09-16T08:00:00+08:00</lastmod>
   </url><url>
     <loc>https://recordnote.github.io/tags/rag/</loc>
